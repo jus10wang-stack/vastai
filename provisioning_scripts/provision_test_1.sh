@@ -1,4 +1,6 @@
 #!/bin/bash
+# triton + sage_attention
+# reference guide: https://www.nextdiffusion.ai/tutorials/fast-image-to-video-comfyui-wan2-2-lightx2v-lora
 
 source /venv/main/bin/activate
 COMFYUI_DIR=${WORKSPACE}/ComfyUI
@@ -20,7 +22,7 @@ NODES=(
 )
 
 WORKFLOWS=(
-    "https://raw.githubusercontent.com/vast-ai/base-image/refs/heads/comfyui-ltxvideo-provisioning/derivatives/pytorch/derivatives/comfyui/workflows/ltx-video-i2v-simple.json"
+    "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/template_workflows/wan2-2-I2V-FP8-Lightning.json?token=GHSAT0AAAAAADK3JIIHW2JEAI5YQYSJLMJE2GAWZTQ"
 )
 
 INPUT=(
@@ -36,15 +38,27 @@ UNET_MODELS=(
 )
 
 LORA_MODELS=(
+    "https://huggingface.co/Kijai/WanVideo_comfy/blob/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors",
+    "https://huggingface.co/Kijai/WanVideo_comfy/blob/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors"
 )
 
 VAE_MODELS=(
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/blob/main/split_files/vae/wan_2.1_vae.safetensors"
 )
 
 ESRGAN_MODELS=(
 )
 
 CONTROLNET_MODELS=(
+)
+
+TEXT_ENCODER_MODELS=(
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/blob/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+)
+
+DIFFUSION_MODELS=(
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/blob/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/blob/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors"
 )
 
 ### DO NOT EDIT BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING ###
@@ -84,6 +98,12 @@ function provisioning_start() {
     provisioning_get_files \
         "${COMFYUI_DIR}/models/esrgan" \
         "${ESRGAN_MODELS[@]}"
+    provisioning_get_files \
+        "${COMFYUI_DIR}/models/text_encoder" \
+        "${TEXT_ENCODER_MODELS[@]}"
+    provisioning_get_files \
+        "${COMFYUI_DIR}/models/diffusion_models" \
+        "${DIFFUSION_MODELS[@]}"
     provisioning_print_end
 }
 
