@@ -11,34 +11,25 @@ APT_PACKAGES=(
 )
 
 PIP_PACKAGES=(
-    #"package-1"
-    #"package-2"
+    "triton>=3.0.0"
+    "sageattention==1.0.6"
 )
 
 NODES=(
-    "https://github.com/Lightricks/ComfyUI-LTXVideo"
-    "https://github.com/kijai/ComfyUI-KJNodes"
-    "https://github.com/aria1th/ComfyUI-LogicUtils"
-    "https://github.com/Mattabyte/ComfyUI-LTXVideo-Registry_Mattabyte"
-    "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite"
+    "https://github.com/Fannovel16/ComfyUI-Frame-Interpolation"
 )
 
 WORKFLOWS=(
     "https://raw.githubusercontent.com/vast-ai/base-image/refs/heads/comfyui-ltxvideo-provisioning/derivatives/pytorch/derivatives/comfyui/workflows/ltx-video-i2v-simple.json"
-    "https://raw.githubusercontent.com/vast-ai/base-image/refs/heads/comfyui-ltxvideo-provisioning/derivatives/pytorch/derivatives/comfyui/workflows/ltx-video-t2v-simple.json"
 )
 
 INPUT=(
-    "https://comfyanonymous.github.io/ComfyUI_examples/ltxv/island.jpg"
 )
 
 CHECKPOINT_MODELS=(
-    "https://huggingface.co/Lightricks/LTX-Video/resolve/main/ltx-video-2b-v0.9.5.safetensors"
-    "https://huggingface.co/Lightricks/LTX-Video/resolve/main/ltxv-13b-0.9.7-distilled-fp8.safetensors"
 )
 
 CLIP_MODELS=(
-    "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors"
 )
 
 UNET_MODELS=(
