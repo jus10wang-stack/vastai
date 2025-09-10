@@ -11,10 +11,12 @@ This document outlines the optimal GPU configurations for running ComfyUI with v
 - GPU RAM: ≥ 40GB
 - Cost: ≤ $0.40/hour
 - Performance: ≥ 80 TFLOPS
+- Network Upload > 100
+- Network Doanload > 100
 
 **Search Command:**
 ```bash
-vastai search offers "gpu_ram>=40 dph<0.4 total_flops>=80 num_gpus=1" -o "dph,gpu_ram"
+vastai search offers "gpu_ram>=40 dph<0.4 total_flops>=80 num_gpus=1 inet_up>100 inet_down>100" -o "dph,gpu_ram"
 ```
 
 **Use Cases:**
@@ -31,10 +33,12 @@ vastai search offers "gpu_ram>=40 dph<0.4 total_flops>=80 num_gpus=1" -o "dph,gp
 - GPU RAM: ≥ 21GB
 - Cost: ≤ $0.40/hour
 - Performance: ≥ 100 TFLOPS
+- Network Upload > 100
+- Network Doanload > 100
 
 **Search Command:**
 ```bash
-vastai search offers "gpu_ram>=21 dph<0.4 total_flops>=100 num_gpus=1" -o "dph,gpu_ram"
+vastai search offers "gpu_ram>=21 dph<0.4 total_flops>=100 num_gpus=1 inet_up>100 inet_down>100" -o "dph,gpu_ram"
 ```
 
 **Use Cases:**

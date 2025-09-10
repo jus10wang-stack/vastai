@@ -84,5 +84,9 @@ graph TD
 ## Configuration Files
 
 - **Provisioning Script**: `provisioning_scripts/provision_test_1.sh`
-- **CLI Template**: `vastai_cli_template/example_cli_command.txt`
+- **CLI Templates**: 
+  - `vastai_cli_template/ssh/example_cli_command.txt` - Basic template
+  - `vastai_cli_template/ssh/example_cli_command_fix.txt` - Single env string format
+  - `vastai_cli_template/ssh/example_cli_command_fix_separate_env.txt` - Separate env flags
+  - `vastai_cli_template/ssh/example_cli_command_fix_double_quotes.txt` - Windows compatible (recommended)
 - **Workflows**: `template_workflows/`
