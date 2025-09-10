@@ -69,21 +69,8 @@ class VastAIClient:
         Returns:
             List of offer dictionaries
         """
-        # Build query object according to API docs
-        query_filters = {
-            "verified": {"eq": True},
-            "external": {"eq": False}, 
-            "rentable": {"eq": True},
-            "rented": {"eq": False},
-            "dph_total": {"lte": dph_max},
-            "num_gpus": {"eq": num_gpus},
-            "gpu_name": {"eq": gpu_name},
-            "inet_up": {"gte": inet_up_min},
-            "inet_down": {"gte": inet_down_min}
-        }
-        
+        # API filters don't work, so we'll get all offers and filter client-side
         payload = {
-            "q": query_filters,
             "type": offer_type,
             "order": [["dph_total", "asc"]]
         }
@@ -96,9 +83,6 @@ class VastAIClient:
         
         for endpoint in endpoints_to_try:
             try:
-                print(f"Trying endpoint: {endpoint}")
-                print(f"Payload: {json.dumps(payload, indent=2)}")
-                
                 # Try both PUT (documented) and GET (working) methods
                 try:
                     response = requests.put(endpoint, headers=self.headers, json=payload)
@@ -110,27 +94,118 @@ class VastAIClient:
                     # Fallback to GET
                     params = {"limit": 100}
                     response = requests.get(endpoint, headers=self.headers, params=params)
-                print(f"Status code: {response.status_code}")
                 
                 if response.status_code == 200:
                     data = response.json()
-                    print(f"Response type: {type(data)}")
                     
                     if isinstance(data, list):
-                        return data
+                        all_offers = data
                     elif isinstance(data, dict):
                         # Try different possible keys
-                        offers = data.get("offers", data.get("data", data.get("results", [])))
-                        return offers if isinstance(offers, list) else []
+                        all_offers = data.get("offers", data.get("data", data.get("results", [])))
+                    else:
+                        all_offers = []
+                    
+                    # Apply client-side filtering if we got unfiltered results
+                    if all_offers:
+                        filtered_offers = self._apply_filters(
+                            all_offers, dph_max, num_gpus, gpu_name, 
+                            inet_up_min, inet_down_min
+                        )
+                        return filtered_offers
                         
                 else:
-                    print(f"Error response: {response.text}")
+                    print(f"API Error {response.status_code}: {response.text}")
                     
             except requests.exceptions.RequestException as e:
                 print(f"Request error for {endpoint}: {e}")
                 continue
                 
         return []
+    
+    def _apply_filters(self, offers: List[Dict], dph_max: float, num_gpus: int, 
+                      gpu_name: str, inet_up_min: int, inet_down_min: int) -> List[Dict]:
+        """Apply client-side filtering since API filters don't work properly"""
+        filtered = []
+        filter_stats = {
+            'total': len(offers),
+            'price_failed': 0,
+            'gpu_count_failed': 0, 
+            'gpu_name_failed': 0,
+            'inet_up_failed': 0,
+            'inet_down_failed': 0,
+            'not_verified': 0,
+            'rented': 0,
+            'not_rentable': 0
+        }
+        
+        # Check GPU name (case-insensitive partial match)
+        target_gpu = gpu_name.lower().replace('_', ' ')
+        
+        # Collect available GPU types for informative error message
+        available_gpus = set()
+        for offer in offers[:20]:  # Check first 20 offers
+            gpu_name_str = offer.get('gpu_name', '')
+            if gpu_name_str:
+                available_gpus.add(gpu_name_str)
+        
+        for offer in offers:
+            # Check price filter
+            if offer.get('dph_total', float('inf')) > dph_max:
+                filter_stats['price_failed'] += 1
+                continue
+                
+            # Check GPU count
+            if offer.get('num_gpus', 0) != num_gpus:
+                filter_stats['gpu_count_failed'] += 1
+                continue
+                
+            # Check GPU name (case-insensitive partial match)
+            offer_gpu = offer.get('gpu_name', '').lower()
+            if target_gpu not in offer_gpu:
+                filter_stats['gpu_name_failed'] += 1
+                continue
+                
+            # Check upload speed
+            if offer.get('inet_up', 0) < inet_up_min:
+                filter_stats['inet_up_failed'] += 1
+                continue
+                
+            # Check download speed  
+            if offer.get('inet_down', 0) < inet_down_min:
+                filter_stats['inet_down_failed'] += 1
+                continue
+                
+            # Check if verified and available - handle None values properly
+            verified = offer.get('verified')
+            if verified is False:  # Only exclude if explicitly False
+                filter_stats['not_verified'] += 1
+                continue
+                
+            if offer.get('rented', False) is True:  # Only exclude if explicitly rented
+                filter_stats['rented'] += 1
+                continue
+                
+            rentable = offer.get('rentable')
+            if rentable is False:  # Only exclude if explicitly not rentable
+                filter_stats['not_rentable'] += 1
+                continue
+                
+            filtered.append(offer)
+        
+        # Print filter statistics and available GPUs if no matches found
+        if not filtered:
+            print(f"\nNo offers found matching '{target_gpu}'")
+            print(f"Available GPU types: {', '.join(sorted(available_gpus))}")
+            print(f"\nFilter Statistics:")
+            for key, value in filter_stats.items():
+                if value > 0:
+                    print(f"  {key}: {value}")
+        
+        # Sort by price (ascending)
+        filtered.sort(key=lambda x: x.get('dph_total', float('inf')))
+        
+        return filtered
     
     def format_offer(self, offer: Dict) -> str:
         """Format an offer for display"""
@@ -157,7 +232,7 @@ def main():
     print(f"Searching for offers: {query}")
     print("-" * 100)
     
-    # Perform search with proper parameters
+    # Search for RTX 3060 offers
     offers = client.search_offers(
         dph_max=0.2,
         num_gpus=1,
