@@ -84,7 +84,7 @@ function provisioning_start() {
         "${COMFYUI_DIR}/models/unet" \
         "${UNET_MODELS[@]}"
     provisioning_get_files \
-        "${COMFYUI_DIR}/models/lora" \
+        "${COMFYUI_DIR}/models/loras" \
         "${LORA_MODELS[@]}"
     provisioning_get_files \
         "${COMFYUI_DIR}/models/controlnet" \
@@ -99,7 +99,7 @@ function provisioning_start() {
         "${COMFYUI_DIR}/models/esrgan" \
         "${ESRGAN_MODELS[@]}"
     provisioning_get_files \
-        "${COMFYUI_DIR}/models/text_encoder" \
+        "${COMFYUI_DIR}/models/text_encoders" \
         "${TEXT_ENCODER_MODELS[@]}"
     provisioning_get_files \
         "${COMFYUI_DIR}/models/diffusion_models" \
