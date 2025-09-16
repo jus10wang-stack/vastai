@@ -33,7 +33,8 @@ def create_instance(offer_id):
     #         # "target_state": "running"
     #     })
     payload = json.dumps({
-        "template_hash_id": "b88b12faab234e40a5b218546ef21c3d"
+        # "template_hash_id": "b88b12faab234e40a5b218546ef21c3d",
+        "template_hash_id": "793b9eedaf1885f768b2f930dea53748"
     })
 
     headers = {
