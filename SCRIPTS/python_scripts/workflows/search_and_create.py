@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
 Search for GPU offers and create an instance with the selected offer
+Usage: python search_and_create.py [INDEX] [PROVISIONING_SCRIPT]
+Example: python search_and_create.py 1 provision_test_1.sh
 """
 
 import subprocess
@@ -8,13 +10,18 @@ import sys
 import os
 
 def main():
-    # Get index from command line argument or use default
+    # Get index and provisioning script from command line arguments or use defaults
     index = 0
+    provisioning_script = "provision_test_3.sh"
+    
     if len(sys.argv) > 1:
         try:
             index = int(sys.argv[1])
         except ValueError:
             print("Invalid index provided. Using default index 0")
+            
+    if len(sys.argv) > 2:
+        provisioning_script = sys.argv[2]
     
     # Run search_offers.py and capture the output
     print(f"Searching for GPU offers and selecting index {index}...")
@@ -47,10 +54,10 @@ def main():
     
     print(f"\nSelected offer ID: {selected_id}")
     
-    # Run create_instance.py with the selected ID
-    print(f"\nCreating instance with offer ID {selected_id}...")
+    # Run create_instance.py with the selected ID and provisioning script
+    print(f"\nCreating instance with offer ID {selected_id} using {provisioning_script}...")
     result = subprocess.run(
-        [sys.executable, os.path.join(components_dir, "create_instance.py"), selected_id],
+        [sys.executable, os.path.join(components_dir, "create_instance.py"), selected_id, provisioning_script],
         text=True
     )
     

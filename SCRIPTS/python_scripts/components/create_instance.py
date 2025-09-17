@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def create_instance(offer_id):
+def create_instance(offer_id, provisioning_script="provision_test_3.sh"):
     url = f"https://console.vast.ai/api/v0/asks/{offer_id}/"
     
     # Method 1: Using template_hash_id only (current working method)
@@ -22,9 +22,9 @@ def create_instance(offer_id):
     # Method 2: Using template_hash_id with overrides (if needed)
     # payload = json.dumps({
     #     "template_hash_id": "008d76dd092d69db5fab9af1a0f017e2",
-    #     "disk": 48,  # Override disk size
+    #     "disk": 100,  # Override disk size
     #     "env": {
-    #         "PROVISIONING_SCRIPT": "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/provisioning_scripts/provision_test_3.sh"
+    #         "PROVISIONING_SCRIPT": f"https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/{provisioning_script}"
     #     }
     # })
     
@@ -38,7 +38,7 @@ def create_instance(offer_id):
             "JUPYTER_DIR": "/",
             "DATA_DIRECTORY": "/workspace/",
             "PORTAL_CONFIG": "localhost:1111:11111:/:Instance Portal|localhost:8188:18188:/:ComfyUI|localhost:8080:18080:/:Jupyter|localhost:8080:8080:/terminals/1:Jupyter Terminal|localhost:8384:18384:/:Syncthing",
-            "PROVISIONING_SCRIPT": "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/provisioning_scripts/provision_test_3.sh",
+            "PROVISIONING_SCRIPT": f"https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/{provisioning_script}",
             "COMFYUI_ARGS": "--disable-auto-launch --port 8188 --listen 0.0.0.0 --enable-cors-header --use-sage-attention"
         },
         "runtype": "jupyter",
@@ -70,9 +70,17 @@ def create_instance(offer_id):
         return None
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python create_instance.py <OFFER_ID>")
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("Usage: python create_instance.py <OFFER_ID> [PROVISIONING_SCRIPT]")
         print("Example: python create_instance.py 20089849")
+        print("Example: python create_instance.py 20089849 provision_test_1.sh")
+        print("Available provisioning scripts:")
+        print("  - provision_test_1.sh")
+        print("  - provision_test_2.sh") 
+        print("  - provision_test_3.sh (default)")
         sys.exit(1)
     
-    create_instance(sys.argv[1])
+    offer_id = sys.argv[1]
+    provisioning_script = sys.argv[2] if len(sys.argv) == 3 else "provision_test_3.sh"
+    
+    create_instance(offer_id, provisioning_script)
