@@ -1,0 +1,117 @@
+#!/bin/bash
+# VAI - Vast.ai Command Line Interface
+# Quick access to all Vast.ai automation scripts
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON_SCRIPTS_DIR="$SCRIPT_DIR/SCRIPTS/python_scripts"
+
+# Function to show help
+show_help() {
+    echo "🚀 VAI - Vast.ai Workflow Command Interface"
+    echo "============================================="
+    echo ""
+    echo "PRIMARY WORKFLOWS:"
+    echo "  vai cm [index] [gpu] [provision_script]  - Create and Monitor instance"
+    echo "  vai exec <instance> <workflow> <image> <prompt>  - Execute workflow"
+    echo ""
+    echo "EXAMPLES:"
+    echo "  vai cm                                    # Use defaults (index=0, RTX 3060, provision_test_3.sh)"
+    echo "  vai cm 1 \"RTX 4090\" provision_test_1.sh   # Custom settings"
+    echo "  vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/images/test-image.png \"cat in space\""
+    echo ""
+    echo "HELP:"
+    echo "  vai cm --help                            # Show create_and_monitor.py help"
+    echo "  vai exec --help                          # Show execute_workflow.py help"
+    echo "  vai help                                 # Show this help"
+    echo ""
+    echo "WORKFLOW FILES:"
+    echo "  Available in: /workspace/ComfyUI/user/default/workflows/"
+    echo "  - wan2-2-I2V-FP8-Lightning.json"
+    echo ""
+    echo "PROVISIONING SCRIPTS:"
+    echo "  Available options: provision_test_1.sh, provision_test_2.sh, provision_test_3.sh (default)"
+}
+
+# Check if no arguments provided
+if [ $# -eq 0 ]; then
+    show_help
+    exit 0
+fi
+
+# Get the command
+COMMAND="$1"
+shift  # Remove first argument, so $@ now contains the rest
+
+case "$COMMAND" in
+    "cm"|"create-monitor")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "🎯 Create and Monitor Workflow Help"
+            echo "===================================="
+            echo "Usage: vai cm [INDEX] [GPU_NAME] [PROVISIONING_SCRIPT]"
+            echo ""
+            echo "Arguments:"
+            echo "  INDEX               Offer index to select (default: 0)"
+            echo "  GPU_NAME            GPU to search for (default: 'RTX 3060')"
+            echo "  PROVISIONING_SCRIPT Provisioning script to use (default: 'provision_test_3.sh')"
+            echo ""
+            echo "Examples:"
+            echo "  vai cm                                # Use all defaults"
+            echo "  vai cm 1                              # Use offer index 1"
+            echo "  vai cm 1 \"RTX 4090\"                  # Custom GPU"
+            echo "  vai cm 1 \"RTX 4090\" provision_test_1.sh # Full custom"
+            echo ""
+            echo "This command will:"
+            echo "  1. Search for GPU offers"
+            echo "  2. Create instance with selected provisioning script"
+            echo "  3. Monitor until instance is ready"
+            echo "  4. Display instance ID when complete"
+        else
+            echo "🎯 Running Create and Monitor workflow..."
+            cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/workflows/create_and_monitor.py" "$@"
+        fi
+        ;;
+    
+    "exec"|"execute")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "⚡ Execute Workflow Help"
+            echo "========================"
+            echo "Usage: vai exec <INSTANCE_ID> <WORKFLOW_FILENAME> <IMAGE_PATH> \"<PROMPT>\""
+            echo ""
+            echo "Arguments:"
+            echo "  INSTANCE_ID        Vast.ai instance ID"
+            echo "  WORKFLOW_FILENAME  Workflow file (e.g., wan2-2-I2V-FP8-Lightning.json)"
+            echo "  IMAGE_PATH         Path to image file"
+            echo "  PROMPT             Text prompt for generation"
+            echo ""
+            echo "Examples:"
+            echo "  vai exec 26003629 wan2-2-I2V-FP8-Lightning.json ./image.png \"cat in space\""
+            echo "  vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/images/test-image.png \"beautiful landscape\""
+            echo ""
+            echo "This command will:"
+            echo "  1. Auto-fetch SSH connection details from Vast.ai API"
+            echo "  2. Upload your image to the instance"
+            echo "  3. Execute the specified workflow with your prompt"
+            echo "  4. Start background monitoring and logging"
+            echo "  5. Display job ID for tracking progress"
+            echo ""
+            echo "Workflow files should be located in: /workspace/ComfyUI/user/default/workflows/"
+        else
+            echo "⚡ Running Execute Workflow..."
+            cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/workflows/execute_workflow.py" "$@"
+        fi
+        ;;
+    
+    "help"|"--help"|"-h")
+        show_help
+        ;;
+    
+    *)
+        echo "❌ Unknown command: $COMMAND"
+        echo ""
+        show_help
+        exit 1
+        ;;
+esac
