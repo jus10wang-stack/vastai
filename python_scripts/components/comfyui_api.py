@@ -1072,7 +1072,7 @@ class ComfyUIController:
                 bg_controller = ComfyUIController(self.instance_id, self.ssh_host, self.ssh_port)
                 try:
                     if bg_controller.connect():
-                        bg_controller.monitor_job_progress(prompt_id, log_path, max_wait_seconds=1200)
+                        bg_controller.monitor_job_progress(prompt_id, log_path, max_wait_seconds=7200)
                 finally:
                     if bg_controller and hasattr(bg_controller, 'ssh_client') and bg_controller.ssh_client:
                         bg_controller.disconnect()

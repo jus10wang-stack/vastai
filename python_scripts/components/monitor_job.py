@@ -50,7 +50,7 @@ def main():
             sys.exit(1)
         
         # Monitor the job
-        success = controller.monitor_job_progress(job_id, log_file, max_wait_seconds=1200)
+        success = controller.monitor_job_progress(job_id, log_file, max_wait_seconds=7200)
         
         if success:
             print("✅ Job monitoring completed successfully")
