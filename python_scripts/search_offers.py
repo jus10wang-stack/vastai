@@ -102,20 +102,28 @@ def search_gpu(gpu_name, index=0):
         
         # Apply bandwidth cost filter
         filtered = [o for o in filtered if o.get('inet_down_cost', float('inf')) <= 0.002 and o.get('inet_up_cost', float('inf')) <= 0.002]
-        filtered.sort(key=lambda x: x.get('inet_down_cost', float('inf')))
+        
+        # Calculate total costs for each offer before sorting
+        for offer in filtered:
+            runtime_hours = 10 / 60
+            compute_cost = offer['dph_total'] * runtime_hours
+            download_cost = offer.get('inet_down_cost', 0) * 100
+            offer['_total_cost'] = compute_cost + download_cost
+        
+        # Sort by lowest 10min total cost
+        filtered.sort(key=lambda x: x.get('_total_cost', float('inf')))
         
         print(f"Found {len(filtered)} {gpu_name} offers under $1/hr with good internet and low bandwidth costs:")
-        print("Assuming: 10min runtime, 5GB storage, 100GB download")
+        print("Sorted by lowest 10min total cost. Assuming: 10min runtime, 100GB download")
         for i, offer in enumerate(filtered[:10]):
             down_cost_tb = offer.get('inet_down_cost', 0) * 1000  # Convert $/GB to $/TB
             up_cost_tb = offer.get('inet_up_cost', 0) * 1000  # Convert $/GB to $/TB
             
-            # Calculate total cost for 10 minutes with 5GB storage and 100GB download
+            # Calculate total cost for 10 minutes runtime + 100GB download
             runtime_hours = 10 / 60  # 10 minutes to hours (0.1667)
             compute_cost = offer['dph_total'] * runtime_hours
-            storage_cost = offer.get('storage_cost', 0) * 5 * runtime_hours  # storage_cost is per GB/hr, using 5GB
             download_cost = offer.get('inet_down_cost', 0) * 100  # 100GB download
-            total_cost = compute_cost + storage_cost + download_cost
+            total_cost = compute_cost + download_cost
             
             # Format bandwidth costs with appropriate precision
             down_display = f"${down_cost_tb:.4f}/TB" if down_cost_tb > 0.01 else f"${down_cost_tb:.6f}/TB"
