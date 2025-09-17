@@ -14,7 +14,7 @@ def main():
         print("Example: python quick_monitor.py 25984471")
         print()
         print("💡 To get your instance ID:")
-        print("1. Run: poetry run python python_scripts/search_and_create.py 0")
+        print("1. Run: poetry run python SCRIPTS/python_scripts/search_and_create.py 0")
         print("2. Look for 'Instance ID: XXXXX' in the output")
         print("3. Run this script with that ID")
         sys.exit(1)

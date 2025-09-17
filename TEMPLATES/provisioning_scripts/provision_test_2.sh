@@ -8,8 +8,7 @@ COMFYUI_DIR=${WORKSPACE}/ComfyUI
 # Packages are installed after nodes so we can fix them...
 
 APT_PACKAGES=(
-    #"package-1"
-    #"package-2"
+    "aria2"
 )
 
 PIP_PACKAGES=(
@@ -22,7 +21,7 @@ NODES=(
 )
 
 WORKFLOWS=(
-    "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/template_workflows/wan2-2-I2V-FP8-Lightning.json"
+    "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/workflows/wan2-2-I2V-FP8-Lightning.json"
 )
 
 INPUT=(
@@ -109,7 +108,7 @@ function provisioning_start() {
 
 function provisioning_get_apt_packages() {
     if [[ -n $APT_PACKAGES ]]; then
-            sudo $APT_INSTALL ${APT_PACKAGES[@]}
+            sudo apt-get update && sudo apt-get install -y ${APT_PACKAGES[@]}
     fi
 }
 
@@ -219,9 +218,9 @@ function provisioning_download() {
         auth_token="$CIVITAI_TOKEN"
     fi
     if [[ -n $auth_token ]];then
-        wget --header="Authorization: Bearer $auth_token" -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
+        aria2c -x 16 -s 16 --header="Authorization: Bearer $auth_token" --auto-file-renaming=false --continue=true --dir="$2" "$1"
     else
-        wget -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
+        aria2c -x 16 -s 16 --auto-file-renaming=false --continue=true --dir="$2" "$1"
     fi
 }
 

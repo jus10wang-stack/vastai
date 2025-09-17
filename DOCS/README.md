@@ -52,13 +52,13 @@ The easiest way to get started is with the all-in-one workflow script:
 
 ```bash
 # Search, create, and monitor an RTX 3060 instance (cheapest option)
-poetry run python python_scripts/workflows/create_and_monitor.py
+poetry run python SCRIPTS/python_scripts/workflows/create_and_monitor.py
 
 # Use a different offer (e.g., second cheapest)
-poetry run python python_scripts/workflows/create_and_monitor.py 1
+poetry run python SCRIPTS/python_scripts/workflows/create_and_monitor.py 1
 
 # Search for a different GPU
-poetry run python python_scripts/workflows/create_and_monitor.py 0 "RTX 4090"
+poetry run python SCRIPTS/python_scripts/workflows/create_and_monitor.py 0 "RTX 4090"
 ```
 
 This script will:
@@ -72,31 +72,31 @@ This script will:
 The Python scripts are organized into two categories:
 
 #### 📦 Components (Individual Tools)
-Located in `python_scripts/components/`:
+Located in `SCRIPTS/python_scripts/components/`:
 
 ```bash
 # Search for GPU offers
-poetry run python python_scripts/components/search_offers.py [INDEX]
+poetry run python SCRIPTS/python_scripts/components/search_offers.py [INDEX]
 
 # Create instance with offer ID
-poetry run python python_scripts/components/create_instance.py <OFFER_ID>
+poetry run python SCRIPTS/python_scripts/components/create_instance.py <OFFER_ID>
 
 # Monitor existing instance
-poetry run python python_scripts/components/monitor_instance.py <INSTANCE_ID>
+poetry run python SCRIPTS/python_scripts/components/monitor_instance.py <INSTANCE_ID>
 ```
 
 #### 🔄 Workflows (Complete Processes)
-Located in `python_scripts/workflows/`:
+Located in `SCRIPTS/python_scripts/workflows/`:
 
 ```bash
 # Complete workflow: Search → Create → Monitor
-poetry run python python_scripts/workflows/create_and_monitor.py [INDEX] [GPU_NAME]
+poetry run python SCRIPTS/python_scripts/workflows/create_and_monitor.py [INDEX] [GPU_NAME]
 
 # Partial workflow: Search → Create (no monitoring)
-poetry run python python_scripts/workflows/search_and_create.py [INDEX]
+poetry run python SCRIPTS/python_scripts/workflows/search_and_create.py [INDEX]
 ```
 
-See `python_scripts/README.md` for detailed documentation of each script.
+See `SCRIPTS/python_scripts/README.md` for detailed documentation of each script.
 
 ### CLI Templates
 
@@ -169,32 +169,36 @@ poetry add package-name
 poetry run pytest
 
 # Format code
-poetry run black python_scripts/
+poetry run black SCRIPTS/python_scripts/
 
 # Lint code  
-poetry run flake8 python_scripts/
+poetry run flake8 SCRIPTS/python_scripts/
 ```
 
 ### File Structure
 ```
 vastai/
-├── docs/                           # Documentation
+├── DOCS/                           # Documentation
 │   ├── vastai_flow.md             # Workflow guide
 │   └── vastai_gpu.md              # GPU selection guide
-├── provisioning_scripts/          # Instance setup scripts
-│   └── provision_test_1.sh       # ComfyUI provisioning
-├── python_scripts/               # Python automation tools
-│   ├── components/              # Individual single-purpose tools
-│   │   ├── search_offers.py     # Search GPU offers with cost optimization
-│   │   ├── create_instance.py   # Create instance from offer ID
-│   │   ├── monitor_instance.py  # Monitor instance until ready
-│   │   └── quick_monitor.py     # Helper wrapper for monitoring
-│   └── workflows/               # Complete multi-step processes
-│       ├── create_and_monitor.py # Full workflow: search, create, monitor
-│       └── search_and_create.py  # Partial workflow: search and create
-├── template_workflows/           # ComfyUI workflows
-├── vastai_cli_template/         # CLI command templates
-│   └── ssh/                     # SSH instance templates
+├── TEMPLATES/                      # Templates and configurations
+│   ├── workflows/                 # ComfyUI workflows
+│   ├── provisioning_scripts/      # Instance setup scripts
+│   ├── images/                    # Template images
+│   ├── prompts/                   # Template prompts
+│   └── values/                    # Template values
+├── SCRIPTS/                        # All scripts and automation
+│   ├── python_scripts/           # Python automation tools
+│   │   ├── components/          # Individual single-purpose tools
+│   │   │   ├── search_offers.py # Search GPU offers with cost optimization
+│   │   │   ├── create_instance.py # Create instance from offer ID
+│   │   │   ├── monitor_instance.py # Monitor instance until ready
+│   │   │   └── quick_monitor.py # Helper wrapper for monitoring
+│   │   └── workflows/           # Complete multi-step processes
+│   │       ├── create_and_monitor.py # Full workflow: search, create, monitor
+│   │       └── search_and_create.py # Partial workflow: search and create
+│   ├── bash_scripts/            # Bash automation scripts
+│   └── logs/                    # All log files
 ├── .env.example                 # Environment template
 ├── pyproject.toml              # Poetry configuration
 └── README.md                   # This file

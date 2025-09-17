@@ -32,7 +32,7 @@ def main():
     if len(sys.argv) > 5:
         log_file = sys.argv[5]
     else:
-        logs_dir = os.path.expanduser("~/wsl-cursor-projects/vastai/logs/comfyui_jobs")
+        logs_dir = os.path.expanduser("~/wsl-cursor-projects/vastai/SCRIPTS/logs/comfyui_jobs")
         log_files = [f for f in os.listdir(logs_dir) if job_id[:8] in f and f.endswith('.log')]
         if not log_files:
             print(f"❌ No log file found for job {job_id[:8]}")

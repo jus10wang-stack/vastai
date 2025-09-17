@@ -37,8 +37,8 @@ def main():
             )
             print(f'🎉 Success! Job ID: {prompt_id}')
             print(f'📝 Background monitoring started - connection will remain open')
-            print(f'🔍 To view live progress: python python_scripts/components/view_job_logs.py follow <log_filename>')
-            print(f'📋 To list jobs: python python_scripts/components/view_job_logs.py list')
+            print(f'🔍 To view live progress: python SCRIPTS/python_scripts/components/view_job_logs.py follow <log_filename>')
+            print(f'📋 To list jobs: python SCRIPTS/python_scripts/components/view_job_logs.py list')
         except Exception as e:
             print(f'❌ Error: {e}')
             controller.disconnect()

@@ -55,7 +55,7 @@ class ComfyUIController:
         self.comfyui_url = "http://127.0.0.1:8188"
         
         # Logging setup
-        self.logs_dir = os.path.expanduser("~/wsl-cursor-projects/vastai/logs/comfyui_jobs")
+        self.logs_dir = os.path.expanduser("~/wsl-cursor-projects/vastai/SCRIPTS/logs/comfyui_jobs")
         os.makedirs(self.logs_dir, exist_ok=True)
         self.last_log_position = 0
         

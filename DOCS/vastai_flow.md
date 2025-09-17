@@ -24,7 +24,7 @@ The automated method handles the complete workflow from search to ready instance
 
 ```bash
 # One command to search, create, and monitor
-poetry run python python_scripts/create_and_monitor.py
+poetry run python SCRIPTS/python_scripts/create_and_monitor.py
 ```
 
 **Features:**
@@ -38,7 +38,7 @@ The manual CLI method creates instances through command-line interface:
 
 1. **Search for Offers**
    ```bash
-   poetry run python python_scripts/search_offers.py
+   poetry run python SCRIPTS/python_scripts/search_offers.py
    ```
 
 2. **Create Instance**
@@ -50,7 +50,7 @@ The manual CLI method creates instances through command-line interface:
 
 3. **Monitor Instance**
    ```bash
-   poetry run python python_scripts/monitor_instance.py <INSTANCE_ID>
+   poetry run python SCRIPTS/python_scripts/monitor_instance.py <INSTANCE_ID>
    ```
 
 ## Execution Methods
@@ -134,4 +134,4 @@ graph TD
   - `vastai_cli_template/ssh/example_cli_command_fix.txt` - Single env string format
   - `vastai_cli_template/ssh/example_cli_command_fix_separate_env.txt` - Separate env flags
   - `vastai_cli_template/ssh/example_cli_command_fix_double_quotes.txt` - Windows compatible (recommended)
-- **Workflows**: `template_workflows/`
+- **Workflows**: `TEMPLATES/workflows/`

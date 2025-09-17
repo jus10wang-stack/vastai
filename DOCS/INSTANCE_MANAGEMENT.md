@@ -9,10 +9,10 @@ Scripts for managing and monitoring Vast.ai instances.
 
 ```bash
 # Create instance using offer index 0 (cheapest) and monitor it
-poetry run python python_scripts/create_and_monitor.py 0
+poetry run python SCRIPTS/python_scripts/create_and_monitor.py 0
 
 # Create instance using offer index 2 and monitor it  
-poetry run python python_scripts/create_and_monitor.py 2
+poetry run python SCRIPTS/python_scripts/create_and_monitor.py 2
 ```
 
 **Features:**
@@ -27,7 +27,7 @@ Monitor an existing instance by ID.
 
 ```bash
 # Monitor instance with specific ID
-poetry run python python_scripts/monitor_instance.py 12345
+poetry run python SCRIPTS/python_scripts/monitor_instance.py 12345
 ```
 
 **Features:**
@@ -67,13 +67,13 @@ When ready, you'll see URLs like:
 ### Quick Start (Most Common)
 ```bash
 # Create and monitor in one command
-poetry run python python_scripts/create_and_monitor.py 0
+poetry run python SCRIPTS/python_scripts/create_and_monitor.py 0
 ```
 
 ### Manual Monitoring  
 ```bash
 # If you already have an instance ID
-poetry run python python_scripts/monitor_instance.py 25736179
+poetry run python SCRIPTS/python_scripts/monitor_instance.py 25736179
 ```
 
 ### Check URLs Only

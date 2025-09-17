@@ -23,7 +23,7 @@ def find_monitoring_processes():
                     'run_wan2_workflow.py',
                     'monitor_job.py', 
                     'comfyui_api.py'
-                ]) and 'vastai/python_scripts' in cmdline:
+                ]) and 'vastai/SCRIPTS/python_scripts' in cmdline:
                     create_time = datetime.fromtimestamp(proc.info['create_time'])
                     processes.append({
                         'pid': proc.info['pid'],

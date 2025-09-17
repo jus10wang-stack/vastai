@@ -22,7 +22,7 @@ def find_running_job_monitors():
                     'run_wan2_workflow.py',
                     'monitor_job.py', 
                     'comfyui_api.py',
-                    'vastai/python_scripts'
+                    'vastai/SCRIPTS/python_scripts'
                 ]):
                     create_time = datetime.fromtimestamp(proc.info['create_time'])
                     running_monitors.append({

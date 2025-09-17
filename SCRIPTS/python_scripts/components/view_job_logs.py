@@ -11,7 +11,7 @@ from datetime import datetime
 
 def get_logs_directory():
     """Get the job logs directory."""
-    return os.path.expanduser("~/wsl-cursor-projects/vastai/logs/comfyui_jobs")
+    return os.path.expanduser("~/wsl-cursor-projects/vastai/SCRIPTS/logs/comfyui_jobs")
 
 def list_recent_jobs(limit=10):
     """List recent job log files."""
