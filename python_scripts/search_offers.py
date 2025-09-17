@@ -112,10 +112,10 @@ def search_gpu(gpu_name, index=0):
         # print(offers)
         
         # Filter and sort by price like CLI does
-        filtered = [o for o in offers if o['dph_total'] <= 0.2 and o.get('inet_up', 0) >= 100 and o.get('inet_down', 0) > 100]
+        filtered = [o for o in offers if o['dph_total'] <= 1 and o.get('inet_up', 0) >= 1000 and o.get('inet_down', 0) > 1000]
         filtered.sort(key=lambda x: x['dph_total'])
         
-        print(f"Found {len(filtered)} {gpu_name} offers under $0.20/hr with good internet:")
+        print(f"Found {len(filtered)} {gpu_name} offers under $1/hr with good internet:")
         for i, offer in enumerate(filtered[:10]):
             print(f"[{i}] ID: {offer['id']:<10} | GPU: {offer.get('gpu_name', 'N/A')} | DPH: ${offer['dph_total']:.4f} | Down: {offer.get('inet_down', 0):.0f}Mbps | NumGPUs: {offer.get('num_gpus', 0)} | Verification: {offer.get('verification', 'N/A')} | Rentable: {offer.get('rentable', False)} | Rented: {offer.get('rented', False)} | Region: {offer.get('geolocation', 'Unknown')}")
         
