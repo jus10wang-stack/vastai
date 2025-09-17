@@ -768,6 +768,49 @@ class ComfyUIController:
         except Exception as e:
             print(f"⚠️ Error updating job status: {e}")
     
+    def update_job_performance_metrics(self, log_path: str, updates: dict):
+        """Update specific performance metrics in the log file metadata."""
+        try:
+            if not os.path.exists(log_path):
+                print(f"⚠️ Log file not found: {log_path}")
+                return
+                
+            with open(log_path, 'r') as f:
+                content = f.read()
+            
+            if "=== JOB METADATA ===" in content:
+                parts = content.split("=== LIVE TERMINAL OUTPUT ===")
+                metadata_section = parts[0].replace("=== JOB METADATA ===\n", "")
+                
+                try:
+                    metadata = json.loads(metadata_section)
+                    
+                    # Update execution_info fields
+                    if "status" in updates:
+                        metadata["execution_info"]["status"] = updates["status"]
+                    if "last_updated" in updates:
+                        metadata["execution_info"]["last_updated"] = updates["last_updated"]
+                    
+                    # Update performance fields
+                    performance_fields = ["queue_time", "execution_time", "execution_start_time", "current_duration"]
+                    for field in performance_fields:
+                        if field in updates:
+                            metadata["performance"][field] = updates[field]
+                    
+                    # Rewrite file with updated metadata
+                    with open(log_path, 'w') as f:
+                        f.write("=== JOB METADATA ===\n")
+                        f.write(json.dumps(metadata, indent=2))
+                        f.write("\n\n=== LIVE TERMINAL OUTPUT ===\n")
+                        if len(parts) > 1:
+                            f.write(parts[1])
+                    
+                except json.JSONDecodeError as e:
+                    print(f"⚠️ Error parsing metadata JSON: {e}")
+            
+        except Exception as e:
+            print(f"⚠️ Error updating performance metrics: {e}")
+    
     def append_terminal_output(self, log_path: str, new_lines: list):
         """Append new terminal output lines with timestamps."""
         if not new_lines:
@@ -817,28 +860,80 @@ class ComfyUIController:
         # Update status to running
         self.update_job_status(log_path, "running")
         
-        # Reset log position to capture new output
-        self.last_log_position = 0
+        # Set log position to current end to capture only NEW output from this point forward
+        try:
+            cmd = 'wc -l /var/log/portal/comfyui.log'
+            stdout, stderr, exit_code = self.execute_command(cmd)
+            if exit_code == 0:
+                current_line_count = int(stdout.strip().split()[0])
+                self.last_log_position = current_line_count
+                print(f"📍 Starting log capture from line {current_line_count} (only new logs will be captured)")
+            else:
+                self.last_log_position = 0
+                print("⚠️ Could not determine log position, capturing all logs")
+        except:
+            self.last_log_position = 0
+            print("⚠️ Error getting log position, capturing all logs")
+        
+        execution_started = False
+        queue_end_time = None
         
         while time.time() - start_time < max_wait_seconds:
             try:
+                current_time = time.time()
+                elapsed_time = current_time - start_time
+                
                 # Get job status from ComfyUI history
                 history_item = self.get_history_item(job_id)
                 
                 # Get new log lines
                 new_lines, self.last_log_position = self.get_comfyui_logs_since_position(self.last_log_position)
                 
+                # Check if execution started by looking for execution indicators in new logs
+                if new_lines and not execution_started:
+                    for line in new_lines:
+                        # Look for various execution start indicators
+                        if any(indicator in line.lower() for indicator in [
+                            "got prompt", "processing", "requested to load", 
+                            "% | ", "|██", "it/s]"  # Progress bars
+                        ]):
+                            execution_started = True
+                            queue_end_time = current_time
+                            queue_duration = queue_end_time - start_time
+                            print(f"🚀 Job execution started after {queue_duration:.1f}s queue time")
+                            # Update metadata with queue time and execution start
+                            self.update_job_performance_metrics(log_path, {
+                                "queue_time": f"{queue_duration:.1f}s",
+                                "execution_start_time": datetime.now().isoformat(),
+                                "status": "executing"
+                            })
+                            break
+                
                 # Append new terminal output
                 if new_lines:
                     self.append_terminal_output(log_path, new_lines)
+                
+                # Update last_updated timestamp periodically (every 10 seconds or when there are new logs)
+                if new_lines or int(elapsed_time) % 10 == 0:
+                    execution_time = current_time - queue_end_time if execution_started and queue_end_time else None
+                    performance_update = {
+                        "last_updated": datetime.now().isoformat(),
+                        "current_duration": f"{elapsed_time:.1f}s"  # Always show running duration
+                    }
+                    if execution_time:
+                        performance_update["execution_time"] = f"{execution_time:.1f}s"
+                    
+                    self.update_job_performance_metrics(log_path, performance_update)
                 
                 # Check if job is complete
                 if history_item:
                     # Job found in history - it's completed
                     total_duration = time.time() - start_time
+                    final_execution_time = (current_time - queue_end_time) if queue_end_time else total_duration
+                    
                     self.update_job_status(log_path, "completed", total_duration)
                     self.append_execution_summary(log_path, history_item, total_duration)
-                    print(f"✅ Job {job_id} completed - logs saved to {os.path.basename(log_path)}")
+                    print(f"✅ Job {job_id} completed - Total: {total_duration:.1f}s, Execution: {final_execution_time:.1f}s")
                     return True
                 
                 time.sleep(2)  # Poll every 2 seconds
@@ -950,12 +1045,36 @@ class ComfyUIController:
         # Create job log file with detailed analysis
         log_path = self.create_job_log_file(prompt_id, workflow_file_path, image_filename, prompt_text, original_workflow, modified_workflow, prompt_node_id, image_node_id)
         
-        # Start background monitoring in a separate thread
-        def background_monitor():
-            self.monitor_job_progress(prompt_id, log_path, max_wait_seconds=1200)  # 20 minutes max
+        # Start background monitoring using the standalone monitor script
+        import subprocess
+        import sys
         
-        monitor_thread = threading.Thread(target=background_monitor, daemon=True)
-        monitor_thread.start()
+        try:
+            monitor_script = os.path.join(os.path.dirname(__file__), "monitor_job.py")
+            cmd = [
+                sys.executable, monitor_script,
+                str(self.instance_id), self.ssh_host, str(self.ssh_port), 
+                prompt_id, log_path
+            ]
+            
+            # Start the monitor as a completely separate process
+            subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            print(f"🔗 Background monitoring started as separate process")
+            
+        except Exception as e:
+            print(f"❌ Failed to start background monitoring: {e}")
+            # Fallback to thread-based monitoring
+            def background_monitor():
+                bg_controller = ComfyUIController(self.instance_id, self.ssh_host, self.ssh_port)
+                try:
+                    if bg_controller.connect():
+                        bg_controller.monitor_job_progress(prompt_id, log_path, max_wait_seconds=1200)
+                finally:
+                    if bg_controller and hasattr(bg_controller, 'ssh_client') and bg_controller.ssh_client:
+                        bg_controller.disconnect()
+            
+            monitor_thread = threading.Thread(target=background_monitor, daemon=True)
+            monitor_thread.start()
         
         print("=" * 50)
         print("🎉 Workflow submitted successfully!")
