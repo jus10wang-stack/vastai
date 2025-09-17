@@ -95,17 +95,32 @@ def search_gpu(gpu_name, index=0):
     if response.status_code == 200:
         data = response.json()
         offers = data.get('offers', [])
-        # print(offers)
+        print(f"Total offers received: {len(offers)}")
         
-        # Filter and sort by price like CLI does
-        filtered = [o for o in offers if o['dph_total'] <= 1 and o.get('inet_up', 0) >= 1000 and o.get('inet_down', 0) > 1000 and o.get('inet_down_cost', float('inf')) <= 0.002 and o.get('inet_up_cost', float('inf')) <= 0.002]
-        filtered.sort(key=lambda x: x['dph_total'])
+        # Filter and sort by inet_down_cost (cheapest bandwidth first)
+        filtered = [o for o in offers if o['dph_total'] <= 1 and o.get('inet_up', 0) >= 100 and o.get('inet_down', 0) >= 800]
+        
+        # Apply bandwidth cost filter
+        filtered = [o for o in filtered if o.get('inet_down_cost', float('inf')) <= 0.002 and o.get('inet_up_cost', float('inf')) <= 0.002]
+        filtered.sort(key=lambda x: x.get('inet_down_cost', float('inf')))
         
         print(f"Found {len(filtered)} {gpu_name} offers under $1/hr with good internet and low bandwidth costs:")
+        print("Assuming: 10min runtime, 5GB storage, 100GB download")
         for i, offer in enumerate(filtered[:10]):
             down_cost_tb = offer.get('inet_down_cost', 0) * 1000  # Convert $/GB to $/TB
             up_cost_tb = offer.get('inet_up_cost', 0) * 1000  # Convert $/GB to $/TB
-            print(f"[{i}] ID: {offer['id']:<10} | GPU: {offer.get('gpu_name', 'N/A')} | DPH: ${offer['dph_total']:.4f} | Down: {offer.get('inet_down', 0):.0f}Mbps (${down_cost_tb:.2f}/TB) | Up: {offer.get('inet_up', 0):.0f}Mbps (${up_cost_tb:.2f}/TB) | NumGPUs: {offer.get('num_gpus', 0)} | Region: {offer.get('geolocation', 'Unknown')}")
+            
+            # Calculate total cost for 10 minutes with 5GB storage and 100GB download
+            runtime_hours = 10 / 60  # 10 minutes to hours (0.1667)
+            compute_cost = offer['dph_total'] * runtime_hours
+            storage_cost = offer.get('storage_cost', 0) * 5 * runtime_hours  # storage_cost is per GB/hr, using 5GB
+            download_cost = offer.get('inet_down_cost', 0) * 100  # 100GB download
+            total_cost = compute_cost + storage_cost + download_cost
+            
+            # Format bandwidth costs with appropriate precision
+            down_display = f"${down_cost_tb:.4f}/TB" if down_cost_tb > 0.01 else f"${down_cost_tb:.6f}/TB"
+            
+            print(f"[{i}] ID: {offer['id']:<10} | GPU: {offer.get('gpu_name', 'N/A')} | DPH: ${offer['dph_total']:.4f} | Down: {offer.get('inet_down', 0):.0f}Mbps ({down_display}) | 10min Total: ${total_cost:.4f} | Region: {offer.get('geolocation', 'Unknown')}")
         
         # Return the ID at the specified index
         if 0 <= index < len(filtered):

@@ -414,32 +414,35 @@ expect eof
         
         emoji = status_emoji.get(status, '❓')
         
-        print(f"\\n{emoji} Instance {self.instance_id} - Status: {status}")
+        print(f"\n{emoji} Instance {self.instance_id} - Status: {status}")
         print(f"   {status_data['details']}")
         
         # Show download progress if downloading
         if status == 'DOWNLOADING' and status_data['current_download']:
-            print(f"\\n📦 Current Download Progress:")
-            for line in status_data['current_download'].strip().split('\\n'):
+            print(f"\n📦 Current Download Progress:")
+            for line in status_data['current_download'].strip().split('\n'):
                 if line.strip():
                     print(f"   {line}")
         
         # Show tunnel URLs if available
         if status_data['tunnel_urls']:
-            print(f"\\n🌐 Portal URLs:")
+            print(f"\n🌐 Portal URLs:")
             for service, url in status_data['tunnel_urls'].items():
                 print(f"   {service}: {url}")
         
         # Show recent logs
         if status_data['last_log']:
-            print(f"\\n📝 Recent Activity:")
+            print("\n" + "─" * 65)
+            print("📝 Recent Activity:")
+            print("─" * 65)
             for log_line in status_data['last_log'][-3:]:
                 if log_line.strip():
-                    print(f"   {log_line}")
+                    print(f"│ {log_line}")
+            print("─" * 65)
         
         # Show errors if any
         if status_data['error_details']:
-            print(f"\\n⚠️ Error Details:")
+            print(f"\n⚠️ Error Details:")
             for error_line in status_data['error_details']:
                 print(f"   {error_line}")
     
@@ -468,7 +471,7 @@ expect eof
                 continue
             
             # Execute status check
-            print(f"\\n🔗 Connecting to {ssh_info['host']}:{ssh_info['port']}")
+            print(f"\n🔗 Connecting to {ssh_info['host']}:{ssh_info['port']}")
             raw_output = self.execute_remote_script(ssh_info, status_script)
             
             if "STATUS:" not in raw_output:
@@ -487,14 +490,14 @@ expect eof
                     print(f"🎨 ComfyUI URL: {status_data['tunnel_urls']['ComfyUI']}")
                 return True
             elif status_data['status'] == 'ERROR':
-                print(f"\\n💥 Instance encountered an error. Check the logs above.")
+                print(f"\n💥 Instance encountered an error. Check the logs above.")
                 return False
             
             # Wait before next check
-            print(f"\\n⏳ Waiting {poll_interval}s before next check...")
+            print(f"\n⏳ Waiting {poll_interval}s before next check...")
             time.sleep(poll_interval)
         
-        print(f"\\n⏰ Timeout after {max_wait_minutes} minutes. Instance may still be starting up.")
+        print(f"\n⏰ Timeout after {max_wait_minutes} minutes. Instance may still be starting up.")
         return False
 
 def main():
