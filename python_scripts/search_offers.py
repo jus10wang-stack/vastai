@@ -98,12 +98,14 @@ def search_gpu(gpu_name, index=0):
         # print(offers)
         
         # Filter and sort by price like CLI does
-        filtered = [o for o in offers if o['dph_total'] <= 1 and o.get('inet_up', 0) >= 1000 and o.get('inet_down', 0) > 1000]
+        filtered = [o for o in offers if o['dph_total'] <= 1 and o.get('inet_up', 0) >= 1000 and o.get('inet_down', 0) > 1000 and o.get('inet_down_cost', float('inf')) <= 0.002 and o.get('inet_up_cost', float('inf')) <= 0.002]
         filtered.sort(key=lambda x: x['dph_total'])
         
-        print(f"Found {len(filtered)} {gpu_name} offers under $1/hr with good internet:")
+        print(f"Found {len(filtered)} {gpu_name} offers under $1/hr with good internet and low bandwidth costs:")
         for i, offer in enumerate(filtered[:10]):
-            print(f"[{i}] ID: {offer['id']:<10} | GPU: {offer.get('gpu_name', 'N/A')} | DPH: ${offer['dph_total']:.4f} | Down: {offer.get('inet_down', 0):.0f}Mbps | NumGPUs: {offer.get('num_gpus', 0)} | Verification: {offer.get('verification', 'N/A')} | Rentable: {offer.get('rentable', False)} | Rented: {offer.get('rented', False)} | Region: {offer.get('geolocation', 'Unknown')}")
+            down_cost_tb = offer.get('inet_down_cost', 0) * 1000  # Convert $/GB to $/TB
+            up_cost_tb = offer.get('inet_up_cost', 0) * 1000  # Convert $/GB to $/TB
+            print(f"[{i}] ID: {offer['id']:<10} | GPU: {offer.get('gpu_name', 'N/A')} | DPH: ${offer['dph_total']:.4f} | Down: {offer.get('inet_down', 0):.0f}Mbps (${down_cost_tb:.2f}/TB) | Up: {offer.get('inet_up', 0):.0f}Mbps (${up_cost_tb:.2f}/TB) | NumGPUs: {offer.get('num_gpus', 0)} | Region: {offer.get('geolocation', 'Unknown')}")
         
         # Return the ID at the specified index
         if 0 <= index < len(filtered):
