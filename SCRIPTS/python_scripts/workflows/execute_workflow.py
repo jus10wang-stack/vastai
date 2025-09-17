@@ -54,21 +54,31 @@ def get_instance_ssh_info(instance_id):
 
 def main():
     if len(sys.argv) < 4:
-        print("Usage: python execute_workflow.py <instance_id> <workflow_filename> <image_path> \"<prompt>\"")
-        print("Example: python execute_workflow.py 26003629 wan2-2-I2V-FP8-Lightning.json ./test-image.png \"im a potato\"")
+        print("Usage: python execute_workflow.py <instance_id> <workflow_filename> <image_filename> \"<prompt>\"")
+        print("Example: python execute_workflow.py 26003629 wan2-2-I2V-FP8-Lightning.json test-image.png \"im a potato\"")
         print("")
         print("Workflow files should be located in: /workspace/ComfyUI/user/default/workflows/")
         print("Available workflows:")
         print("  - wan2-2-I2V-FP8-Lightning.json")
+        print("")
+        print("Image files should be located in: TEMPLATES/images/")
+        print("Available images:")
+        print("  - test-image.png")
         sys.exit(1)
     
     instance_id = sys.argv[1]
     workflow_filename = sys.argv[2]
-    image_path = sys.argv[3]
+    image_filename = sys.argv[3]
     prompt = sys.argv[4] if len(sys.argv) > 4 else "A beautiful scene"
+    
+    # Get the script directory to build absolute paths
+    script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     
     # Hardcode the workflow base path - this is always the same
     workflow_path = f"/workspace/ComfyUI/user/default/workflows/{workflow_filename}"
+    
+    # Hardcode the image base path - always use TEMPLATES/images/
+    image_path = os.path.join(script_dir, "TEMPLATES", "images", image_filename)
     
     try:
         # Auto-fetch SSH info from Vast.ai API
