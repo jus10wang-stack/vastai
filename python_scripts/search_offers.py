@@ -14,20 +14,6 @@ load_dotenv()
 def search_gpu(gpu_name, index=0):
     url = "https://console.vast.ai/api/v0/search/asks/"
     
-    # payload = json.dumps({
-    #     "body": {
-    #         "q": {
-    #             "verified": {"eq": True},
-    #             "rentable": {"eq": True},
-    #             "rented": {"eq": False},
-    #             "num_gpus": {"eq": 1},
-    #             "gpu_name": "RTX 4060",
-    #             "dph_total": {"lte": 0.2},
-    #             "inet_up": {"gte": 100},
-    #             "inet_down": {"gt": 100},
-    #         }
-    #     }
-    # })
     payload = json.dumps({
     "q": {
         "num_gpus": {
