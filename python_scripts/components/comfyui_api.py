@@ -757,7 +757,9 @@ class ComfyUIController:
                         f.write(json.dumps(metadata, indent=2))
                         f.write("\n\n=== LIVE TERMINAL OUTPUT ===\n")
                         if len(parts) > 1:
-                            f.write(parts[1])
+                            # Strip leading whitespace from terminal content to prevent accumulating newlines
+                            terminal_content = parts[1].lstrip('\n')
+                            f.write(terminal_content)
                     
                     if total_duration_seconds:
                         print(f"📊 Job {new_status} - Duration: {minutes}m {seconds}s")
@@ -803,7 +805,9 @@ class ComfyUIController:
                         f.write(json.dumps(metadata, indent=2))
                         f.write("\n\n=== LIVE TERMINAL OUTPUT ===\n")
                         if len(parts) > 1:
-                            f.write(parts[1])
+                            # Strip leading whitespace from terminal content to prevent accumulating newlines
+                            terminal_content = parts[1].lstrip('\n')
+                            f.write(terminal_content)
                     
                 except json.JSONDecodeError as e:
                     print(f"⚠️ Error parsing metadata JSON: {e}")
