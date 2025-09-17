@@ -436,11 +436,120 @@ class ComfyUIController:
         
         return prompt_id
     
+    def get_queue_status(self) -> Dict:
+        """Get current queue status from ComfyUI."""
+        cmd = f'curl -s -X GET "{self.comfyui_url}/queue"'
+        stdout, stderr, exit_code = self.execute_command(cmd)
+        
+        if exit_code != 0:
+            raise RuntimeError(f"Failed to get queue status: {stderr}")
+        
+        return json.loads(stdout)
+    
+    def get_history_item(self, prompt_id: str) -> Dict:
+        """Get a specific item from history by prompt ID."""
+        cmd = f'curl -s -X GET "{self.comfyui_url}/history/{prompt_id}"'
+        stdout, stderr, exit_code = self.execute_command(cmd)
+        
+        if exit_code != 0:
+            return {}
+        
+        try:
+            return json.loads(stdout)
+        except:
+            return {}
+    
+    def audit_workflow_changes(self, original_workflow: Dict, modified_workflow: Dict, 
+                              image_filename: str, prompt_text: str):
+        """Show a detailed audit of what changed in the workflow."""
+        print("\n" + "=" * 60)
+        print("🔍 WORKFLOW AUDIT")
+        print("=" * 60)
+        
+        changes_found = False
+        
+        # Check each node for changes
+        for node_id, modified_node in modified_workflow.items():
+            if node_id in original_workflow:
+                orig_inputs = original_workflow[node_id].get('inputs', {})
+                mod_inputs = modified_node.get('inputs', {})
+                
+                # Check for input changes
+                for input_name, new_value in mod_inputs.items():
+                    old_value = orig_inputs.get(input_name)
+                    
+                    if old_value != new_value:
+                        changes_found = True
+                        node_type = modified_node.get('class_type', 'Unknown')
+                        print(f"📝 Node {node_id} ({node_type}) - {input_name}:")
+                        print(f"   Old: {old_value}")
+                        print(f"   New: {new_value}")
+                        
+                        # Highlight our specific changes
+                        if input_name == "text" and new_value == prompt_text:
+                            print("   ✅ This is your custom prompt!")
+                        elif input_name == "image" and new_value == image_filename:
+                            print("   ✅ This is your uploaded image!")
+                        print()
+        
+        if not changes_found:
+            print("⚠️ No changes detected in workflow")
+        
+        print("=" * 60)
+    
     def save_modified_workflow(self, workflow: Dict, output_path: str):
         """Save the modified workflow to a file for inspection."""
         cmd = f"echo '{json.dumps(workflow, indent=2)}' > {output_path}"
         self.execute_command(cmd)
         print(f"💾 Modified workflow saved to: {output_path}")
+    
+    def convert_api_to_workflow_format(self, api_workflow: Dict, original_workflow_data: Dict, 
+                                       image_filename: str, prompt_text: str) -> Dict:
+        """
+        Convert API format back to workflow format for ComfyUI UI compatibility.
+        
+        Args:
+            api_workflow: The API format workflow
+            original_workflow_data: The original workflow file data (with nodes, links, etc.)
+            image_filename: The new image filename
+            prompt_text: The new prompt text
+            
+        Returns:
+            Workflow in ComfyUI UI format
+        """
+        # Start with the original workflow structure
+        ui_workflow = original_workflow_data.copy()
+        
+        # Update the specific nodes with our changes
+        if 'nodes' in ui_workflow:
+            for node in ui_workflow['nodes']:
+                node_id = str(node['id'])
+                
+                # Update prompt node (node 6)
+                if node_id == "6" and node.get('type') == 'CLIPTextEncode':
+                    if 'widgets_values' in node:
+                        node['widgets_values'][0] = prompt_text
+                        print(f"✅ Updated UI workflow node {node_id} prompt: '{prompt_text}'")
+                
+                # Update image node (node 62) 
+                elif node_id == "62" and node.get('type') == 'LoadImage':
+                    if 'widgets_values' in node:
+                        node['widgets_values'][0] = image_filename
+                        print(f"✅ Updated UI workflow node {node_id} image: '{image_filename}'")
+        
+        return ui_workflow
+    
+    def save_ui_compatible_workflow(self, api_workflow: Dict, original_workflow_data: Dict,
+                                   image_filename: str, prompt_text: str, output_path: str):
+        """Save a ComfyUI UI-compatible version of the modified workflow."""
+        ui_workflow = self.convert_api_to_workflow_format(
+            api_workflow, original_workflow_data, image_filename, prompt_text
+        )
+        
+        cmd = f"echo '{json.dumps(ui_workflow, indent=2)}' > {output_path}"
+        self.execute_command(cmd)
+        print(f"💾 UI-compatible workflow saved to: {output_path}")
+        print(f"   You can drag this file into ComfyUI web interface!")
     
     def run_workflow_from_file(self, workflow_file_path: str, local_image_path: str, 
                               prompt_text: str, prompt_node_id: str = "6", 
@@ -469,20 +578,32 @@ class ComfyUIController:
         # Upload image
         image_filename = self.upload_image(local_image_path)
         
-        # Load workflow from file
-        workflow = self.load_workflow_from_file(workflow_file_path)
+        # Load the original workflow file data (for UI format conversion)
+        cmd = f"cat {workflow_file_path}"
+        stdout, stderr, exit_code = self.execute_command(cmd)
+        if exit_code != 0:
+            raise RuntimeError(f"Failed to read workflow file: {stderr}")
+        original_workflow_data = json.loads(stdout)
+        
+        # Load workflow from file (converted to API format)
+        original_workflow = self.load_workflow_from_file(workflow_file_path)
         
         # Modify workflow
         modified_workflow = self.modify_workflow(
-            workflow, 
+            original_workflow, 
             image_filename, 
             prompt_text,
             prompt_node_id,
             image_node_id
         )
         
-        # Save modified workflow for inspection
-        self.save_modified_workflow(modified_workflow, "/tmp/modified_workflow.json")
+        # Show audit of changes
+        self.audit_workflow_changes(original_workflow, modified_workflow, image_filename, prompt_text)
+        
+        # Save both formats for inspection
+        self.save_modified_workflow(modified_workflow, "/tmp/modified_workflow_api.json")
+        self.save_ui_compatible_workflow(modified_workflow, original_workflow_data, 
+                                        image_filename, prompt_text, "/tmp/modified_workflow_ui.json")
         
         # Queue execution
         prompt_id = self.queue_prompt(modified_workflow)

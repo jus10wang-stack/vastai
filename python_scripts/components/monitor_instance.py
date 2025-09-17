@@ -287,11 +287,25 @@ expect eof
                 done
             }
             
+            # Function to get storage usage
+            get_storage_info() {
+                echo "STORAGE_INFO:"
+                df -h / | tail -n 1 | awk '{
+                    used=$3; 
+                    total=$2; 
+                    avail=$4; 
+                    percent=$5; 
+                    gsub(/%/, "", percent);
+                    print "Used: " used " / " total " (" percent "% used, " avail " available)"
+                }'
+            }
+            
             # Check for final ready state
             if grep -q "To see the GUI go to:" "$ONSTART_LOG" 2>/dev/null; then
                 echo "STATUS: READY"
                 echo "DETAILS: ComfyUI is fully loaded and running"
                 get_tunnel_urls
+                get_storage_info
                 echo "LAST_LOG:"
                 tail -n 3 "$ONSTART_LOG" | sed 's/^/  /'
                 exit 0
@@ -302,6 +316,7 @@ expect eof
                 echo "STATUS: STARTING_APP"
                 echo "DETAILS: Provisioning complete, ComfyUI starting up"
                 get_tunnel_urls
+                get_storage_info
                 echo "LAST_LOG:"
                 tail -n 5 "$ONSTART_LOG" | sed 's/^/  /'
                 exit 0
@@ -321,6 +336,7 @@ expect eof
                     echo "$current_download" | sed 's/^/  /'
                 fi
                 
+                get_storage_info
                 echo "LAST_LOG:"
                 tail -n 3 "$ONSTART_LOG" | sed 's/^/  /'
                 exit 0
@@ -330,6 +346,7 @@ expect eof
             if [ -f "/.provisioning" ] || grep -q "Provisioning container" "$ONSTART_LOG" 2>/dev/null; then
                 echo "STATUS: PROVISIONING"
                 echo "DETAILS: Running initial provisioning script"
+                get_storage_info
                 echo "LAST_LOG:"
                 tail -n 5 "$ONSTART_LOG" 2>/dev/null | sed 's/^/  /'
                 exit 0
@@ -341,12 +358,14 @@ expect eof
                 echo "DETAILS: Error detected in logs"
                 echo "ERROR_DETAILS:"
                 grep -iE "error|failed|traceback" "$ONSTART_LOG" 2>/dev/null | tail -n 3 | sed 's/^/  /'
+                get_storage_info
                 exit 0
             fi
             
             # Default: still initializing
             echo "STATUS: INITIALIZING"
             echo "DETAILS: Instance booting up, waiting for services to start"
+            get_storage_info
             if [ -f "$ONSTART_LOG" ]; then
                 echo "LAST_LOG:"
                 tail -n 3 "$ONSTART_LOG" | sed 's/^/  /'
@@ -362,7 +381,8 @@ expect eof
             'tunnel_urls': {},
             'last_log': [],
             'current_download': '',
-            'error_details': []
+            'error_details': [],
+            'storage_info': ''
         }
         
         current_section = None
@@ -380,6 +400,8 @@ expect eof
                 current_section = 'download'
             elif line.startswith('ERROR_DETAILS:'):
                 current_section = 'error'
+            elif line.startswith('STORAGE_INFO:'):
+                current_section = 'storage'
             elif current_section == 'urls' and ':' in line:
                 parts = line.split(': ', 1)
                 if len(parts) == 2:
@@ -390,6 +412,8 @@ expect eof
                 status_data['current_download'] += line[2:] + '\n'
             elif current_section == 'error' and line.startswith('  '):
                 status_data['error_details'].append(line[2:])
+            elif current_section == 'storage' and line.strip():
+                status_data['storage_info'] = line.strip()
         
         return status_data
     
@@ -424,11 +448,19 @@ expect eof
                 if line.strip():
                     print(f"   {line}")
         
+        # Show storage info if available
+        if status_data['storage_info']:
+            print(f"\n💾 Storage: {status_data['storage_info']}")
+        
         # Show tunnel URLs if available
         if status_data['tunnel_urls']:
             print(f"\n🌐 Portal URLs:")
             for service, url in status_data['tunnel_urls'].items():
                 print(f"   {service}: {url}")
+        
+        # Show SSH connection commands (only when ready or have SSH access)
+        if status in ['READY', 'STARTING_APP', 'DOWNLOADING'] and hasattr(self, 'current_ssh_info'):
+            self.print_ssh_commands()
         
         # Show recent logs
         if status_data['last_log']:
@@ -445,6 +477,49 @@ expect eof
             print(f"\n⚠️ Error Details:")
             for error_line in status_data['error_details']:
                 print(f"   {error_line}")
+    
+    def print_ssh_commands(self):
+        """Print SSH connection commands for manual access"""
+        if not hasattr(self, 'current_ssh_info'):
+            return
+            
+        ssh_info = self.current_ssh_info
+        host = ssh_info['host']
+        port = ssh_info['port']
+        
+        print(f"\n🔑 SSH Connection Commands:")
+        print("─" * 65)
+        
+        # Basic SSH connection
+        print(f"📋 Basic SSH access:")
+        print(f"   ssh -p {port} root@{host}")
+        
+        # SSH with port forwarding for common services
+        print(f"\n📋 SSH with port forwarding:")
+        print(f"   # ComfyUI (8188)")
+        print(f"   ssh -p {port} root@{host} -L 8188:localhost:8188")
+        
+        print(f"\n   # Multiple services")
+        print(f"   ssh -p {port} root@{host} \\")
+        print(f"     -L 8188:localhost:8188 \\")  # ComfyUI
+        print(f"     -L 8080:localhost:8080 \\")  # Jupyter
+        print(f"     -L 8384:localhost:8384 \\")  # Syncthing
+        print(f"     -L 1111:localhost:1111")    # Portal
+        
+        # With key file (if using custom key)
+        if self.ssh_key_path and not self.ssh_key_path.endswith('id_ed25519'):
+            print(f"\n📋 With custom SSH key:")
+            print(f"   ssh -i {self.ssh_key_path} -p {port} root@{host}")
+        
+        # SCP examples
+        print(f"\n📋 File transfer (SCP):")
+        print(f"   # Upload file")
+        print(f"   scp -P {port} ./local_file.txt root@{host}:/workspace/")
+        print(f"   # Download file") 
+        print(f"   scp -P {port} root@{host}:/workspace/file.txt ./")
+        
+        print("─" * 65)
+        print("💡 After connecting, ComfyUI is available at http://localhost:8188")
     
     def monitor(self, max_wait_minutes=60, poll_interval=10):
         """Monitor the instance until ready or timeout"""
@@ -469,6 +544,9 @@ expect eof
                 print("⏳ Waiting for instance to be ready for SSH...")
                 time.sleep(poll_interval)
                 continue
+            
+            # Store SSH info for later use in display
+            self.current_ssh_info = ssh_info
             
             # Execute status check
             print(f"\n🔗 Connecting to {ssh_info['host']}:{ssh_info['port']}")
