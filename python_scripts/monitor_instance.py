@@ -355,7 +355,7 @@ expect eof
     
     def parse_status_output(self, output):
         """Parse the status script output into structured data"""
-        lines = output.split('\\n')
+        lines = output.split('\n')
         status_data = {
             'status': 'UNKNOWN',
             'details': '',
@@ -387,7 +387,7 @@ expect eof
             elif current_section == 'log' and line.startswith('  '):
                 status_data['last_log'].append(line[2:])
             elif current_section == 'download' and line.startswith('  '):
-                status_data['current_download'] += line[2:] + '\\n'
+                status_data['current_download'] += line[2:] + '\n'
             elif current_section == 'error' and line.startswith('  '):
                 status_data['error_details'].append(line[2:])
         
@@ -482,7 +482,7 @@ expect eof
             
             # Check if we're done
             if status_data['status'] == 'READY':
-                print(f"\\n🎉 Instance is fully ready! ComfyUI is accessible.")
+                print(f"\n🎉 Instance is fully ready! ComfyUI is accessible.")
                 if status_data['tunnel_urls'].get('ComfyUI'):
                     print(f"🎨 ComfyUI URL: {status_data['tunnel_urls']['ComfyUI']}")
                 return True
