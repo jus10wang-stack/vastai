@@ -46,24 +46,57 @@ cp .env.example .env
 
 ## Usage
 
+### Quick Start - Complete Workflow
+
+The easiest way to get started is with the all-in-one workflow script:
+
+```bash
+# Search, create, and monitor an RTX 3060 instance (cheapest option)
+poetry run python python_scripts/workflows/create_and_monitor.py
+
+# Use a different offer (e.g., second cheapest)
+poetry run python python_scripts/workflows/create_and_monitor.py 1
+
+# Search for a different GPU
+poetry run python python_scripts/workflows/create_and_monitor.py 0 "RTX 4090"
+```
+
+This script will:
+1. 🔍 Search for GPU offers sorted by total 10-minute cost (compute + 100GB download)
+2. 🚀 Create an instance with the selected offer
+3. 📊 Monitor the instance until it's fully ready
+4. ✅ Exit when ComfyUI is accessible
+
 ### Python Scripts
 
-#### Search for GPU Offers
+The Python scripts are organized into two categories:
+
+#### 📦 Components (Individual Tools)
+Located in `python_scripts/components/`:
+
 ```bash
-# Using Poetry
-poetry run python python_scripts/search_offers.py
+# Search for GPU offers
+poetry run python python_scripts/components/search_offers.py [INDEX]
 
-# Or use the shortcut
-poetry run search-offers
+# Create instance with offer ID
+poetry run python python_scripts/components/create_instance.py <OFFER_ID>
 
-# Using pip/direct Python
-python python_scripts/search_offers.py
+# Monitor existing instance
+poetry run python python_scripts/components/monitor_instance.py <INSTANCE_ID>
 ```
 
-#### Simple CLI Wrapper
+#### 🔄 Workflows (Complete Processes)
+Located in `python_scripts/workflows/`:
+
 ```bash
-poetry run python python_scripts/search_offers_simple.py
+# Complete workflow: Search → Create → Monitor
+poetry run python python_scripts/workflows/create_and_monitor.py [INDEX] [GPU_NAME]
+
+# Partial workflow: Search → Create (no monitoring)
+poetry run python python_scripts/workflows/search_and_create.py [INDEX]
 ```
+
+See `python_scripts/README.md` for detailed documentation of each script.
 
 ### CLI Templates
 
@@ -151,8 +184,14 @@ vastai/
 ├── provisioning_scripts/          # Instance setup scripts
 │   └── provision_test_1.sh       # ComfyUI provisioning
 ├── python_scripts/               # Python automation tools
-│   ├── search_offers.py          # API-based offer search
-│   └── search_offers_simple.py   # CLI wrapper approach
+│   ├── components/              # Individual single-purpose tools
+│   │   ├── search_offers.py     # Search GPU offers with cost optimization
+│   │   ├── create_instance.py   # Create instance from offer ID
+│   │   ├── monitor_instance.py  # Monitor instance until ready
+│   │   └── quick_monitor.py     # Helper wrapper for monitoring
+│   └── workflows/               # Complete multi-step processes
+│       ├── create_and_monitor.py # Full workflow: search, create, monitor
+│       └── search_and_create.py  # Partial workflow: search and create
 ├── template_workflows/           # ComfyUI workflows
 ├── vastai_cli_template/         # CLI command templates
 │   └── ssh/                     # SSH instance templates

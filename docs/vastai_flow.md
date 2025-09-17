@@ -12,27 +12,72 @@ This document outlines the complete workflow for deploying and managing ComfyUI 
   - [X] Configuration files
 
 ### Instance Discovery
-- [ ] Script to find specific GPU offering that meets requirements
+- [X] Script to find specific GPU offering that meets requirements
+  - [X] Search by GPU type with cost optimization
+  - [X] Filter by internet speed and bandwidth costs
+  - [X] Sort by total 10-minute cost (compute + download)
 
 ## Instance Deployment
 
-### Instant CLI Method
-The instant CLI method creates and configures instances through command-line interface:
+### Automated Python Method (Recommended)
+The automated method handles the complete workflow from search to ready instance:
 
-1. **Create Instance**
+```bash
+# One command to search, create, and monitor
+poetry run python python_scripts/create_and_monitor.py
+```
+
+**Features:**
+- [X] Automatic GPU offer discovery with cost optimization
+- [X] Instance creation with selected offer
+- [X] Real-time monitoring until ready
+- [X] Automatic exit when ComfyUI is accessible
+
+### Manual CLI Method
+The manual CLI method creates instances through command-line interface:
+
+1. **Search for Offers**
+   ```bash
+   poetry run python python_scripts/search_offers.py
+   ```
+
+2. **Create Instance**
    - [X] Deploy template with custom provisioning script
    - [X] Install performance optimizations:
      - [X] SageAttention for 8-bit attention
      - [X] Triton for custom CUDA kernels
    - [X] Load required models automatically
 
+3. **Monitor Instance**
+   ```bash
+   poetry run python python_scripts/monitor_instance.py <INSTANCE_ID>
+   ```
+
 ## Execution Methods
+
+### Instance Monitoring
+
+The monitoring script provides real-time status updates:
+
+**Status Stages:**
+1. 🔄 **INITIALIZING** - Instance booting up
+2. ⚙️ **PROVISIONING** - Running provisioning script
+3. ⬇️ **DOWNLOADING** - Downloading models (shows progress)
+4. 🚀 **STARTING_APP** - ComfyUI starting up
+5. ✅ **READY** - Instance fully ready
+
+**Features:**
+- Real-time log monitoring
+- Model download progress tracking
+- Portal URL discovery
+- Automatic SSH key detection
+- Exit on ready with success/failure status
 
 ### API Method
 This method keeps image/prompt/settings on local machine for reference and control.
 
 **Process:**
-1. [ ] Script checks if instance is ready
+1. [X] Script checks if instance is ready (via monitoring)
 2. [ ] Execute API call with parameters:
    - [ ] Input image
    - [ ] Text prompt

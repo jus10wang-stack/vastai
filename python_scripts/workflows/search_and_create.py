@@ -18,8 +18,9 @@ def main():
     
     # Run search_offers.py and capture the output
     print(f"Searching for GPU offers and selecting index {index}...")
+    components_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "components")
     result = subprocess.run(
-        [sys.executable, os.path.join(os.path.dirname(__file__), "search_offers.py"), str(index)],
+        [sys.executable, os.path.join(components_dir, "search_offers.py"), str(index)],
         capture_output=True,
         text=True
     )
@@ -49,7 +50,7 @@ def main():
     # Run create_instance.py with the selected ID
     print(f"\nCreating instance with offer ID {selected_id}...")
     result = subprocess.run(
-        [sys.executable, os.path.join(os.path.dirname(__file__), "create_instance.py"), selected_id],
+        [sys.executable, os.path.join(components_dir, "create_instance.py"), selected_id],
         text=True
     )
     
