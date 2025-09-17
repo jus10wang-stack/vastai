@@ -10,6 +10,9 @@ import os
 import sys
 import time
 import uuid
+import threading
+import copy
+from datetime import datetime
 from typing import Dict, Optional, Tuple
 from dotenv import load_dotenv
 
@@ -50,6 +53,11 @@ class ComfyUIController:
         
         self.ssh_client = None
         self.comfyui_url = "http://127.0.0.1:8188"
+        
+        # Logging setup
+        self.logs_dir = os.path.expanduser("~/wsl-cursor-projects/vastai/logs/comfyui_jobs")
+        os.makedirs(self.logs_dir, exist_ok=True)
+        self.last_log_position = 0
         
     def connect(self):
         """Establish SSH connection to the instance."""
@@ -551,6 +559,337 @@ class ComfyUIController:
         print(f"💾 UI-compatible workflow saved to: {output_path}")
         print(f"   You can drag this file into ComfyUI web interface!")
     
+    def create_job_log_file(self, job_id: str, workflow_path: str, image_filename: str, 
+                           prompt_text: str, original_workflow: dict, modified_workflow: dict, 
+                           prompt_node_id: str = "6", image_node_id: str = "62") -> str:
+        """Create a new job log file with detailed metadata."""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        # Extract workflow name from path
+        workflow_name = os.path.basename(workflow_path).replace('.json', '').replace('_', '-')
+        job_id_short = job_id[:8] if len(job_id) > 8 else job_id
+        
+        # Create log filename
+        log_filename = f"{timestamp}_{self.instance_id}_{workflow_name}_{job_id_short}.log"
+        log_path = os.path.join(self.logs_dir, log_filename)
+        
+        # Analyze modifications made to the workflow
+        modifications = self.analyze_workflow_modifications(original_workflow, modified_workflow, image_filename, prompt_text, prompt_node_id, image_node_id)
+        
+        # Organized metadata
+        metadata = {
+            "execution_info": {
+                "job_id": job_id,
+                "timestamp": datetime.now().isoformat(),
+                "status": "queued"
+            },
+            "instance_info": {
+                "instance_id": self.instance_id,
+                "ssh_host": self.ssh_host,
+                "ssh_port": self.ssh_port,
+                "ssh_connection": f"{self.ssh_host}:{self.ssh_port}"
+            },
+            "workflow_info": {
+                "template_file": os.path.basename(workflow_path),
+                "workflow_name": workflow_name,
+                "template_path": workflow_path
+            },
+            "modifications": modifications,
+            "performance": {
+                "queue_time": None,
+                "execution_time": None,
+                "total_duration": None,
+                "start_timestamp": datetime.now().isoformat()
+            }
+        }
+        
+        # Write initial log file
+        with open(log_path, 'w') as f:
+            f.write("=== JOB METADATA ===\n")
+            f.write(json.dumps(metadata, indent=2))
+            f.write("\n\n=== LIVE TERMINAL OUTPUT ===\n")
+        
+        print(f"📝 Job log created: {log_filename}")
+        return log_path
+    
+    def analyze_workflow_modifications(self, original_workflow: dict, modified_workflow: dict, 
+                                     image_filename: str, prompt_text: str, prompt_node_id: str, image_node_id: str) -> dict:
+        """Analyze what modifications were made to the workflow."""
+        modifications = {
+            "nodes_modified": [],
+            "summary": {
+                "prompt_changes": 0,
+                "image_changes": 0,
+                "other_changes": 0
+            }
+        }
+        
+        # Check specific nodes we know we modified
+        prompt_node_changes = []
+        image_node_changes = []
+        
+        # Check prompt node
+        if prompt_node_id in modified_workflow:
+            node_type = modified_workflow[prompt_node_id].get('class_type', 'Unknown')
+            old_prompt = original_workflow.get(prompt_node_id, {}).get('inputs', {}).get('text', '')
+            new_prompt = modified_workflow[prompt_node_id].get('inputs', {}).get('text', '')
+            
+            if old_prompt != new_prompt:
+                prompt_node_changes.append({
+                    "input_name": "text",
+                    "change_type": "prompt",
+                    "description": "Updated prompt text",
+                    "old_value": old_prompt,
+                    "new_value": new_prompt
+                })
+                modifications["summary"]["prompt_changes"] += 1
+                
+                modifications["nodes_modified"].append({
+                    "node_id": prompt_node_id,
+                    "node_type": node_type,
+                    "node_name": self.get_node_display_name(node_type),
+                    "changes": prompt_node_changes
+                })
+        
+        # Check image node
+        if image_node_id in modified_workflow:
+            node_type = modified_workflow[image_node_id].get('class_type', 'Unknown')
+            old_image = original_workflow.get(image_node_id, {}).get('inputs', {}).get('image', '')
+            new_image = modified_workflow[image_node_id].get('inputs', {}).get('image', '')
+            
+            if old_image != new_image:
+                image_node_changes.append({
+                    "input_name": "image",
+                    "change_type": "image",
+                    "description": "Updated image file",
+                    "old_value": old_image,
+                    "new_value": new_image
+                })
+                modifications["summary"]["image_changes"] += 1
+                
+                modifications["nodes_modified"].append({
+                    "node_id": image_node_id,
+                    "node_type": node_type,
+                    "node_name": self.get_node_display_name(node_type),
+                    "changes": image_node_changes
+                })
+        
+        # Check for any other unexpected changes
+        for node_id, modified_node in modified_workflow.items():
+            if node_id not in [prompt_node_id, image_node_id] and node_id in original_workflow:
+                orig_inputs = original_workflow[node_id].get('inputs', {})
+                mod_inputs = modified_node.get('inputs', {})
+                node_type = modified_node.get('class_type', 'Unknown')
+                
+                node_changes = []
+                
+                # Check for input changes
+                for input_name, new_value in mod_inputs.items():
+                    old_value = orig_inputs.get(input_name)
+                    
+                    if old_value != new_value and not isinstance(new_value, list):  # Skip node connections
+                        node_changes.append({
+                            "input_name": input_name,
+                            "change_type": "other",
+                            "description": f"Changed {input_name}",
+                            "old_value": old_value,
+                            "new_value": new_value
+                        })
+                        modifications["summary"]["other_changes"] += 1
+                
+                if node_changes:
+                    modifications["nodes_modified"].append({
+                        "node_id": node_id,
+                        "node_type": node_type,
+                        "node_name": self.get_node_display_name(node_type),
+                        "changes": node_changes
+                    })
+        
+        return modifications
+    
+    def get_node_display_name(self, node_type: str) -> str:
+        """Get a human-readable display name for a node type."""
+        node_names = {
+            "CLIPTextEncode": "Text Prompt Encoder",
+            "LoadImage": "Image Loader", 
+            "VAELoader": "VAE Model Loader",
+            "CLIPLoader": "CLIP Model Loader",
+            "UNETLoader": "Diffusion Model Loader",
+            "LoraLoaderModelOnly": "LoRA Model Loader",
+            "ModelSamplingSD3": "Model Sampling Configuration",
+            "KSamplerAdvanced": "Advanced Sampler",
+            "WanImageToVideo": "Image-to-Video Generator",
+            "RIFE VFI": "Video Frame Interpolation",
+            "CreateVideo": "Video Creator",
+            "SaveVideo": "Video Saver",
+            "VAEDecode": "VAE Decoder"
+        }
+        return node_names.get(node_type, node_type)
+    
+    def update_job_status(self, log_path: str, new_status: str, total_duration_seconds: float = None):
+        """Update the job status in the log file metadata."""
+        try:
+            # Read current log
+            with open(log_path, 'r') as f:
+                content = f.read()
+            
+            # Find and update metadata section
+            if "=== JOB METADATA ===" in content:
+                parts = content.split("=== LIVE TERMINAL OUTPUT ===")
+                metadata_section = parts[0].replace("=== JOB METADATA ===\n", "")
+                
+                try:
+                    metadata = json.loads(metadata_section)
+                    metadata["execution_info"]["status"] = new_status
+                    metadata["execution_info"]["last_updated"] = datetime.now().isoformat()
+                    
+                    # Add total duration when job completes
+                    if new_status in ["completed", "failed", "timeout"] and total_duration_seconds:
+                        minutes = int(total_duration_seconds // 60)
+                        seconds = int(total_duration_seconds % 60)
+                        metadata["performance"]["total_duration"] = f"{minutes}m {seconds}s"
+                        metadata["performance"]["total_duration_seconds"] = total_duration_seconds
+                        metadata["execution_info"]["completion_timestamp"] = datetime.now().isoformat()
+                    
+                    # Rewrite file with updated metadata
+                    with open(log_path, 'w') as f:
+                        f.write("=== JOB METADATA ===\n")
+                        f.write(json.dumps(metadata, indent=2))
+                        f.write("\n\n=== LIVE TERMINAL OUTPUT ===\n")
+                        if len(parts) > 1:
+                            f.write(parts[1])
+                    
+                    if total_duration_seconds:
+                        print(f"📊 Job {new_status} - Duration: {minutes}m {seconds}s")
+                    else:
+                        print(f"📊 Job status updated to: {new_status}")
+                except json.JSONDecodeError:
+                    print("⚠️ Could not update job status - invalid metadata format")
+        except Exception as e:
+            print(f"⚠️ Error updating job status: {e}")
+    
+    def append_terminal_output(self, log_path: str, new_lines: list):
+        """Append new terminal output lines with timestamps."""
+        if not new_lines:
+            return
+            
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        
+        with open(log_path, 'a') as f:
+            for line in new_lines:
+                if line.strip():  # Only log non-empty lines
+                    f.write(f"[{timestamp}] {line.strip()}\n")
+    
+    def get_comfyui_logs_since_position(self, last_position: int) -> Tuple[list, int]:
+        """Get ComfyUI log lines since the last position."""
+        try:
+            cmd = f'wc -l /var/log/portal/comfyui.log'
+            stdout, stderr, exit_code = self.execute_command(cmd)
+            
+            if exit_code != 0:
+                return [], last_position
+                
+            current_line_count = int(stdout.strip().split()[0])
+            
+            if current_line_count <= last_position:
+                return [], last_position
+            
+            # Get new lines since last position
+            lines_to_read = current_line_count - last_position
+            cmd = f'tail -n {lines_to_read} /var/log/portal/comfyui.log'
+            stdout, stderr, exit_code = self.execute_command(cmd)
+            
+            if exit_code == 0:
+                new_lines = stdout.strip().split('\n')
+                return new_lines, current_line_count
+            else:
+                return [], last_position
+                
+        except Exception as e:
+            print(f"⚠️ Error reading ComfyUI logs: {e}")
+            return [], last_position
+    
+    def monitor_job_progress(self, job_id: str, log_path: str, max_wait_seconds: int = 600):
+        """Monitor job progress and capture live terminal output."""
+        print(f"🔍 Starting job monitoring for {job_id}")
+        start_time = time.time()
+        
+        # Update status to running
+        self.update_job_status(log_path, "running")
+        
+        # Reset log position to capture new output
+        self.last_log_position = 0
+        
+        while time.time() - start_time < max_wait_seconds:
+            try:
+                # Get job status from ComfyUI history
+                history_item = self.get_history_item(job_id)
+                
+                # Get new log lines
+                new_lines, self.last_log_position = self.get_comfyui_logs_since_position(self.last_log_position)
+                
+                # Append new terminal output
+                if new_lines:
+                    self.append_terminal_output(log_path, new_lines)
+                
+                # Check if job is complete
+                if history_item:
+                    # Job found in history - it's completed
+                    total_duration = time.time() - start_time
+                    self.update_job_status(log_path, "completed", total_duration)
+                    self.append_execution_summary(log_path, history_item, total_duration)
+                    print(f"✅ Job {job_id} completed - logs saved to {os.path.basename(log_path)}")
+                    return True
+                
+                time.sleep(2)  # Poll every 2 seconds
+                
+            except Exception as e:
+                print(f"⚠️ Error monitoring job: {e}")
+                time.sleep(5)
+        
+        # Timeout
+        total_duration = time.time() - start_time
+        self.update_job_status(log_path, "timeout", total_duration)
+        print(f"⏰ Job monitoring timed out after {max_wait_seconds}s")
+        return False
+    
+    def append_execution_summary(self, log_path: str, history_item: Dict, total_time: float):
+        """Append execution summary to the log file."""
+        try:
+            outputs = history_item.get('outputs', {})
+            output_files = []
+            
+            for node_id, node_output in outputs.items():
+                if 'videos' in node_output:
+                    for video in node_output['videos']:
+                        output_files.append({
+                            "type": "video",
+                            "filename": video.get('filename', 'unknown'),
+                            "node_id": node_id
+                        })
+                if 'images' in node_output:
+                    for image in node_output['images']:
+                        output_files.append({
+                            "type": "image", 
+                            "filename": image.get('filename', 'unknown'),
+                            "node_id": node_id
+                        })
+            
+            summary = {
+                "total_time": f"{total_time:.1f}s",
+                "output_files": output_files,
+                "final_status": "completed",
+                "completion_time": datetime.now().isoformat()
+            }
+            
+            with open(log_path, 'a') as f:
+                f.write(f"\n=== EXECUTION SUMMARY ===\n")
+                f.write(json.dumps(summary, indent=2))
+                f.write("\n")
+                
+        except Exception as e:
+            print(f"⚠️ Error writing execution summary: {e}")
+    
     def run_workflow_from_file(self, workflow_file_path: str, local_image_path: str, 
                               prompt_text: str, prompt_node_id: str = "6", 
                               image_node_id: str = "62") -> str:
@@ -588,9 +927,9 @@ class ComfyUIController:
         # Load workflow from file (converted to API format)
         original_workflow = self.load_workflow_from_file(workflow_file_path)
         
-        # Modify workflow
+        # Create a deep copy before modifying to preserve original for comparison
         modified_workflow = self.modify_workflow(
-            original_workflow, 
+            copy.deepcopy(original_workflow), 
             image_filename, 
             prompt_text,
             prompt_node_id,
@@ -608,9 +947,20 @@ class ComfyUIController:
         # Queue execution
         prompt_id = self.queue_prompt(modified_workflow)
         
+        # Create job log file with detailed analysis
+        log_path = self.create_job_log_file(prompt_id, workflow_file_path, image_filename, prompt_text, original_workflow, modified_workflow, prompt_node_id, image_node_id)
+        
+        # Start background monitoring in a separate thread
+        def background_monitor():
+            self.monitor_job_progress(prompt_id, log_path, max_wait_seconds=1200)  # 20 minutes max
+        
+        monitor_thread = threading.Thread(target=background_monitor, daemon=True)
+        monitor_thread.start()
+        
         print("=" * 50)
         print("🎉 Workflow submitted successfully!")
         print(f"📁 Output will appear in ComfyUI/output/")
+        print(f"📝 Live logs: {os.path.basename(log_path)}")
         print("=" * 50)
         
         return prompt_id
