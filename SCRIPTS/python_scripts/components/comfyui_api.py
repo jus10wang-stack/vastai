@@ -861,8 +861,8 @@ class ComfyUIController:
         print(f"🔍 Starting job monitoring for {job_id}")
         start_time = time.time()
         
-        # Update status to running
-        self.update_job_status(log_path, "running")
+        # Don't create log file yet - wait until job actually starts executing
+        log_file_created = False
         
         # Set log position to current end to capture only NEW output from this point forward
         try:
@@ -905,6 +905,13 @@ class ComfyUIController:
                             queue_end_time = current_time
                             queue_duration = queue_end_time - start_time
                             print(f"🚀 Job execution started after {queue_duration:.1f}s queue time")
+                            
+                            # NOW create the log file since execution actually started
+                            if not log_file_created:
+                                self.update_job_status(log_path, "executing")
+                                log_file_created = True
+                                print(f"📝 Created log file: {os.path.basename(log_path)}")
+                            
                             # Update metadata with queue time and execution start
                             self.update_job_performance_metrics(log_path, {
                                 "queue_time": f"{queue_duration:.1f}s",
@@ -913,12 +920,30 @@ class ComfyUIController:
                             })
                             break
                 
-                # Append new terminal output
+                # Check for cancellation/interruption in new logs
                 if new_lines:
+                    for line in new_lines:
+                        if "Processing interrupted" in line or "Interrupted" in line:
+                            total_duration = time.time() - start_time
+                            final_execution_time = (current_time - queue_end_time) if queue_end_time else total_duration
+                            
+                            # Create log file if not already created (to record the cancellation)
+                            if not log_file_created:
+                                self.update_job_status(log_path, "cancelled")
+                                log_file_created = True
+                                print(f"📝 Created log file for cancelled job: {os.path.basename(log_path)}")
+                            else:
+                                self.update_job_status(log_path, "cancelled", total_duration)
+                            
+                            print(f"🛑 Job {job_id} was cancelled/interrupted - Total: {total_duration:.1f}s")
+                            return True
+                
+                # Append new terminal output (only if log file was created)
+                if new_lines and log_file_created:
                     self.append_terminal_output(log_path, new_lines)
                 
-                # Update last_updated timestamp periodically (every 10 seconds or when there are new logs)
-                if new_lines or int(elapsed_time) % 10 == 0:
+                # Update last_updated timestamp periodically (only if log file was created)
+                if (new_lines or int(elapsed_time) % 10 == 0) and log_file_created:
                     execution_time = current_time - queue_end_time if execution_started and queue_end_time else None
                     performance_update = {
                         "last_updated": datetime.now().isoformat(),
@@ -935,9 +960,13 @@ class ComfyUIController:
                     total_duration = time.time() - start_time
                     final_execution_time = (current_time - queue_end_time) if queue_end_time else total_duration
                     
-                    self.update_job_status(log_path, "completed", total_duration)
-                    self.append_execution_summary(log_path, history_item, total_duration)
-                    print(f"✅ Job {job_id} completed - Total: {total_duration:.1f}s, Execution: {final_execution_time:.1f}s")
+                    # Only update log if it was created (job actually executed)
+                    if log_file_created:
+                        self.update_job_status(log_path, "completed", total_duration)
+                        self.append_execution_summary(log_path, history_item, total_duration)
+                        print(f"✅ Job {job_id} completed - Total: {total_duration:.1f}s, Execution: {final_execution_time:.1f}s")
+                    else:
+                        print(f"✅ Job {job_id} completed without execution (was likely cancelled while pending)")
                     return True
                 
                 time.sleep(2)  # Poll every 2 seconds
@@ -948,8 +977,11 @@ class ComfyUIController:
         
         # Timeout
         total_duration = time.time() - start_time
-        self.update_job_status(log_path, "timeout", total_duration)
-        print(f"⏰ Job monitoring timed out after {max_wait_seconds}s")
+        if log_file_created:
+            self.update_job_status(log_path, "timeout", total_duration)
+            print(f"⏰ Job monitoring timed out after {max_wait_seconds}s")
+        else:
+            print(f"⏰ Job monitoring timed out after {max_wait_seconds}s (job never started executing)")
         return False
     
     def append_execution_summary(self, log_path: str, history_item: Dict, total_time: float):

@@ -311,10 +311,10 @@ def cancel_all_jobs_all_instances(ssh_host, ssh_port, force=False):
         
         print(f"📋 Found {len(active_instances)} running instances")
         
+        # First pass: Count jobs and collect instance info
+        instances_with_jobs = []
         total_jobs = 0
-        total_cancelled = 0
         
-        # Process each instance
         for instance in active_instances:
             instance_id = str(instance.get('id'))
             print(f"\n🔍 Checking instance {instance_id}...")
@@ -347,15 +347,15 @@ def cancel_all_jobs_all_instances(ssh_host, ssh_port, force=False):
                 
                 if instance_job_count == 0:
                     print(f"✅ No jobs found on instance {instance_id}")
-                    continue
-                
-                print(f"📋 Found {instance_job_count} jobs on instance {instance_id}")
-                total_jobs += instance_job_count
-                
-                # Cancel all jobs for this instance
-                success = cancel_all_jobs(instance_id, instance_ssh_host, instance_ssh_port, True)  # Force=True to avoid multiple prompts
-                if success:
-                    total_cancelled += instance_job_count
+                else:
+                    print(f"📋 Found {instance_job_count} jobs on instance {instance_id}")
+                    total_jobs += instance_job_count
+                    instances_with_jobs.append({
+                        'instance_id': instance_id,
+                        'ssh_host': instance_ssh_host,
+                        'ssh_port': instance_ssh_port,
+                        'job_count': instance_job_count
+                    })
                     
             except Exception as e:
                 print(f"⚠️ Error processing instance {instance_id}: {e}")
@@ -368,10 +368,24 @@ def cancel_all_jobs_all_instances(ssh_host, ssh_port, force=False):
         
         # Global confirmation unless --force is used
         if not force:
-            response = input(f"\n⚠️ Found {total_jobs} total jobs across {len(active_instances)} instances. Cancel ALL? (y/N): ")
+            response = input(f"\n⚠️ Found {total_jobs} total jobs across {len(instances_with_jobs)} instances. Cancel ALL? (y/N): ")
             if response.lower() not in ['y', 'yes']:
                 print("⏹️ Cancellation aborted")
                 return False
+        
+        # Second pass: Actually cancel the jobs
+        total_cancelled = 0
+        print(f"\n🛑 Proceeding to cancel {total_jobs} jobs...")
+        
+        for instance_info in instances_with_jobs:
+            instance_id = instance_info['instance_id']
+            instance_ssh_host = instance_info['ssh_host']
+            instance_ssh_port = instance_info['ssh_port']
+            
+            print(f"\n🔄 Cancelling jobs on instance {instance_id}...")
+            success = cancel_all_jobs(instance_id, instance_ssh_host, instance_ssh_port, True)  # Force=True to avoid multiple prompts
+            if success:
+                total_cancelled += instance_info['job_count']
         
         print(f"\n📊 Final Summary: {total_cancelled}/{total_jobs} jobs cancelled across all instances")
         return total_cancelled == total_jobs
