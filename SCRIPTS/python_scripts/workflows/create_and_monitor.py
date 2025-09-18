@@ -15,15 +15,158 @@ from components.search_offers import search_gpu
 from components.create_instance import create_instance as create_vast_instance
 from components.monitor_instance import VastInstanceMonitor
 
-def start_monitoring(instance_id):
-    """Start monitoring the created instance using VastInstanceMonitor"""
-    print(f"\n🔍 Starting monitoring for instance {instance_id}...")
+def start_monitoring_with_failsafe(instance_id, result_data=None):
+    """Start monitoring the created instance with SSH failsafe"""
+    import requests
+    from components.destroy_instance import destroy_instance
+    
+    print(f"\n🔍 Starting monitoring for instance {instance_id} with SSH failsafe...")
+    print("⚠️  If SSH connection fails for 3 minutes, instance will be automatically destroyed")
     print("=" * 60)
+    
+    # Extract host information if available
+    host_id = None
+    if result_data and isinstance(result_data, dict):
+        host_id = result_data.get('host_id')
+        if host_id:
+            print(f"🏠 Host ID: {host_id}")
+    
+    # Track SSH connection failures
+    ssh_fail_start_time = None
+    ssh_fail_duration = 0
+    max_ssh_fail_minutes = 3
     
     try:
         monitor = VastInstanceMonitor(instance_id)
-        success = monitor.monitor(max_wait_minutes=60, poll_interval=10)
-        return success
+        
+        # Custom monitoring with SSH failure tracking
+        start_time = time.time()
+        max_wait_minutes = 60
+        poll_interval = 10
+        max_wait_time = max_wait_minutes * 60
+        status_script = monitor.create_status_script()
+        
+        while time.time() - start_time < max_wait_time:
+            # Get instance info
+            instance_data = monitor.get_instance_info()
+            if not instance_data:
+                print("❌ Could not fetch instance data, retrying...")
+                time.sleep(poll_interval)
+                continue
+            
+            # Track host ID if not already captured
+            if not host_id and instance_data:
+                host_id = instance_data.get('host_id')
+                if host_id:
+                    print(f"🏠 Host ID: {host_id}")
+            
+            # Get SSH info
+            ssh_info = monitor.get_ssh_info(instance_data)
+            if not ssh_info:
+                print("⏳ Waiting for instance to be ready for SSH...")
+                if ssh_fail_start_time is None:
+                    ssh_fail_start_time = time.time()
+                
+                ssh_fail_duration = (time.time() - ssh_fail_start_time) / 60
+                
+                if ssh_fail_duration >= max_ssh_fail_minutes:
+                    print(f"\n🚨 SSH connection failed for {max_ssh_fail_minutes} minutes!")
+                    print(f"🏠 Problematic Host ID: {host_id}")
+                    print(f"💣 Destroying instance {instance_id} to avoid charges...")
+                    
+                    # Destroy the instance
+                    try:
+                        destroy_result = destroy_instance(instance_id, force=True)
+                        if destroy_result:
+                            print("✅ Instance destroyed successfully")
+                        else:
+                            print("❌ Failed to destroy instance - manual cleanup may be required")
+                    except Exception as e:
+                        print(f"❌ Error destroying instance: {e}")
+                    
+                    return False
+                else:
+                    print(f"⏰ SSH fail duration: {ssh_fail_duration:.1f} minutes (failsafe at {max_ssh_fail_minutes} minutes)")
+                
+                time.sleep(poll_interval)
+                continue
+            
+            # SSH is available, reset failure tracking
+            if ssh_fail_start_time is not None:
+                print("✅ SSH connection established!")
+                ssh_fail_start_time = None
+                ssh_fail_duration = 0
+            
+            # Store SSH info for later use
+            monitor.current_ssh_info = ssh_info
+            
+            # Execute status check
+            print(f"\n🔗 Connecting to {ssh_info['host']}:{ssh_info['port']}")
+            raw_output = monitor.execute_remote_script(ssh_info, status_script)
+            
+            # Check for SSH errors in output
+            if "SSH_NOT_READY" in raw_output or "SSH_ERROR" in raw_output or "SSH_AUTH_ERROR" in raw_output:
+                print("⚠️ SSH connection issue detected")
+                if ssh_fail_start_time is None:
+                    ssh_fail_start_time = time.time()
+                
+                ssh_fail_duration = (time.time() - ssh_fail_start_time) / 60
+                
+                if ssh_fail_duration >= max_ssh_fail_minutes:
+                    print(f"\n🚨 SSH connection failed for {max_ssh_fail_minutes} minutes!")
+                    print(f"🏠 Problematic Host ID: {host_id}")
+                    print(f"💣 Destroying instance {instance_id} to avoid charges...")
+                    
+                    # Destroy the instance
+                    try:
+                        destroy_result = destroy_instance(instance_id, force=True)
+                        if destroy_result:
+                            print("✅ Instance destroyed successfully")
+                        else:
+                            print("❌ Failed to destroy instance - manual cleanup may be required")
+                    except Exception as e:
+                        print(f"❌ Error destroying instance: {e}")
+                    
+                    return False
+                else:
+                    print(f"⏰ SSH fail duration: {ssh_fail_duration:.1f} minutes (failsafe at {max_ssh_fail_minutes} minutes)")
+                
+                time.sleep(poll_interval)
+                continue
+            
+            # SSH working, reset failure tracking
+            if ssh_fail_start_time is not None:
+                print("✅ SSH connection restored!")
+                ssh_fail_start_time = None
+                ssh_fail_duration = 0
+            
+            # Rest of monitoring logic
+            if "STATUS:" not in raw_output:
+                print(f"❌ Unexpected script output: {raw_output}")
+                time.sleep(poll_interval)
+                continue
+            
+            # Parse and display status
+            status_data = monitor.parse_status_output(raw_output)
+            monitor.print_status_report(status_data)
+            
+            # Check if we're done
+            if status_data['status'] == 'READY':
+                print(f"\n🎉 Instance is fully ready! ComfyUI is accessible.")
+                if status_data['tunnel_urls'].get('ComfyUI'):
+                    print(f"🎨 ComfyUI URL: {status_data['tunnel_urls']['ComfyUI']}")
+                return True
+            elif status_data['status'] == 'ERROR':
+                print(f"\n💥 Instance encountered an error. Check the logs above.")
+                return False
+            
+            # Wait before next check
+            print(f"\n⏳ Waiting {poll_interval}s before next check...")
+            time.sleep(poll_interval)
+        
+        print(f"\n⏰ Timeout after {max_wait_minutes} minutes. Instance may still be starting up.")
+        return False
+        
     except Exception as e:
         print(f"❌ Error during monitoring: {e}")
         return False
@@ -87,14 +230,16 @@ def main():
                 print("\n⏳ Waiting 30 seconds before starting monitoring...")
                 time.sleep(30)
                 
-                # Step 3: Start monitoring
-                success = start_monitoring(instance_id)
+                # Step 3: Start monitoring with failsafe
+                success = start_monitoring_with_failsafe(instance_id, result)
                 
                 if success:
                     print("\n🎉 Instance is ready and monitoring completed successfully!")
                 else:
-                    print(f"\n⚠️ Monitoring completed with issues. Instance ID: {instance_id}")
-                    print(f"💡 You can manually check status with: python monitor_instance.py {instance_id}")
+                    print(f"\n⚠️ Monitoring completed with issues.")
+                    if result and result.get('host_id'):
+                        print(f"🏠 Problematic Host ID: {result.get('host_id')}")
+                    print(f"💡 If instance was not destroyed, check manually with: python monitor_instance.py {instance_id}")
                 
                 sys.exit(0 if success else 1)
             else:

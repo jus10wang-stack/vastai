@@ -12,6 +12,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def destroy_instance(instance_id, force=False):
+    """Wrapper function for destroy_single_instance to be imported by other modules."""
+    return destroy_single_instance(instance_id, force)
+
 def destroy_single_instance(instance_id, force=False):
     """Destroy a specific instance by ID."""
     api_key = os.getenv("VAST_API_KEY")
