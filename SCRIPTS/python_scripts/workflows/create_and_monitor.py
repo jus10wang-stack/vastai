@@ -33,12 +33,13 @@ def main():
     index = 0
     gpu_name = "RTX 3060"
     provisioning_script = "provision_test_3.sh"
+    disk_size = 100
     
     if len(sys.argv) > 1:
         try:
             index = int(sys.argv[1])
         except ValueError:
-            print("❌ Invalid index provided. Usage: python create_and_monitor.py [INDEX] [GPU_NAME] [PROVISIONING_SCRIPT]")
+            print("❌ Invalid index provided. Usage: python create_and_monitor.py [INDEX] [GPU_NAME] [PROVISIONING_SCRIPT] [DISK_SIZE]")
             sys.exit(1)
     
     if len(sys.argv) > 2:
@@ -46,11 +47,19 @@ def main():
         
     if len(sys.argv) > 3:
         provisioning_script = sys.argv[3]
+        
+    if len(sys.argv) > 4:
+        try:
+            disk_size = int(sys.argv[4])
+        except ValueError:
+            print("❌ Invalid disk size provided. Must be a number (GB)")
+            sys.exit(1)
     
     print("🎯 Vast.ai Instance Creator & Monitor")
     print(f"🎮 GPU: {gpu_name}")
     print(f"📍 Using offer index: {index}")
     print(f"📋 Provisioning script: {provisioning_script}")
+    print(f"💾 Disk size: {disk_size}GB")
     print("=" * 60)
     
     # Step 1: Search for offers using the search_gpu function
@@ -65,7 +74,7 @@ def main():
     # Step 2: Create the instance using the create_instance function
     print("\n🚀 Creating instance...")
     try:
-        result = create_vast_instance(selected_offer_id, provisioning_script)
+        result = create_vast_instance(selected_offer_id, provisioning_script, disk_size)
         # The create_instance function prints its own output
         
         # Check if instance was created successfully

@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def create_instance(offer_id, provisioning_script="provision_test_3.sh"):
+def create_instance(offer_id, provisioning_script="provision_test_3.sh", disk_size=100):
     url = f"https://console.vast.ai/api/v0/asks/{offer_id}/"
     
     # Method 1: Using template_hash_id only (current working method)
@@ -31,7 +31,7 @@ def create_instance(offer_id, provisioning_script="provision_test_3.sh"):
     # Option O: Working config + try docker_options for ports
     payload = json.dumps({
         "image": "vastai/comfy:@vastai-automatic-tag",
-        "disk": 100,
+        "disk": disk_size,
         "env": {
             "OPEN_BUTTON_PORT": "1111",
             "OPEN_BUTTON_TOKEN": "1", 
@@ -41,7 +41,7 @@ def create_instance(offer_id, provisioning_script="provision_test_3.sh"):
             "PROVISIONING_SCRIPT": f"https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/{provisioning_script}",
             "COMFYUI_ARGS": "--disable-auto-launch --port 8188 --listen 0.0.0.0 --enable-cors-header --use-sage-attention"
         },
-        "runtype": "jupyter",
+        "runtype": "ssh",
         "onstart": "entrypoint.sh",
         "docker_options": "-p 1111:1111 -p 8080:8080 -p 8188:8188"
     })

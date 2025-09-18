@@ -93,6 +93,7 @@ def format_for_easy_editing(cleaned_workflow):
             "gpu_name": "RTX 5090",
             "gpu_index": 0,
             "provisioning_script": default_provisioning_script,
+            "disk_size": 100,
             "note": "Instance creation settings - used when creating new instances for this workflow"
         },
         "configurable_parameters": {}
@@ -136,6 +137,7 @@ def create_user_friendly_template(formatted_workflow):
             "gpu_name": "RTX 5090",
             "gpu_index": 0,
             "provisioning_script": default_provisioning_script,
+            "disk_size": 100,
             "note": "Instance creation settings - used when creating new instances for this workflow"
         },
         "parameters": {}
