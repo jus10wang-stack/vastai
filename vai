@@ -15,6 +15,10 @@ show_help() {
     echo "  vai create [index] [gpu] [provision_script]  - Create and Monitor instance"
     echo "  vai exec <instance> <workflow> <image> <prompt>  - Execute workflow"
     echo ""
+    echo "WORKFLOW MANAGEMENT:"
+    echo "  vai workflow analyze <workflow_file>         - Analyze workflow and create config template"
+    echo "  vai workflow list                            - List available workflow templates"
+    echo ""
     echo "JOB MANAGEMENT:"
     echo "  vai cancel <instance> <job_id>           - Cancel specific job"
     echo "  vai cancel <instance> --list             - List all active jobs for instance"
@@ -35,6 +39,8 @@ show_help() {
     echo "  vai create                                # Use defaults (index=0, RTX 3060, provision_test_3.sh)"
     echo "  vai create 1 \"RTX 4090\" provision_test_1.sh   # Custom settings"
     echo "  vai exec 26003629 wan2-2-I2V-FP8-Lightning.json test-image.png \"cat in space\""
+    echo "  vai workflow analyze TEMPLATES/workflows/new-workflow.json  # Create config template"
+    echo "  vai workflow list                         # List available templates"
     echo "  vai cancel 26003629 --list               # List all active jobs for instance"
     echo "  vai cancel 26003629 abc123def456         # Cancel specific job"
     echo "  vai cancel 26003629 --all                # Cancel ALL jobs for instance"
@@ -48,6 +54,7 @@ show_help() {
     echo "HELP:"
     echo "  vai create --help                        # Show create_and_monitor.py help"
     echo "  vai exec --help                          # Show execute_workflow.py help"
+    echo "  vai workflow --help                      # Show workflow management help"
     echo "  vai cancel --help                        # Show cancel_job.py help"
     echo "  vai destroy --help                       # Show destroy_instance.py help"
     echo "  vai stop --help                          # Show stop/start help"
@@ -291,6 +298,123 @@ case "$COMMAND" in
         else
             echo "🔍 Searching for GPU offers..."
             cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/search_offers.py" "$@"
+        fi
+        ;;
+    
+    "workflow"|"wf")
+        # Check if --help is requested or no subcommand
+        if [[ "$1" == "--help" || "$1" == "-h" || $# -eq 0 ]]; then
+            echo "🎯 Workflow Management Help"
+            echo "==========================="
+            echo "Usage: vai workflow <subcommand> [options]"
+            echo ""
+            echo "SUBCOMMANDS:"
+            echo "  analyze <workflow_file>     - Analyze workflow and create editable config"
+            echo "  list                        - List available workflow templates"
+            echo ""
+            echo "ANALYZE OPTIONS:"
+            echo "  --format, -f <format>       - Output format: user_friendly (default), detailed, minimal"
+            echo "  --output, -o <path>         - Custom output path (auto-generated if not specified)"
+            echo "  --pretty, -p                - Pretty print the configuration to console"
+            echo ""
+            echo "EXAMPLES:"
+            echo "  vai workflow analyze my-workflow.json"
+            echo "  vai workflow analyze my-workflow.json --format minimal"
+            echo "  vai workflow analyze my-workflow.json --pretty"
+            echo "  vai workflow list"
+            echo ""
+            echo "This will:"
+            echo "  1. Extract all configurable parameters from any ComfyUI workflow"
+            echo "  2. Remove UI clutter (positioning, colors, etc.)"
+            echo "  3. Create clean, editable configuration files"
+            echo "  4. Save to TEMPLATES/configs/ for easy editing"
+            echo ""
+            echo "Output formats:"
+            echo "  user_friendly: Simple, easy-to-edit format for end users"
+            echo "  detailed:      More structured but comprehensive format"
+            echo "  minimal:       Just the essential configurable parts"
+        else
+            SUBCOMMAND="$1"
+            shift
+            
+            case "$SUBCOMMAND" in
+                "analyze"|"a")
+                    if [ $# -eq 0 ]; then
+                        echo "❌ Please provide a workflow filename"
+                        echo "Example: vai workflow analyze my-workflow.json"
+                        echo "Available files:"
+                        if [ -d "$SCRIPT_DIR/TEMPLATES/workflows" ]; then
+                            for file in "$SCRIPT_DIR/TEMPLATES/workflows"/*.json; do
+                                if [ -f "$file" ]; then
+                                    echo "  - $(basename "$file")"
+                                fi
+                            done
+                        fi
+                        exit 1
+                    fi
+                    
+                    # Get the filename (first argument)
+                    WORKFLOW_FILE="$1"
+                    shift  # Remove filename from arguments
+                    
+                    # Check if it's already a full path or just a filename
+                    if [[ "$WORKFLOW_FILE" == *"/"* ]]; then
+                        # It's a full path, use as-is
+                        FULL_PATH="$WORKFLOW_FILE"
+                    else
+                        # It's just a filename, prepend the templates path
+                        FULL_PATH="$SCRIPT_DIR/TEMPLATES/workflows/$WORKFLOW_FILE"
+                    fi
+                    
+                    # Check if file exists
+                    if [ ! -f "$FULL_PATH" ]; then
+                        echo "❌ Workflow file not found: $FULL_PATH"
+                        echo "Available files in TEMPLATES/workflows/:"
+                        if [ -d "$SCRIPT_DIR/TEMPLATES/workflows" ]; then
+                            for file in "$SCRIPT_DIR/TEMPLATES/workflows"/*.json; do
+                                if [ -f "$file" ]; then
+                                    echo "  - $(basename "$file")"
+                                fi
+                            done
+                        fi
+                        exit 1
+                    fi
+                    
+                    echo "🔍 Analyzing workflow template: $(basename "$FULL_PATH")"
+                    cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/workflows/analyze_workflow_generic.py" "$FULL_PATH" "$@"
+                    ;;
+                "list"|"ls")
+                    echo "📋 Available workflow templates:"
+                    echo "================================"
+                    if [ -d "$SCRIPT_DIR/TEMPLATES/workflows" ]; then
+                        for file in "$SCRIPT_DIR/TEMPLATES/workflows"/*.json; do
+                            if [ -f "$file" ]; then
+                                basename "$file"
+                            fi
+                        done
+                    else
+                        echo "No workflow templates found in TEMPLATES/workflows/"
+                    fi
+                    echo ""
+                    echo "📋 Available config templates:"
+                    echo "============================="
+                    if [ -d "$SCRIPT_DIR/TEMPLATES/configs" ]; then
+                        for file in "$SCRIPT_DIR/TEMPLATES/configs"/*.json; do
+                            if [ -f "$file" ]; then
+                                basename "$file"
+                            fi
+                        done
+                    else
+                        echo "No config templates found in TEMPLATES/configs/"
+                        echo "Use 'vai workflow analyze' to create some!"
+                    fi
+                    ;;
+                *)
+                    echo "❌ Unknown workflow subcommand: $SUBCOMMAND"
+                    echo "Use 'vai workflow --help' for available options"
+                    exit 1
+                    ;;
+            esac
         fi
         ;;
     
