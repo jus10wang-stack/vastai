@@ -327,8 +327,7 @@ def cancel_all_jobs_all_instances(ssh_host, ssh_port, force=False):
                 print(f"⚠️ No SSH info available for instance {instance_id} - skipping")
                 continue
             
-            # Apply port correction (Vast.ai bug workaround)
-            instance_ssh_port = instance_ssh_port + 1
+            # Use the port directly from API
             
             print(f"🔗 Using SSH: {instance_ssh_host}:{instance_ssh_port}")
             

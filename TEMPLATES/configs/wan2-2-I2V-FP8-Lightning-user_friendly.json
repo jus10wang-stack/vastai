@@ -2,10 +2,10 @@
   "workflow_name": "wan2-2-I2V-FP8-Lightning",
   "description": "Edit the values below, then use with execute_workflow_config.py",
   "instance_config": {
-    "gpu_name": "RTX 3090",
+    "gpu_name": "RTX 3070",
     "gpu_index": 0,
     "provisioning_script": "wan2-2-I2V-FP8-Lightning.sh",
-    "disk_size": 100,
+    "disk_size": 103,
     "note": "Instance creation settings - used when creating new instances for this workflow"
   },
   "parameters": {
@@ -23,7 +23,7 @@
       "node_id": 6,
       "title": "CLIP Text Encode (Positive Prompt)",
       "values": [
-        "\n\n\n\n\n\n\n\n\n\n\n"
+        "sample-prompt.txt"
       ],
       "note": "Configurable parameters for CLIPTextEncode"
     },
@@ -192,7 +192,7 @@
       "node_id": 62,
       "title": "LoadImage_62",
       "values": [
-        "ComfyUI_00100.png",
+        "test-image.png",
         "image"
       ],
       "note": "Configurable parameters for LoadImage"

@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def search_gpu(gpu_name, index=0):
+def search_gpu(gpu_name, index=0, min_disk_size=100):
     url = "https://console.vast.ai/api/v0/search/asks/"
     
     payload = json.dumps({
@@ -103,6 +103,9 @@ def search_gpu(gpu_name, index=0):
         # Apply bandwidth cost filter
         filtered = [o for o in filtered if o.get('inet_down_cost', float('inf')) <= 0.002 and o.get('inet_up_cost', float('inf')) <= 0.002]
         
+        # Apply disk size filter
+        filtered = [o for o in filtered if o.get('disk_space', 0) >= min_disk_size]
+        
         # Calculate total costs for each offer before sorting
         for offer in filtered:
             runtime_hours = 10 / 60
@@ -113,7 +116,7 @@ def search_gpu(gpu_name, index=0):
         # Sort by lowest 10min total cost
         filtered.sort(key=lambda x: x.get('_total_cost', float('inf')))
         
-        print(f"Found {len(filtered)} {gpu_name} offers under $1/hr with good internet and low bandwidth costs:")
+        print(f"Found {len(filtered)} {gpu_name} offers under $1/hr with good internet, low bandwidth costs, and {min_disk_size}GB+ disk:")
         print("Sorted by lowest 10min total cost. Assuming: 10min runtime, 100GB download")
         for i, offer in enumerate(filtered[:10]):
             down_cost_tb = offer.get('inet_down_cost', 0) * 1000  # Convert $/GB to $/TB
@@ -128,7 +131,10 @@ def search_gpu(gpu_name, index=0):
             # Format bandwidth costs with appropriate precision
             down_display = f"${down_cost_tb:.4f}/TB" if down_cost_tb > 0.01 else f"${down_cost_tb:.6f}/TB"
             
-            print(f"[{i}] ID: {offer['id']:<10} | GPU: {offer.get('gpu_name', 'N/A')} | DPH: ${offer['dph_total']:.4f} | Down: {offer.get('inet_down', 0):.0f}Mbps ({down_display}) | 10min Total: ${total_cost:.4f} | Region: {offer.get('geolocation', 'Unknown')}")
+            # Get disk space in GB
+            disk_space = offer.get('disk_space', 0)
+            
+            print(f"[{i}] ID: {offer['id']:<10} | GPU: {offer.get('gpu_name', 'N/A')} | DPH: ${offer['dph_total']:.4f} | Disk: {disk_space:.0f}GB | Down: {offer.get('inet_down', 0):.0f}Mbps ({down_display}) | 10min Total: ${total_cost:.4f} | Region: {offer.get('geolocation', 'Unknown')}")
         
         # Return the ID at the specified index
         if 0 <= index < len(filtered):
@@ -143,6 +149,7 @@ if __name__ == "__main__":
     # Default values
     gpu_name = "RTX 3060"
     index = 0
+    min_disk_size = 100
     
     # Parse command line arguments
     if len(sys.argv) > 1:
@@ -155,8 +162,15 @@ if __name__ == "__main__":
     if len(sys.argv) > 2:
         # Second argument is gpu_name
         gpu_name = sys.argv[2]
+        
+    if len(sys.argv) > 3:
+        try:
+            # Third argument is min_disk_size
+            min_disk_size = int(sys.argv[3])
+        except ValueError:
+            print("Invalid disk size provided. Using default 100GB")
     
-    selected_id = search_gpu(gpu_name, index)
+    selected_id = search_gpu(gpu_name, index, min_disk_size)
     if selected_id:
         print(f"\nSelected ID at index {index}: {selected_id}")
     else:

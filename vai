@@ -36,7 +36,8 @@ show_help() {
     echo "  vai start <instance>                     - Start specific instance"
     echo "  vai start --all                          - Start ALL stopped instances"
     echo "  vai list                                 - List all instances with status"
-    echo "  vai search [index] [gpu]                 - Search for GPU offers"
+    echo "  vai search [index] [gpu] [min_disk]      - Search for GPU offers"
+    echo "  vai calculate <provision_script>         - Calculate provisioning download size"
     echo ""
     echo "EXAMPLES:"
     echo "  vai create wan2-2-I2V-FP8-Lightning-user_friendly.json  # Create from config"
@@ -52,8 +53,10 @@ show_help() {
     echo "  vai destroy 26003629                     # Destroy specific instance"
     echo "  vai stop --all                           # Stop all running instances"
     echo "  vai list                                 # List all instances"
-    echo "  vai search                               # Search for RTX 3060 offers (default)"
+    echo "  vai search                               # Search for RTX 3060 offers (default 100GB)"
     echo "  vai search 2 \"RTX 4090\"                 # Search for RTX 4090, select index 2"
+    echo "  vai search 0 \"RTX 3060\" 500             # Search for RTX 3060 with 500GB+ disk"
+    echo "  vai calculate provision_test_3.sh        # Calculate provisioning download size"
     echo ""
     echo "HELP:"
     echo "  vai create --help                        # Show create_and_monitor.py help"
@@ -64,6 +67,7 @@ show_help() {
     echo "  vai destroy --help                       # Show destroy_instance.py help"
     echo "  vai stop --help                          # Show stop/start help"
     echo "  vai search --help                        # Show search help"
+    echo "  vai calculate --help                     # Show calculate help"
     echo "  vai help                                 # Show this help"
     echo ""
     echo "WORKFLOW FILES:"
@@ -326,27 +330,85 @@ case "$COMMAND" in
         if [[ "$1" == "--help" || "$1" == "-h" ]]; then
             echo "🔍 Search GPU Offers Help"
             echo "========================="
-            echo "Usage: vai search [INDEX] [GPU_NAME]"
+            echo "Usage: vai search [INDEX] [GPU_NAME] [MIN_DISK_SIZE]"
             echo ""
             echo "Arguments:"
             echo "  INDEX               Offer index to select (default: 0)"
             echo "  GPU_NAME            GPU to search for (default: 'RTX 3060')"
+            echo "  MIN_DISK_SIZE       Minimum disk size in GB (default: 100)"
             echo ""
             echo "Examples:"
-            echo "  vai search                                # Use defaults (index=0, RTX 3060)"
-            echo "  vai search 2                              # Select index 2, RTX 3060"
-            echo "  vai search 0 \"RTX 4090\"                  # Search RTX 4090, index 0"
-            echo "  vai search 3 \"RTX A6000\"                 # Search RTX A6000, index 3"
+            echo "  vai search                                # Use defaults (index=0, RTX 3060, 100GB)"
+            echo "  vai search 2                              # Select index 2, RTX 3060, 100GB"
+            echo "  vai search 0 \"RTX 4090\"                  # Search RTX 4090, index 0, 100GB"
+            echo "  vai search 0 \"RTX 3060\" 500              # Search RTX 3060 with 500GB+ disk"
             echo ""
             echo "This command will:"
             echo "  1. Search for available GPU offers on Vast.ai"
-            echo "  2. Filter by price, bandwidth, and reliability"
+            echo "  2. Filter by price, bandwidth, reliability, and disk size"
             echo "  3. Sort by lowest 10-minute total cost"
             echo "  4. Display top 10 offers with details"
             echo "  5. Return the selected offer ID"
         else
             echo "🔍 Searching for GPU offers..."
             cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/search_offers.py" "$@"
+        fi
+        ;;
+    
+    "calculate"|"calc")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "📊 Calculate Provisioning Size Help"
+            echo "==================================="
+            echo "Usage: vai calculate <PROVISIONING_SCRIPT>"
+            echo ""
+            echo "Arguments:"
+            echo "  PROVISIONING_SCRIPT  Provisioning script to analyze"
+            echo ""
+            echo "Options:"
+            echo "  --verbose, -v        Verbose output with full URLs"
+            echo "  --list-files, -l     List all URLs found in script"
+            echo "  --update-configs, -u Update matching config files with recommended disk size"
+            echo ""
+            echo "Examples:"
+            echo "  vai calculate provision_test_3.sh"
+            echo "  vai calculate wan2-2-I2V-FP8-Lightning.sh"
+            echo "  vai calculate provision_test_3.sh --verbose"
+            echo "  vai calculate provision_test_3.sh --list-files"
+            echo "  vai calculate wan2-2-I2V-FP8-Lightning.sh --update-configs"
+            echo ""
+            echo "This command will:"
+            echo "  1. Parse provisioning script for all downloads"
+            echo "  2. Check file sizes from remote servers"
+            echo "  3. Calculate total model/file downloads"
+            echo "  4. Estimate package installation sizes"
+            echo "  5. Recommend appropriate disk size"
+            echo ""
+            echo "Available scripts:"
+            if [ -d "$SCRIPT_DIR/TEMPLATES/provisioning_scripts" ]; then
+                for file in "$SCRIPT_DIR/TEMPLATES/provisioning_scripts"/*.sh "$SCRIPT_DIR/TEMPLATES/provisioning_scripts/archive"/*.sh; do
+                    if [ -f "$file" ]; then
+                        echo "  - $(basename "$file")"
+                    fi
+                done | sort -u
+            fi
+        else
+            if [ $# -eq 0 ]; then
+                echo "❌ Please provide a provisioning script name"
+                echo "Example: vai calculate provision_test_3.sh"
+                echo ""
+                echo "Available scripts:"
+                if [ -d "$SCRIPT_DIR/TEMPLATES/provisioning_scripts" ]; then
+                    for file in "$SCRIPT_DIR/TEMPLATES/provisioning_scripts"/*.sh "$SCRIPT_DIR/TEMPLATES/provisioning_scripts/archive"/*.sh; do
+                        if [ -f "$file" ]; then
+                            echo "  - $(basename "$file")"
+                        fi
+                    done | sort -u
+                fi
+                exit 1
+            fi
+            echo "📊 Calculating provisioning download size..."
+            cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/calculate_provision_size.py" "$@"
         fi
         ;;
     

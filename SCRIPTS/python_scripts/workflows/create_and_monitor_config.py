@@ -88,7 +88,7 @@ def main():
         print("=" * 60)
         
         # Step 1: Search for offers using the search_gpu function
-        selected_offer_id = search_gpu(gpu_name, gpu_index)
+        selected_offer_id = search_gpu(gpu_name, gpu_index, disk_size)
         
         if not selected_offer_id:
             print("❌ No suitable offer found at that index")

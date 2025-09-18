@@ -40,8 +40,7 @@ def get_instance_ssh_info(instance_id):
                 ssh_port = instance.get('ssh_port')
                 
                 if ssh_host and ssh_port:
-                    # Apply port correction (Vast.ai bug workaround)
-                    ssh_port = ssh_port + 1
+                    # Use the port directly from API
                     print(f"✅ Found SSH info: {ssh_host}:{ssh_port}")
                     return ssh_host, ssh_port
                 else:

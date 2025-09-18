@@ -9,6 +9,7 @@ import os
 import json
 import re
 import requests
+import tempfile
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -43,8 +44,7 @@ def get_instance_ssh_info(instance_id):
                 ssh_port = instance.get('ssh_port')
                 
                 if ssh_host and ssh_port:
-                    # Apply port correction (Vast.ai bug workaround)
-                    ssh_port = ssh_port + 1
+                    # Use the port directly from API
                     print(f"✅ Found SSH info: {ssh_host}:{ssh_port}")
                     return ssh_host, ssh_port
                 else:
@@ -301,10 +301,61 @@ def main():
                 print("❌ Failed to upload images")
                 sys.exit(1)
             
-            # Step 7: Execute the modified workflow
+            # Step 7: Convert workflow to API format and execute
             print(f"\n🚀 Executing workflow on instance {instance_id}...")
             
-            prompt_id = controller.run_workflow_from_json(modified_workflow)
+            # Convert the UI format workflow to API format
+            api_workflow = {}
+            if 'nodes' in modified_workflow:
+                for node in modified_workflow['nodes']:
+                    node_id = str(node.get('id'))
+                    api_workflow[node_id] = {
+                        "class_type": node.get('type'),
+                        "inputs": {}
+                    }
+                    
+                    # Add widget values as inputs
+                    if 'widgets_values' in node and node['widgets_values']:
+                        # Map widget values to inputs based on the node type
+                        # For now, we'll use the controller's load_workflow_from_file logic
+                        # by saving and re-loading the workflow
+                        pass
+                    
+                    # Add connections
+                    if 'inputs' in node and isinstance(node['inputs'], list):
+                        for input_def in node['inputs']:
+                            if input_def.get('link') is not None:
+                                link_id = input_def['link']
+                                input_name = input_def['name']
+                                
+                                # Find the source node for this link
+                                for link in modified_workflow.get('links', []):
+                                    if link[0] == link_id:
+                                        source_node_id = str(link[1])
+                                        source_slot = link[2]
+                                        api_workflow[node_id]["inputs"][input_name] = [source_node_id, source_slot]
+                                        break
+            
+            # For now, use a simpler approach: save and reload through controller
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
+                json.dump(modified_workflow, tmp)
+                tmp_path = tmp.name
+            
+            # Upload the workflow to the instance
+            remote_path = f"/tmp/workflow_{instance_id}_{config_filename}"
+            if controller.upload_file(tmp_path, remote_path):
+                # Load and convert using the controller's method
+                api_workflow = controller.load_workflow_from_file(remote_path)
+                prompt_id = controller.run_workflow_from_json(api_workflow)
+                
+                # Clean up
+                os.unlink(tmp_path)
+                controller.execute_command(f"rm -f {remote_path}")
+            else:
+                print("❌ Failed to upload workflow")
+                os.unlink(tmp_path)
+                sys.exit(1)
             
             if prompt_id:
                 print(f'🎉 Success! Job ID: {prompt_id}')
