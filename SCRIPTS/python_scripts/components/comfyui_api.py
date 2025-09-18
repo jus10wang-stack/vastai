@@ -1168,6 +1168,127 @@ class ComfyUIController:
         except Exception as e:
             print(f"❌ Error executing workflow: {e}")
             return None
+    
+    def run_workflow_from_json_with_monitoring(self, workflow_dict: Dict, 
+                                             workflow_file_path: str = None,
+                                             workflow_name: str = None,
+                                             nodes_modified: list = None) -> str:
+        """
+        Execute a workflow from a Python dictionary with job monitoring and logging.
+        
+        Args:
+            workflow_dict: The workflow as a Python dictionary
+            workflow_file_path: Optional path to the workflow file for metadata
+            workflow_name: Optional name for the workflow
+            nodes_modified: Optional list of modifications made to the workflow
+            
+        Returns:
+            The prompt ID of the queued job
+        """
+        print("🚀 Queueing workflow...")
+        
+        try:
+            prompt_id = self.queue_prompt(workflow_dict)
+            
+            if prompt_id:
+                print(f"✅ Job queued! Prompt ID: {prompt_id}")
+                
+                # Create job log file
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                workflow_name_clean = workflow_name or f"config-workflow-{prompt_id[:8]}"
+                log_filename = f"{timestamp}_{self.instance_id}_{workflow_name_clean}_{prompt_id[:8]}.log"
+                
+                # Get logs directory
+                script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+                logs_dir = os.path.join(script_dir, "SCRIPTS", "logs", "comfyui_jobs")
+                os.makedirs(logs_dir, exist_ok=True)
+                log_path = os.path.join(logs_dir, log_filename)
+                
+                # Create initial log file with metadata
+                metadata = {
+                    "execution_info": {
+                        "job_id": prompt_id,
+                        "timestamp": datetime.now().isoformat(),
+                        "status": "executing",
+                        "last_updated": datetime.now().isoformat()
+                    },
+                    "instance_info": {
+                        "instance_id": self.instance_id,
+                        "ssh_host": self.ssh_host,
+                        "ssh_port": self.ssh_port,
+                        "ssh_connection": f"{self.ssh_host}:{self.ssh_port}"
+                    },
+                    "workflow_info": {
+                        "template_file": workflow_file_path.split('/')[-1] if workflow_file_path else "config-based.json",
+                        "workflow_name": workflow_name_clean,
+                        "template_path": workflow_file_path or "memory"
+                    },
+                    "modifications": {
+                        "nodes_modified": nodes_modified or [],
+                        "summary": {
+                            "prompt_changes": sum(1 for n in (nodes_modified or []) for c in n.get("changes", []) if c.get("change_type") == "prompt"),
+                            "image_changes": sum(1 for n in (nodes_modified or []) for c in n.get("changes", []) if c.get("change_type") == "image"),
+                            "other_changes": sum(1 for n in (nodes_modified or []) for c in n.get("changes", []) if c.get("change_type") not in ["prompt", "image"])
+                        }
+                    },
+                    "performance": {
+                        "queue_time": None,
+                        "execution_time": None,
+                        "total_duration": None,
+                        "start_timestamp": datetime.now().isoformat(),
+                        "execution_start_time": None
+                    }
+                }
+                
+                with open(log_path, 'w') as f:
+                    f.write("=== JOB METADATA ===\n")
+                    f.write(json.dumps(metadata, indent=2))
+                    f.write("\n\n=== EXECUTION LOGS ===\n")
+                
+                print(f"📝 Job log created: {log_filename}")
+                
+                # Start background monitoring using the standalone monitor script
+                import subprocess
+                import sys
+                
+                try:
+                    monitor_script = os.path.join(os.path.dirname(__file__), "monitor_job.py")
+                    cmd = [
+                        sys.executable, monitor_script,
+                        str(self.instance_id), self.ssh_host, str(self.ssh_port), 
+                        prompt_id, log_path
+                    ]
+                    
+                    # Start the monitor as a completely separate process
+                    subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    print(f"🔗 Background monitoring started as separate process")
+                    
+                except Exception as e:
+                    print(f"⚠️ Failed to start background monitoring: {e}")
+                    # Fallback to thread-based monitoring
+                    def background_monitor():
+                        bg_controller = ComfyUIController(self.instance_id, self.ssh_host, self.ssh_port)
+                        try:
+                            if bg_controller.connect():
+                                bg_controller.monitor_job_progress(prompt_id, log_path, max_wait_seconds=7200)
+                        finally:
+                            if bg_controller and hasattr(bg_controller, 'ssh_client') and bg_controller.ssh_client:
+                                bg_controller.disconnect()
+                    
+                    monitor_thread = threading.Thread(target=background_monitor, daemon=True)
+                    monitor_thread.start()
+                
+                print("=" * 50)
+                print("🎉 Workflow submitted successfully!")
+                print(f"📁 Output will appear in ComfyUI/output/")
+                print(f"📝 Live logs: {os.path.basename(log_path)}")
+                print("=" * 50)
+                
+            return prompt_id
+            
+        except Exception as e:
+            print(f"❌ Error executing workflow: {e}")
+            return None
 
 def main():
     """Example usage of the ComfyUI controller."""

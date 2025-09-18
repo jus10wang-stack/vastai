@@ -145,6 +145,7 @@ def apply_config_to_workflow(original_workflow, config):
     
     parameters = config.get("parameters", {})
     changes_made = 0
+    nodes_modified = []
     
     print(f"🔧 Applying configuration changes...")
     
@@ -164,25 +165,68 @@ def apply_config_to_workflow(original_workflow, config):
                 
                 # Check if values are different
                 values_changed = False
+                changes = []
                 if len(new_values) != len(original_values):
                     values_changed = True
                 else:
                     for i, (new_val, orig_val) in enumerate(zip(new_values, original_values)):
                         if new_val != orig_val:
                             values_changed = True
-                            break
+                            changes.append({
+                                "index": i,
+                                "old_value": orig_val,
+                                "new_value": new_val
+                            })
                 
                 if values_changed:
                     print(f"  📝 Node {node_id} ({param_config.get('node_type')}): {original_values} → {new_values}")
                     node["widgets_values"] = new_values
                     changes_made += 1
+                    
+                    # Track the modification details
+                    node_mod_info = {
+                        "node_id": str(node_id),
+                        "node_type": param_config.get('node_type', node.get('type', 'Unknown')),
+                        "node_name": param_config.get('title', node.get('title', f'Node {node_id}')),
+                        "changes": []
+                    }
+                    
+                    # Determine change type based on node type
+                    if param_config.get('node_type') == 'CLIPTextEncode':
+                        node_mod_info["changes"].append({
+                            "input_name": "text",
+                            "change_type": "prompt",
+                            "description": "Updated prompt text",
+                            "old_value": original_values[0] if original_values else "",
+                            "new_value": new_values[0] if new_values else ""
+                        })
+                    elif param_config.get('node_type') == 'LoadImage':
+                        node_mod_info["changes"].append({
+                            "input_name": "image",
+                            "change_type": "image",
+                            "description": "Updated image file",
+                            "old_value": original_values[0] if original_values else "",
+                            "new_value": new_values[0] if new_values else ""
+                        })
+                    else:
+                        # Generic change tracking
+                        for idx, change in enumerate(changes):
+                            node_mod_info["changes"].append({
+                                "input_name": f"widget_{idx}",
+                                "change_type": "parameter",
+                                "description": f"Updated parameter {idx}",
+                                "old_value": change["old_value"],
+                                "new_value": change["new_value"]
+                            })
+                    
+                    nodes_modified.append(node_mod_info)
                 break
         
         if not node_found:
             print(f"⚠️ Warning: Node {node_id} not found in workflow")
     
     print(f"✅ Applied {changes_made} configuration changes")
-    return workflow
+    return workflow, nodes_modified
 
 def substitute_text_content(config, text_content):
     """Replace .txt file references with actual text content."""
@@ -285,7 +329,7 @@ def main():
         
         # Step 4: Load original workflow and apply config changes
         original_workflow = load_original_workflow(workflow_name, script_dir)
-        modified_workflow = apply_config_to_workflow(original_workflow, config)
+        modified_workflow, nodes_modified = apply_config_to_workflow(original_workflow, config)
         
         # Step 5: Auto-fetch SSH info and connect
         ssh_host, ssh_port = get_instance_ssh_info(instance_id)
@@ -336,7 +380,7 @@ def main():
                                         api_workflow[node_id]["inputs"][input_name] = [source_node_id, source_slot]
                                         break
             
-            # For now, use a simpler approach: save and reload through controller
+            # Save the UI format workflow and upload it
             import tempfile
             with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
                 json.dump(modified_workflow, tmp)
@@ -345,9 +389,16 @@ def main():
             # Upload the workflow to the instance
             remote_path = f"/tmp/workflow_{instance_id}_{config_filename}"
             if controller.upload_file(tmp_path, remote_path):
-                # Load and convert using the controller's method
+                # Load and convert the workflow to API format
                 api_workflow = controller.load_workflow_from_file(remote_path)
-                prompt_id = controller.run_workflow_from_json(api_workflow)
+                
+                # Execute the API format workflow without modifications
+                prompt_id = controller.run_workflow_from_json_with_monitoring(
+                    api_workflow,
+                    workflow_file_path=remote_path,
+                    workflow_name=f"workflow-{instance_id}-{config_filename.replace('.json', '')}",
+                    nodes_modified=nodes_modified
+                )
                 
                 # Clean up
                 os.unlink(tmp_path)

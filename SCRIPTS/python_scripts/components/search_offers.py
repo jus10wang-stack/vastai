@@ -118,6 +118,8 @@ def search_gpu(gpu_name, index=0, min_disk_size=100):
         
         print(f"Found {len(filtered)} {gpu_name} offers under $1/hr with good internet, low bandwidth costs, and {min_disk_size}GB+ disk:")
         print("Sorted by lowest 10min total cost. Assuming: 10min runtime, 100GB download")
+        print("⚠️  Will use image: vastai/comfy:@vastai-automatic-tag (auto-selected version)")
+        print()
         for i, offer in enumerate(filtered[:10]):
             down_cost_tb = offer.get('inet_down_cost', 0) * 1000  # Convert $/GB to $/TB
             up_cost_tb = offer.get('inet_up_cost', 0) * 1000  # Convert $/GB to $/TB
@@ -134,7 +136,7 @@ def search_gpu(gpu_name, index=0, min_disk_size=100):
             # Get disk space in GB
             disk_space = offer.get('disk_space', 0)
             
-            print(f"[{i}] ID: {offer['id']:<10} | GPU: {offer.get('gpu_name', 'N/A')} | DPH: ${offer['dph_total']:.4f} | Disk: {disk_space:.0f}GB | Down: {offer.get('inet_down', 0):.0f}Mbps ({down_display}) | 10min Total: ${total_cost:.4f} | Region: {offer.get('geolocation', 'Unknown')}")
+            print(f"[{i}] ID: {offer['id']:<10} | GPU: {offer.get('gpu_name', 'N/A')} | DPH: ${offer['dph_total']:.4f} | Disk: {disk_space:.0f}GB | Down: {offer.get('inet_down', 0):.0f}Mbps ({down_display}) | 10min: ${total_cost:.4f} | {offer.get('geolocation', 'Unknown')}")
         
         # Return the ID at the specified index
         if 0 <= index < len(filtered):

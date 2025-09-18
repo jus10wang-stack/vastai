@@ -8,6 +8,9 @@ import sys
 import time
 import os
 import json
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Add parent directory to path to import components
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -40,16 +43,99 @@ def load_instance_config(config_filename, script_dir):
     return gpu_name, gpu_index, provisioning_script, disk_size
 
 def start_monitoring(instance_id):
-    """Start monitoring the created instance using VastInstanceMonitor"""
+    """Start monitoring the created instance using VastInstanceMonitor with log file"""
+    import datetime
+    import io
+    from contextlib import redirect_stdout
+    
+    # Create log file for this instance
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_filename = f"startup_{instance_id}_{timestamp}.log"
+    
+    # Get the SCRIPTS directory (where logs should go)
+    script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    log_dir = os.path.join(script_dir, "SCRIPTS", "logs", "startup")
+    
+    # Ensure log directory exists
+    os.makedirs(log_dir, exist_ok=True)
+    log_path = os.path.join(log_dir, log_filename)
+    
+    def log_message(message):
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        formatted_message = f"[{timestamp}] {message}"
+        print(formatted_message)
+        with open(log_path, 'a') as f:
+            f.write(formatted_message + "\n")
+    
+    # Custom stdout/stderr capture that writes to both console and log file
+    class TeeOutput:
+        def __init__(self, log_file_path):
+            self.log_file_path = log_file_path
+        
+        def write(self, text):
+            # Write to console
+            import sys
+            sys.__stdout__.write(text)
+            # Write to log file with timestamp
+            if text.strip() and self.log_file_path:
+                timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                with open(self.log_file_path, 'a') as f:
+                    # Don't add timestamp to continuation lines or empty lines
+                    if text.strip():
+                        f.write(f"[{timestamp}] {text}")
+                    else:
+                        f.write(text)
+        
+        def flush(self):
+            import sys
+            sys.__stdout__.flush()
+    
     print(f"\n🔍 Starting monitoring for instance {instance_id}...")
+    print(f"📝 Log file: SCRIPTS/logs/startup/{log_filename}")
     print("=" * 60)
     
     try:
-        monitor = VastInstanceMonitor(instance_id)
-        success = monitor.monitor(max_wait_minutes=60, poll_interval=10)
+        log_message(f"🔄 Starting detailed monitoring for instance {instance_id}...")
+        
+        # Redirect output to capture monitoring details
+        tee = TeeOutput(log_path)
+        with redirect_stdout(tee):
+            monitor = VastInstanceMonitor(instance_id)
+            success = monitor.monitor(max_wait_minutes=60, poll_interval=10)
+        
+        if success:
+            log_message(f"✅ Instance {instance_id} is fully ready and operational!")
+            
+            # Add practical SSH command for easy access
+            try:
+                import requests
+                api_key = os.getenv("VAST_API_KEY")
+                if api_key:
+                    headers = {"Authorization": f"Bearer {api_key}"}
+                    response = requests.get("https://console.vast.ai/api/v0/instances/", headers=headers)
+                    instances = response.json().get('instances', [])
+                    
+                    for instance in instances:
+                        if str(instance.get('id')) == str(instance_id):
+                            ssh_host = instance.get('ssh_host')
+                            ssh_port = instance.get('ssh_port', 0)
+                            ssh_key_path = '/home/ballsac/.ssh/id_ed25519_vastai'
+                            
+                            log_message(f"")
+                            log_message(f"🔑 SSH Commands for ComfyUI Access:")
+                            log_message(f"ssh -i {ssh_key_path} -p {ssh_port} root@{ssh_host} -L 8188:localhost:8188")
+                            log_message(f"Then open: http://localhost:8188")
+                            log_message(f"")
+                            break
+            except Exception as e:
+                log_message(f"⚠️ Could not generate SSH command: {e}")
+        else:
+            log_message(f"⚠️ Monitoring completed with issues for instance {instance_id}")
+            
         return success
+        
     except Exception as e:
-        print(f"❌ Error during monitoring: {e}")
+        log_message(f"❌ Error during monitoring: {e}")
         return False
 
 def main():
