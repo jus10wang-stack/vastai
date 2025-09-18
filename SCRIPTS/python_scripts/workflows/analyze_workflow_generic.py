@@ -84,8 +84,17 @@ def format_for_easy_editing(cleaned_workflow):
     Further format the cleaned workflow to make it super easy to edit.
     Group similar node types and provide clear parameter names.
     """
+    workflow_name = cleaned_workflow["workflow_info"]["name"]
+    default_provisioning_script = f"{workflow_name}.sh"
+    
     formatted = {
         "workflow_info": cleaned_workflow["workflow_info"],
+        "instance_config": {
+            "gpu_name": "RTX 5090",
+            "gpu_index": 0,
+            "provisioning_script": default_provisioning_script,
+            "note": "Instance creation settings - used when creating new instances for this workflow"
+        },
         "configurable_parameters": {}
     }
     
@@ -117,9 +126,18 @@ def create_user_friendly_template(formatted_workflow):
     Create the most user-friendly version possible.
     This extracts just the values users typically want to change.
     """
+    workflow_name = formatted_workflow["workflow_info"]["name"]
+    default_provisioning_script = f"{workflow_name}.sh"
+    
     template = {
-        "workflow_name": formatted_workflow["workflow_info"]["name"],
+        "workflow_name": workflow_name,
         "description": "Edit the values below, then use with execute_workflow_config.py",
+        "instance_config": {
+            "gpu_name": "RTX 5090",
+            "gpu_index": 0,
+            "provisioning_script": default_provisioning_script,
+            "note": "Instance creation settings - used when creating new instances for this workflow"
+        },
         "parameters": {}
     }
     

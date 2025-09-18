@@ -1,6 +1,12 @@
 {
   "workflow_name": "wan2-2-I2V-FP8-Lightning",
   "description": "Edit the values below, then use with execute_workflow_config.py",
+  "instance_config": {
+    "gpu_name": "RTX 5090",
+    "gpu_index": 0,
+    "provisioning_script": "wan2-2-I2V-FP8-Lightning.sh",
+    "note": "Instance creation settings - used when creating new instances for this workflow"
+  },
   "parameters": {
     "7_CLIP_Text_Encode_(Negative_Prompt)": {
       "node_type": "CLIPTextEncode",
@@ -197,6 +203,12 @@
         "id": "ec7da562-7e21-4dac-a0d2-f4441e1efd3b",
         "name": "wan2-2-I2V-FP8-Lightning",
         "description": "Auto-generated configuration template"
+      },
+      "instance_config": {
+        "gpu_name": "RTX 5090",
+        "gpu_index": 0,
+        "provisioning_script": "wan2-2-I2V-FP8-Lightning.sh",
+        "note": "Instance creation settings - used when creating new instances for this workflow"
       },
       "configurable_parameters": {
         "CLIPTextEncode": {
