@@ -1121,6 +1121,54 @@ class ComfyUIController:
         return prompt_id
 
 
+    def upload_file(self, local_file_path: str, remote_file_path: str) -> bool:
+        """
+        Upload a file to the remote instance via SCP.
+        
+        Args:
+            local_file_path: Path to local file
+            remote_file_path: Destination path on remote instance
+            
+        Returns:
+            True if upload was successful, False otherwise
+        """
+        if not os.path.exists(local_file_path):
+            print(f"❌ Local file not found: {local_file_path}")
+            return False
+        
+        try:
+            # Create directory if it doesn't exist
+            remote_dir = os.path.dirname(remote_file_path)
+            if remote_dir:
+                self.ssh_client.exec_command(f"mkdir -p {remote_dir}")
+            
+            # Upload via SFTP
+            sftp = self.ssh_client.open_sftp()
+            sftp.put(local_file_path, remote_file_path)
+            sftp.close()
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error uploading file: {e}")
+            return False
+    
+    def run_workflow_from_json(self, workflow_dict: Dict) -> str:
+        """
+        Execute a workflow from a Python dictionary.
+        
+        Args:
+            workflow_dict: The workflow as a Python dictionary
+            
+        Returns:
+            The prompt ID of the queued job
+        """
+        try:
+            return self.queue_prompt(workflow_dict)
+        except Exception as e:
+            print(f"❌ Error executing workflow: {e}")
+            return None
+
 def main():
     """Example usage of the ComfyUI controller."""
     if len(sys.argv) < 5:
