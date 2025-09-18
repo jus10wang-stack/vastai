@@ -140,15 +140,23 @@ def search_gpu(gpu_name, index=0):
         print(response.text)
 
 if __name__ == "__main__":
-    # Check if index is provided as command line argument
+    # Default values
+    gpu_name = "RTX 3060"
     index = 0
+    
+    # Parse command line arguments
     if len(sys.argv) > 1:
         try:
+            # First argument is index
             index = int(sys.argv[1])
         except ValueError:
             print("Invalid index provided. Using default index 0")
     
-    selected_id = search_gpu("RTX 3060", index)
+    if len(sys.argv) > 2:
+        # Second argument is gpu_name
+        gpu_name = sys.argv[2]
+    
+    selected_id = search_gpu(gpu_name, index)
     if selected_id:
         print(f"\nSelected ID at index {index}: {selected_id}")
     else:

@@ -12,7 +12,7 @@ show_help() {
     echo "============================================="
     echo ""
     echo "PRIMARY WORKFLOWS:"
-    echo "  vai cm [index] [gpu] [provision_script]  - Create and Monitor instance"
+    echo "  vai create [index] [gpu] [provision_script]  - Create and Monitor instance"
     echo "  vai exec <instance> <workflow> <image> <prompt>  - Execute workflow"
     echo ""
     echo "JOB MANAGEMENT:"
@@ -21,19 +21,37 @@ show_help() {
     echo "  vai cancel <instance> --all              - Cancel ALL jobs for instance"
     echo "  vai cancel --all                         - Cancel ALL jobs across ALL instances"
     echo ""
+    echo "INSTANCE MANAGEMENT:"
+    echo "  vai destroy <instance>                   - Destroy specific instance"
+    echo "  vai destroy --all                        - Destroy ALL instances"
+    echo "  vai stop <instance>                      - Stop specific instance"
+    echo "  vai stop --all                           - Stop ALL running instances"
+    echo "  vai start <instance>                     - Start specific instance"
+    echo "  vai start --all                          - Start ALL stopped instances"
+    echo "  vai list                                 - List all instances with status"
+    echo "  vai search [index] [gpu]                 - Search for GPU offers"
+    echo ""
     echo "EXAMPLES:"
-    echo "  vai cm                                    # Use defaults (index=0, RTX 3060, provision_test_3.sh)"
-    echo "  vai cm 1 \"RTX 4090\" provision_test_1.sh   # Custom settings"
+    echo "  vai create                                # Use defaults (index=0, RTX 3060, provision_test_3.sh)"
+    echo "  vai create 1 \"RTX 4090\" provision_test_1.sh   # Custom settings"
     echo "  vai exec 26003629 wan2-2-I2V-FP8-Lightning.json test-image.png \"cat in space\""
     echo "  vai cancel 26003629 --list               # List all active jobs for instance"
     echo "  vai cancel 26003629 abc123def456         # Cancel specific job"
     echo "  vai cancel 26003629 --all                # Cancel ALL jobs for instance"
     echo "  vai cancel --all                         # Cancel ALL jobs across ALL instances"
+    echo "  vai destroy 26003629                     # Destroy specific instance"
+    echo "  vai stop --all                           # Stop all running instances"
+    echo "  vai list                                 # List all instances"
+    echo "  vai search                               # Search for RTX 3060 offers (default)"
+    echo "  vai search 2 \"RTX 4090\"                 # Search for RTX 4090, select index 2"
     echo ""
     echo "HELP:"
-    echo "  vai cm --help                            # Show create_and_monitor.py help"
+    echo "  vai create --help                        # Show create_and_monitor.py help"
     echo "  vai exec --help                          # Show execute_workflow.py help"
     echo "  vai cancel --help                        # Show cancel_job.py help"
+    echo "  vai destroy --help                       # Show destroy_instance.py help"
+    echo "  vai stop --help                          # Show stop/start help"
+    echo "  vai search --help                        # Show search help"
     echo "  vai help                                 # Show this help"
     echo ""
     echo "WORKFLOW FILES:"
@@ -55,12 +73,12 @@ COMMAND="$1"
 shift  # Remove first argument, so $@ now contains the rest
 
 case "$COMMAND" in
-    "cm"|"create-monitor")
+    "create"|"cm")
         # Check if --help is requested
         if [[ "$1" == "--help" || "$1" == "-h" ]]; then
             echo "🎯 Create and Monitor Workflow Help"
             echo "===================================="
-            echo "Usage: vai cm [INDEX] [GPU_NAME] [PROVISIONING_SCRIPT]"
+            echo "Usage: vai create [INDEX] [GPU_NAME] [PROVISIONING_SCRIPT]"
             echo ""
             echo "Arguments:"
             echo "  INDEX               Offer index to select (default: 0)"
@@ -68,10 +86,10 @@ case "$COMMAND" in
             echo "  PROVISIONING_SCRIPT Provisioning script to use (default: 'provision_test_3.sh')"
             echo ""
             echo "Examples:"
-            echo "  vai cm                                # Use all defaults"
-            echo "  vai cm 1                              # Use offer index 1"
-            echo "  vai cm 1 \"RTX 4090\"                  # Custom GPU"
-            echo "  vai cm 1 \"RTX 4090\" provision_test_1.sh # Full custom"
+            echo "  vai create                            # Use all defaults"
+            echo "  vai create 1                          # Use offer index 1"
+            echo "  vai create 1 \"RTX 4090\"              # Custom GPU"
+            echo "  vai create 1 \"RTX 4090\" provision_test_1.sh # Full custom"
             echo ""
             echo "This command will:"
             echo "  1. Search for GPU offers"
@@ -154,6 +172,125 @@ case "$COMMAND" in
         else
             echo "🛑 Managing ComfyUI jobs..."
             cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/cancel_job.py" "$@"
+        fi
+        ;;
+    
+    "destroy")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "🔥 Destroy Instance Help"
+            echo "========================"
+            echo "Usage: vai destroy <INSTANCE_ID>"
+            echo "       vai destroy --all"
+            echo ""
+            echo "Arguments:"
+            echo "  INSTANCE_ID        Vast.ai instance ID to destroy"
+            echo ""
+            echo "Options:"
+            echo "  --all, -a          Destroy ALL instances"
+            echo "  --list, -l         List all instances"
+            echo "  --force, -f        Skip confirmation prompt"
+            echo ""
+            echo "Examples:"
+            echo "  vai destroy 26003629                     # Destroy specific instance"
+            echo "  vai destroy --all                        # Destroy ALL instances"
+            echo "  vai destroy --all --force                # Destroy all without confirmation"
+            echo "  vai destroy --list                       # List all instances"
+            echo ""
+            echo "⚠️  WARNING: Destroying instances is IRREVERSIBLE!"
+        else
+            echo "🔥 Managing instance destruction..."
+            cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/destroy_instance.py" "$@"
+        fi
+        ;;
+    
+    "pause"|"stop")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "⏸️ Stop Instance Help"
+            echo "====================="
+            echo "Usage: vai stop <INSTANCE_ID>"
+            echo "       vai stop --all"
+            echo ""
+            echo "Arguments:"
+            echo "  INSTANCE_ID        Vast.ai instance ID to stop"
+            echo ""
+            echo "Options:"
+            echo "  --all, -a          Stop ALL running instances"
+            echo "  --force, -f        Skip confirmation prompt"
+            echo ""
+            echo "Examples:"
+            echo "  vai stop 26003629                        # Stop specific instance"
+            echo "  vai stop --all                           # Stop ALL running instances"
+            echo "  vai stop --all --force                   # Stop all without confirmation"
+            echo ""
+            echo "This command will stop instances to save costs while preserving data."
+        else
+            echo "⏸️ Managing instance stop..."
+            cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/pause_instance.py" stop "$@"
+        fi
+        ;;
+    
+    "unpause"|"start")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "▶️ Start Instance Help"
+            echo "======================="
+            echo "Usage: vai start <INSTANCE_ID>"
+            echo "       vai start --all"
+            echo ""
+            echo "Arguments:"
+            echo "  INSTANCE_ID        Vast.ai instance ID to start"
+            echo ""
+            echo "Options:"
+            echo "  --all, -a          Start ALL stopped instances"
+            echo "  --force, -f        Skip confirmation prompt"
+            echo "  --no-monitor       Skip detailed startup monitoring"
+            echo ""
+            echo "Examples:"
+            echo "  vai start 26003629                       # Start specific instance with monitoring"
+            echo "  vai start 26003629 --no-monitor          # Start without detailed monitoring"
+            echo "  vai start --all                          # Start ALL stopped instances"
+            echo "  vai start --all --force                  # Start all without confirmation"
+            echo ""
+            echo "This command will resume stopped instances and monitor startup progress by default."
+        else
+            echo "▶️ Managing instance start..."
+            cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/pause_instance.py" start "$@"
+        fi
+        ;;
+    
+    "list")
+        echo "📋 Listing all instances..."
+        cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/pause_instance.py" --list
+        ;;
+    
+    "search")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "🔍 Search GPU Offers Help"
+            echo "========================="
+            echo "Usage: vai search [INDEX] [GPU_NAME]"
+            echo ""
+            echo "Arguments:"
+            echo "  INDEX               Offer index to select (default: 0)"
+            echo "  GPU_NAME            GPU to search for (default: 'RTX 3060')"
+            echo ""
+            echo "Examples:"
+            echo "  vai search                                # Use defaults (index=0, RTX 3060)"
+            echo "  vai search 2                              # Select index 2, RTX 3060"
+            echo "  vai search 0 \"RTX 4090\"                  # Search RTX 4090, index 0"
+            echo "  vai search 3 \"RTX A6000\"                 # Search RTX A6000, index 3"
+            echo ""
+            echo "This command will:"
+            echo "  1. Search for available GPU offers on Vast.ai"
+            echo "  2. Filter by price, bandwidth, and reliability"
+            echo "  3. Sort by lowest 10-minute total cost"
+            echo "  4. Display top 10 offers with details"
+            echo "  5. Return the selected offer ID"
+        else
+            echo "🔍 Searching for GPU offers..."
+            cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/search_offers.py" "$@"
         fi
         ;;
     
