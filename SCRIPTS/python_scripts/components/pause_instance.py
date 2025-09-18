@@ -90,7 +90,7 @@ def monitor_instance_startup(instance_id, log_file=None):
                     for instance in instances:
                         if str(instance.get('id')) == str(instance_id):
                             ssh_host = instance.get('ssh_host')
-                            ssh_port = instance.get('ssh_port', 0) + 1  # Apply port correction
+                            ssh_port = instance.get('ssh_port', 0)  # Use correct API port
                             ssh_key_path = '/home/ballsac/.ssh/id_ed25519_vastai'  # Default key
                             
                             log_message(f"")

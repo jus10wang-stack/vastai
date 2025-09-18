@@ -87,12 +87,9 @@ class VastInstanceMonitor:
         ssh_host = instance_data.get("ssh_host")
         ssh_port = instance_data.get("ssh_port")
         
-        # Sometimes the API port is off by 1, test SSH on both ports
+        # Use the SSH port directly from the API
         if ssh_host and ssh_port:
-            # WORKAROUND: Known issue where API reports wrong port, just use port+1
-            original_port = ssh_port
-            ssh_port = ssh_port + 1
-            print(f"⚠️ Using port {ssh_port} instead of API-provided {original_port} (known Vast.ai issue)")
+            print(f"🔍 Using SSH port {ssh_port} from API")
             
             # Comment out the port detection for now since it's not working reliably
             '''
