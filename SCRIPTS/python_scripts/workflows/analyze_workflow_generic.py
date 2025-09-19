@@ -248,6 +248,37 @@ def main():
             
             print(f"🎯 Node types: {', '.join(sorted(node_types))}")
         
+        # Auto-run calculate --update-config if provisioning script exists
+        workflow_name = Path(args.workflow_file).stem  # Get filename without extension
+        provisioning_script = f"{workflow_name}.sh"
+        
+        # Get the script directory (where vai is located)
+        script_dir = Path(__file__).parent.parent.parent.parent
+        provisioning_path = script_dir / "TEMPLATES" / "provisioning_scripts" / provisioning_script
+        
+        if provisioning_path.exists():
+            print(f"\n🔄 Auto-calculating disk size for {provisioning_script}...")
+            import subprocess
+            try:
+                # Run vai calculate with --update-configs
+                vai_path = script_dir / "vai"
+                result = subprocess.run(
+                    [str(vai_path), "calculate", provisioning_script, "--update-configs"],
+                    cwd=str(script_dir),
+                    capture_output=True,
+                    text=True
+                )
+                
+                if result.returncode == 0:
+                    print(f"✅ Updated config with recommended disk size")
+                else:
+                    print(f"⚠️ Calculate command failed: {result.stderr}")
+                    
+            except Exception as e:
+                print(f"⚠️ Could not auto-calculate disk size: {e}")
+        else:
+            print(f"ℹ️  No matching provisioning script found: {provisioning_script}")
+        
         print(f"\n💡 Usage:")
         print(f"1. Edit: {output_path}")
         print(f"2. Run: python execute_workflow_config.py <instance_id> {Path(output_path).name}")

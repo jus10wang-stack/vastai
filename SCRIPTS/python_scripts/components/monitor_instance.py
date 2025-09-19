@@ -349,15 +349,20 @@ expect eof
                 exit 0
             fi
             
-            # Check for errors
-            if grep -iE -q "error|failed|traceback" "$ONSTART_LOG" 2>/dev/null; then
-                echo "STATUS: ERROR"
-                echo "DETAILS: Error detected in logs"
-                echo "ERROR_DETAILS:"
-                grep -iE "error|failed|traceback" "$ONSTART_LOG" 2>/dev/null | tail -n 3 | sed 's/^/  /'
-                get_storage_info
-                exit 0
-            fi
+            # Check for errors (but don't exit - let the timer handle failures)
+            # Commented out to prevent premature exits on non-fatal errors
+            # if grep -iE "error|failed|traceback" "$ONSTART_LOG" 2>/dev/null | \
+            #    grep -vE "failed to sufficiently increase receive buffer size|UDP Buffer Sizes" | \
+            #    grep -q .; then
+            #     echo "STATUS: ERROR"
+            #     echo "DETAILS: Error detected in logs"
+            #     echo "ERROR_DETAILS:"
+            #     grep -iE "error|failed|traceback" "$ONSTART_LOG" 2>/dev/null | \
+            #         grep -vE "failed to sufficiently increase receive buffer size|UDP Buffer Sizes" | \
+            #         tail -n 3 | sed 's/^/  /'
+            #     get_storage_info
+            #     exit 0
+            # fi
             
             # Default: still initializing
             echo "STATUS: INITIALIZING"
@@ -564,9 +569,7 @@ expect eof
                 if status_data['tunnel_urls'].get('ComfyUI'):
                     print(f"🎨 ComfyUI URL: {status_data['tunnel_urls']['ComfyUI']}")
                 return True
-            elif status_data['status'] == 'ERROR':
-                print(f"\n💥 Instance encountered an error. Check the logs above.")
-                return False
+            # Removed ERROR status handling - let timer handle failures instead
             
             # Wait before next check
             print(f"\n⏳ Waiting {poll_interval}s before next check...")
