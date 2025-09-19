@@ -14,6 +14,7 @@ show_help() {
     echo "PRIMARY WORKFLOWS:"
     echo "  vai create <config_file>                        - Create instance from config file"
     echo "  vai exec <instance> <config_file>               - Execute workflow from config"
+    echo "  vai extract <instance> <type>                   - Extract files from instance"
     echo ""
     echo "LEGACY WORKFLOWS:"
     echo "  vai create-legacy [index] [gpu] [provision_script] [disk_size]  - Create with manual args"
@@ -42,6 +43,7 @@ show_help() {
     echo "EXAMPLES:"
     echo "  vai create wan2-2-I2V-FP8-Lightning-user_friendly.json  # Create from config"
     echo "  vai exec 26003629 wan2-2-I2V-FP8-Lightning-user_friendly.json"
+    echo "  vai extract 26003629 content                    # Extract all images/videos from instance"
     echo "  vai create-legacy                         # Legacy: Use defaults (index=0, RTX 3060, provision_test_3.sh)"
     echo "  vai create-legacy 1 \"RTX 4090\" provision_test_1.sh 200   # Legacy: Custom settings"
     echo "  vai workflow analyze TEMPLATES/workflows/new-workflow.json  # Create config template"
@@ -62,6 +64,7 @@ show_help() {
     echo "  vai create --help                        # Show create_and_monitor.py help"
     echo "  vai create-config --help                 # Show config-based create help"
     echo "  vai exec --help                          # Show execute_workflow.py help"
+    echo "  vai extract --help                       # Show extract_files.py help"
     echo "  vai workflow --help                      # Show workflow management help"
     echo "  vai cancel --help                        # Show cancel_job.py help"
     echo "  vai destroy --help                       # Show destroy_instance.py help"
@@ -194,6 +197,46 @@ case "$COMMAND" in
         else
             echo "⚡ Running Execute Workflow (Config-based)..."
             cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/workflows/execute_workflow_config.py" "$@"
+        fi
+        ;;
+    
+    "extract")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "📥 Extract Files Help"
+            echo "===================="
+            echo "Usage: vai extract <INSTANCE_ID> <TYPE> [options]"
+            echo ""
+            echo "Arguments:"
+            echo "  INSTANCE_ID        Vast.ai instance ID"
+            echo "  TYPE               Type of files to extract: workflows, content, all, custom"
+            echo ""
+            echo "Options:"
+            echo "  --output-dir, -o   Local output directory (default: IMPORT)"
+            echo "  --remote-path, -p  Remote path for custom extraction"
+            echo "  --pattern, -f      File pattern for custom extraction (default: *)"
+            echo "  --ssh-key, -k      Path to SSH private key"
+            echo ""
+            echo "Examples:"
+            echo "  vai extract 26003629 workflows                    # Extract all JSON workflows"
+            echo "  vai extract 26003629 content                      # Extract all images/videos"
+            echo "  vai extract 26003629 all                          # Extract everything"
+            echo "  vai extract 26003629 custom -p /workspace/output -f '*.png'"
+            echo ""
+            echo "This command will:"
+            echo "  1. Connect to the instance via SSH"
+            echo "  2. Search for files matching the specified type/pattern"
+            echo "  3. Download files with organized naming: {timestamp}_{instance-id}_{filename}"
+            echo "  4. Recreate folder structure locally under IMPORT/"
+            echo "  5. Display summary of downloaded files"
+            echo ""
+            echo "File organization:"
+            echo "  - Files are prefixed with timestamp and instance ID for organization"
+            echo "  - Original folder structure is preserved under IMPORT/"
+            echo "  - Example: IMPORT/output/20240918_123456_26003629_image.png"
+        else
+            echo "📥 Extracting files from ComfyUI instance..."
+            cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/components/extract_files.py" "$@"
         fi
         ;;
     

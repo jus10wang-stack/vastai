@@ -411,7 +411,7 @@
             "title": "SaveVideo_61",
             "parameters": {
               "widgets_values": [
-                "video/ComfyUI",
+                "",
                 "auto",
                 "h264"
               ],
