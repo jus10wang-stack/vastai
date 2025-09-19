@@ -176,11 +176,8 @@ def start_monitoring_with_failsafe(instance_id, result_data=None):
                     time.sleep(poll_interval)
                     continue
                 
-                # SSH is available, reset failure tracking
-                if ssh_fail_start_time is not None:
-                    print("✅ SSH connection established!")
-                    ssh_fail_start_time = None
-                    ssh_fail_duration = 0
+                # SSH info is available, but don't reset timer until actual SSH works
+                # (Timer will be reset later if execute_remote_script succeeds)
                 
                 # Store SSH info for later use
                 monitor.current_ssh_info = ssh_info

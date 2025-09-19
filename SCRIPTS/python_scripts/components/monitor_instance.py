@@ -207,6 +207,7 @@ expect eof
                     '-o', 'StrictHostKeyChecking=no',
                     '-o', 'BatchMode=yes',
                     '-o', 'ConnectTimeout=30',
+                    '-o', 'ExitOnForwardFailure=no',
                     '-p', str(port),
                     f'root@{host}',
                     'bash -s'
