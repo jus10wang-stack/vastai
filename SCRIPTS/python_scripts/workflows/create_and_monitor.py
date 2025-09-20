@@ -7,6 +7,7 @@ Coordinates existing scripts to search, create, and monitor instances.
 import sys
 import time
 import os
+import subprocess
 
 # Add parent directory to path to import components
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -235,6 +236,30 @@ def main():
                 
                 if success:
                     print("\n🎉 Instance is ready and monitoring completed successfully!")
+                    
+                    # Auto-extract content
+                    print("\n📥 Auto-extracting content files...")
+                    try:
+                        # Get the script directory (where vai is located)
+                        script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+                        vai_path = os.path.join(script_dir, "vai")
+                        result = subprocess.run(
+                            [vai_path, "extract", str(instance_id), "content"],
+                            cwd=script_dir,
+                            text=True,
+                            capture_output=False  # Let it stream to console/log naturally
+                        )
+                        
+                        if result.returncode == 0:
+                            print("✅ Content extraction completed successfully!")
+                        else:
+                            print("⚠️ Content extraction failed, but instance is ready for manual use")
+                            print(f"💡 You can manually run: vai extract {instance_id} content")
+                            
+                    except Exception as e:
+                        print(f"⚠️ Auto-extract error: {e}")
+                        print(f"💡 Instance is ready - you can manually run: vai extract {instance_id} content")
+                    
                 else:
                     print(f"\n⚠️ Monitoring completed with issues.")
                     if result and result.get('host_id'):

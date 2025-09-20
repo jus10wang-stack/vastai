@@ -8,6 +8,7 @@ import sys
 import time
 import os
 import json
+import subprocess
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -357,6 +358,28 @@ def main():
                     
                     if success:
                         print("\n🎉 Instance is ready and monitoring completed successfully!")
+                        
+                        # Auto-extract content
+                        print("\n📥 Auto-extracting content files...")
+                        try:
+                            vai_path = os.path.join(script_dir, "vai")
+                            result = subprocess.run(
+                                [vai_path, "extract", str(instance_id), "content"],
+                                cwd=script_dir,
+                                text=True,
+                                capture_output=False  # Let it stream to console/log naturally
+                            )
+                            
+                            if result.returncode == 0:
+                                print("✅ Content extraction completed successfully!")
+                            else:
+                                print("⚠️ Content extraction failed, but instance is ready for manual use")
+                                print(f"💡 You can manually run: vai extract {instance_id} content")
+                                
+                        except Exception as e:
+                            print(f"⚠️ Auto-extract error: {e}")
+                            print(f"💡 Instance is ready - you can manually run: vai extract {instance_id} content")
+                        
                         print(f"\n💡 Ready to execute workflow:")
                         print(f"vai exec {instance_id} {config_filename}")
                     else:

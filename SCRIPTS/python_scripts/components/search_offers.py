@@ -90,7 +90,7 @@ def search_gpu(gpu_name, index=0, min_disk_size=100):
         'Authorization': f'Bearer {os.getenv("VAST_API_KEY")}'
     }
     
-    response = requests.put(url, headers=headers, data=payload)
+    response = requests.put(url, headers=headers, data=payload, timeout=30)
     
     if response.status_code == 200:
         data = response.json()

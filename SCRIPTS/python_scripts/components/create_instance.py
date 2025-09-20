@@ -57,7 +57,7 @@ def create_instance(offer_id, provisioning_script="provision_test_3.sh", disk_si
     print(f"Payload: {payload}")
     
     # DON'T ACTUALLY EXECUTE - COSTS MONEY
-    response = requests.put(url, headers=headers, data=payload)
+    response = requests.put(url, headers=headers, data=payload, timeout=30)
     
     if response.status_code == 200:
         data = response.json()

@@ -15,6 +15,7 @@ show_help() {
     echo "  vai create <config_file>                        - Create instance from config file"
     echo "  vai exec <instance> <config_file>               - Execute workflow from config"
     echo "  vai extract <instance> <type>                   - Extract files from instance"
+    echo "  vai oneshot <config_file>                       - Complete pipeline: create→exec→extract"
     echo ""
     echo "LEGACY WORKFLOWS:"
     echo "  vai create-legacy [index] [gpu] [provision_script] [disk_size]  - Create with manual args"
@@ -44,6 +45,7 @@ show_help() {
     echo "  vai create wan2-2-I2V-FP8-Lightning-user_friendly.json  # Create from config"
     echo "  vai exec 26003629 wan2-2-I2V-FP8-Lightning-user_friendly.json"
     echo "  vai extract 26003629 content                    # Extract all images/videos from instance"
+    echo "  vai oneshot wan2-2-I2V-FP8-Lightning-user_friendly.json # Complete pipeline"
     echo "  vai create-legacy                         # Legacy: Use defaults (index=0, RTX 3060, provision_test_3.sh)"
     echo "  vai create-legacy 1 \"RTX 4090\" provision_test_1.sh 200   # Legacy: Custom settings"
     echo "  vai workflow analyze TEMPLATES/workflows/new-workflow.json  # Create config template"
@@ -65,6 +67,7 @@ show_help() {
     echo "  vai create-config --help                 # Show config-based create help"
     echo "  vai exec --help                          # Show execute_workflow.py help"
     echo "  vai extract --help                       # Show extract_files.py help"
+    echo "  vai oneshot --help                       # Show oneshot.py help"
     echo "  vai workflow --help                      # Show workflow management help"
     echo "  vai cancel --help                        # Show cancel_job.py help"
     echo "  vai destroy --help                       # Show destroy_instance.py help"
@@ -197,6 +200,43 @@ case "$COMMAND" in
         else
             echo "⚡ Running Execute Workflow (Config-based)..."
             cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/workflows/execute_workflow_config.py" "$@"
+        fi
+        ;;
+    
+    "oneshot")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "🚀 Oneshot Pipeline Help"
+            echo "========================"
+            echo "Usage: vai oneshot <CONFIG_FILENAME>"
+            echo ""
+            echo "Arguments:"
+            echo "  CONFIG_FILENAME    Configuration file from TEMPLATES/configs/"
+            echo ""
+            echo "Examples:"
+            echo "  vai oneshot wan2-2-I2V-FP8-Lightning-user_friendly.json"
+            echo "  vai oneshot my-custom-workflow-detailed.json"
+            echo ""
+            echo "This command will:"
+            echo "  1. Create instance from config file"
+            echo "  2. Monitor until ComfyUI is fully ready"
+            echo "  3. Execute workflow immediately"
+            echo "  4. Auto-extract content when workflow completes"
+            echo "  5. Display final results and file locations"
+            echo ""
+            echo "Pipeline stages:"
+            echo "  🔍 Search for GPU offers"
+            echo "  🚀 Create instance"
+            echo "  ⏳ Wait for full provisioning (ComfyUI ready)"
+            echo "  ⚡ Execute workflow immediately"
+            echo "  📥 Auto-extract content"
+            echo "  🎉 Complete pipeline"
+            echo ""
+            echo "Note: This waits for full provisioning like 'vai create'."
+            echo "Use 'vai create' + 'vai exec' for manual control."
+        else
+            echo "🚀 Running complete oneshot pipeline..."
+            cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/workflows/oneshot.py" "$@"
         fi
         ;;
     

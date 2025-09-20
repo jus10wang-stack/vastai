@@ -14,7 +14,7 @@
       "node_id": 62,
       "title": "LoadImage_62",
       "values": [
-        "generation-017eef39-a9fe-4dd6-9d09-c87cf8d21ac7.png",
+        "test-image.png",
         "image"
       ],
       "note": "Configurable parameters for LoadImage"
@@ -145,7 +145,7 @@
       "node_id": 6,
       "title": "CLIP Text Encode (Positive Prompt)",
       "values": [
-        "\n\n\n\n\n\n\n\n\n\n\n"
+        "sample-prompt.txt"
       ],
       "note": "Configurable parameters for CLIPTextEncode"
     },

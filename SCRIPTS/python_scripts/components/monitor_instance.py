@@ -57,7 +57,7 @@ class VastInstanceMonitor:
         headers = {"Authorization": f"Bearer {self.api_key}"}
         
         try:
-            response = requests.get(api_url, headers=headers)
+            response = requests.get(api_url, headers=headers, timeout=30)
             response.raise_for_status()
             data = response.json()
             

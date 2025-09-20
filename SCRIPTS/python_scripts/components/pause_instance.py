@@ -84,7 +84,7 @@ def monitor_instance_startup(instance_id, log_file=None):
                 api_key = os.getenv("VAST_API_KEY")
                 if api_key:
                     headers = {"Authorization": f"Bearer {api_key}"}
-                    response = requests.get("https://console.vast.ai/api/v0/instances/", headers=headers)
+                    response = requests.get("https://console.vast.ai/api/v0/instances/", headers=headers, timeout=30)
                     instances = response.json().get('instances', [])
                     
                     for instance in instances:
@@ -152,7 +152,7 @@ def change_instance_state(instance_id, action, force=False):
         # Get instance details first
         api_url = "https://console.vast.ai/api/v0/instances/"
         headers = {"Authorization": f"Bearer {api_key}"}
-        response = requests.get(api_url, headers=headers)
+        response = requests.get(api_url, headers=headers, timeout=30)
         response.raise_for_status()
         data = response.json()
         
@@ -240,7 +240,7 @@ def change_all_instances_state(action, force=False):
         # Get all instances
         api_url = "https://console.vast.ai/api/v0/instances/"
         headers = {"Authorization": f"Bearer {api_key}"}
-        response = requests.get(api_url, headers=headers)
+        response = requests.get(api_url, headers=headers, timeout=30)
         response.raise_for_status()
         data = response.json()
         
@@ -391,7 +391,7 @@ def list_all_instances():
         
         api_url = "https://console.vast.ai/api/v0/instances/"
         headers = {"Authorization": f"Bearer {api_key}"}
-        response = requests.get(api_url, headers=headers)
+        response = requests.get(api_url, headers=headers, timeout=30)
         response.raise_for_status()
         data = response.json()
         
