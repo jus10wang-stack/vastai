@@ -152,7 +152,7 @@ def log_extraction_to_job_log(instance_id, extract_result):
     except Exception as e:
         print(f"⚠️ Failed to log extraction: {e}")
 
-def launch_background_monitoring_and_extraction(instance_id, script_dir):
+def launch_background_monitoring_and_extraction(instance_id, script_dir, auto_destroy=False):
     """Launch background process to monitor workflow completion and auto-extract."""
     try:
         # Create a background script that waits for completion then extracts
@@ -161,7 +161,7 @@ def launch_background_monitoring_and_extraction(instance_id, script_dir):
         # Launch as detached background process
         cmd = [
             sys.executable, background_script,
-            str(instance_id), script_dir
+            str(instance_id), script_dir, str(auto_destroy).lower()
         ]
         
         # Start completely detached process
@@ -335,20 +335,26 @@ def start_monitoring_with_failsafe(instance_id, result_data=None):
         return False
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python oneshot.py <config_filename>")
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("Usage: python oneshot.py <config_filename> [--destroy]")
         print("Example: python oneshot.py wan2-2-I2V-FP8-Lightning-user_friendly.json")
+        print("Example: python oneshot.py wan2-2-I2V-FP8-Lightning-user_friendly.json --destroy")
         print("")
         print("This command will:")
         print("1. Create instance from config")
         print("2. Monitor until SSH is ready")
         print("3. Execute workflow immediately")
         print("4. Auto-extract content when done")
+        print("5. Auto-destroy instance (if --destroy flag used)")
+        print("")
+        print("Options:")
+        print("  --destroy    Automatically destroy instance after successful extraction")
         print("")
         print("Config files should be located in: TEMPLATES/configs/")
         sys.exit(1)
     
     config_filename = sys.argv[1]
+    auto_destroy = len(sys.argv) == 3 and sys.argv[2] == "--destroy"
     
     # Get the script directory to build absolute paths
     script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -409,14 +415,18 @@ def main():
                             
                             # Launch background monitoring and extraction
                             print("\n🔄 Starting background monitoring and auto-extraction...")
-                            launch_background_monitoring_and_extraction(instance_id, script_dir)
+                            launch_background_monitoring_and_extraction(instance_id, script_dir, auto_destroy)
                             
                             print("\n🎉 Oneshot pipeline launched successfully!")
                             print(f"🆔 Instance ID: {instance_id}")
                             print("🔄 Workflow monitoring and extraction running in background")
+                            if auto_destroy:
+                                print("💣 Instance will be automatically destroyed after successful extraction")
                             print("📋 Use these commands:")
                             print(f"   vai cancel {instance_id} --list    # Check job status")
-                            print(f"   vai extract {instance_id} content  # Manual extract if needed")
+                            if not auto_destroy:
+                                print(f"   vai extract {instance_id} content  # Manual extract if needed")
+                                print(f"   vai destroy {instance_id}         # Destroy when done")
                             print("💡 Terminal is now free for SSH port forwarding!")
                         else:
                             print("\n❌ Workflow execution failed")

@@ -78,6 +78,7 @@ def main():
         
     instance_id = sys.argv[1]
     script_dir = sys.argv[2]
+    auto_destroy = len(sys.argv) > 3 and sys.argv[3].lower() == "true"
     
     # Log that background monitoring started
     log_background_status(instance_id, script_dir, "Background monitoring started")
@@ -123,13 +124,36 @@ def main():
             
             if extract_result.returncode == 0:
                 log_background_status(instance_id, script_dir, "Auto-extraction completed successfully")
+                
+                # Auto-destroy if requested
+                if auto_destroy:
+                    log_background_status(instance_id, script_dir, "Starting auto-destroy process")
+                    try:
+                        # Import destroy function
+                        sys.path.append(os.path.join(script_dir, "SCRIPTS", "python_scripts"))
+                        from components.destroy_instance import destroy_instance
+                        
+                        # Destroy the instance
+                        destroy_result = destroy_instance(instance_id, force=True)
+                        if destroy_result:
+                            log_background_status(instance_id, script_dir, "Instance destroyed successfully")
+                        else:
+                            log_background_status(instance_id, script_dir, "Failed to destroy instance - manual cleanup required")
+                    except Exception as e:
+                        log_background_status(instance_id, script_dir, f"Auto-destroy error: {str(e)}")
             else:
                 log_background_status(instance_id, script_dir, f"Auto-extraction failed (code: {extract_result.returncode})")
+                if auto_destroy:
+                    log_background_status(instance_id, script_dir, "Skipping auto-destroy due to extraction failure")
                 
         except Exception as e:
             log_background_status(instance_id, script_dir, f"Auto-extraction error: {str(e)}")
+            if auto_destroy:
+                log_background_status(instance_id, script_dir, "Skipping auto-destroy due to extraction error")
     else:
         log_background_status(instance_id, script_dir, "Workflow did not complete within timeout")
+        if auto_destroy:
+            log_background_status(instance_id, script_dir, "Skipping auto-destroy due to workflow timeout")
 
 if __name__ == "__main__":
     main()
