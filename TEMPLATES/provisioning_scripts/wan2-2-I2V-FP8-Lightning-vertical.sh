@@ -43,6 +43,7 @@ UNET_MODELS=(
 LORA_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors"
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors"
+    "https://civitai.com/api/download/models/2176505?type=Model&format=SafeTensor"
 )
 
 VAE_MODELS=(
