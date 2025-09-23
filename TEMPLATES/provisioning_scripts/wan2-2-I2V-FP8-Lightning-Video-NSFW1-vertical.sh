@@ -25,7 +25,7 @@ NODES=(
 )
 
 WORKFLOWS=(
-    "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/workflows/wan2-2-I2V-FP8-Lightning-vertical.json"
+    "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/workflows/wan2-2-I2V-FP8-Lightning-Video-NSFW1-vertical.json"
 )
 
 INPUT=(

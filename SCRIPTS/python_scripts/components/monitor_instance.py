@@ -268,20 +268,31 @@ expect eof
             # Function to extract tunnel URLs
             get_tunnel_urls() {
                 echo "TUNNEL_URLS:"
-                grep "Default Tunnel started" /var/log/*.log 2>/dev/null | while read line; do
-                    if echo "$line" | grep -q "8188"; then
-                        url=$(echo "$line" | grep -o 'https://[^?]*')
-                        echo "ComfyUI: $url"
-                    elif echo "$line" | grep -q "1111"; then
-                        url=$(echo "$line" | grep -o 'https://[^?]*')
-                        echo "Portal: $url"
-                    elif echo "$line" | grep -q "8080"; then
-                        url=$(echo "$line" | grep -o 'https://[^?]*')
-                        echo "Jupyter: $url"
-                    elif echo "$line" | grep -q "8384"; then
-                        url=$(echo "$line" | grep -o 'https://[^?]*')
-                        echo "Syncthing: $url"
+                # Check multiple log patterns for cloudflare tunnels
+                for log_file in /var/log/*.log /tmp/*.log ~/.cloudflared/*.log; do
+                    if [[ -f "$log_file" ]]; then
+                        # Look for various cloudflare tunnel patterns
+                        grep -E "(tunnel|cloudflare|https://.*\.trycloudflare\.com)" "$log_file" 2>/dev/null | grep -o 'https://[^[:space:]]*\.trycloudflare\.com[^[:space:]]*' | while read url; do
+                            # Determine service by port context
+                            if grep -B5 -A5 "$url" "$log_file" | grep -q "8188\|comfyui"; then
+                                echo "ComfyUI: $url"
+                            elif grep -B5 -A5 "$url" "$log_file" | grep -q "1111\|portal"; then
+                                echo "Portal: $url"
+                            elif grep -B5 -A5 "$url" "$log_file" | grep -q "8080\|jupyter"; then
+                                echo "Jupyter: $url"
+                            elif grep -B5 -A5 "$url" "$log_file" | grep -q "8384\|syncthing"; then
+                                echo "Syncthing: $url"
+                            else
+                                # Generic tunnel URL
+                                echo "Tunnel: $url"
+                            fi
+                        done
                     fi
+                done
+                
+                # Also check for tunnel URLs in process output
+                ps aux | grep -E "(cloudflared|tunnel)" | grep -o 'https://[^[:space:]]*\.trycloudflare\.com[^[:space:]]*' | while read url; do
+                    echo "Active: $url"
                 done
             }
             

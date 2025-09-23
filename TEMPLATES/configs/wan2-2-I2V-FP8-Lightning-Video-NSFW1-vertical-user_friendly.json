@@ -1,0 +1,1046 @@
+{
+  "workflow_name": "wan2-2-I2V-FP8-Lightning-Video-NSFW1-vertical",
+  "description": "Edit the values below, then use with execute_workflow_config.py",
+  "instance_config": {
+    "gpu_name": "RTX 5090",
+    "gpu_index": 0,
+    "provisioning_script": "wan2-2-I2V-FP8-Lightning-Video-NSFW1-vertical.sh",
+    "disk_size": 103,
+    "note": "Instance creation settings - used when creating new instances for this workflow"
+  },
+  "parameters": {
+    "101_ImageScale_101": {
+      "node_type": "ImageScale",
+      "node_id": 101,
+      "title": "ImageScale_101",
+      "values": [
+        "nearest-exact",
+        630,
+        848,
+        "disabled"
+      ],
+      "note": "Configurable parameters for ImageScale"
+    },
+    "58_2._KSampler_(Advanced)": {
+      "node_type": "KSamplerAdvanced",
+      "node_id": 58,
+      "title": "2. KSampler (Advanced)",
+      "values": [
+        "disable",
+        0,
+        "fixed",
+        4,
+        1,
+        "euler",
+        "beta",
+        2,
+        10000,
+        "disable"
+      ],
+      "note": "Configurable parameters for KSamplerAdvanced"
+    },
+    "57_1._KSampler_(Advanced)": {
+      "node_type": "KSamplerAdvanced",
+      "node_id": 57,
+      "title": "1. KSampler (Advanced)",
+      "values": [
+        "enable",
+        509345585843347,
+        "randomize",
+        4,
+        1,
+        "euler",
+        "beta",
+        0,
+        2,
+        "enable"
+      ],
+      "note": "Configurable parameters for KSamplerAdvanced"
+    },
+    "61_SaveVideo_61": {
+      "node_type": "SaveVideo",
+      "node_id": 61,
+      "title": "SaveVideo_61",
+      "values": [
+        "video/ComfyUI",
+        "auto",
+        "h264"
+      ],
+      "note": "Configurable parameters for SaveVideo"
+    },
+    "60_CreateVideo_60": {
+      "node_type": "CreateVideo",
+      "node_id": 60,
+      "title": "CreateVideo_60",
+      "values": [
+        16
+      ],
+      "note": "Configurable parameters for CreateVideo"
+    },
+    "91_RIFE_VFI_91": {
+      "node_type": "RIFE VFI",
+      "node_id": 91,
+      "title": "RIFE VFI_91",
+      "values": [
+        "rife47.pth",
+        50,
+        2,
+        true,
+        true,
+        1
+      ],
+      "note": "Configurable parameters for RIFE VFI"
+    },
+    "55_ModelSamplingSD3_55": {
+      "node_type": "ModelSamplingSD3",
+      "node_id": 55,
+      "title": "ModelSamplingSD3_55",
+      "values": [
+        8
+      ],
+      "note": "Configurable parameters for ModelSamplingSD3"
+    },
+    "54_ModelSamplingSD3_54": {
+      "node_type": "ModelSamplingSD3",
+      "node_id": 54,
+      "title": "ModelSamplingSD3_54",
+      "values": [
+        8.000000000000002
+      ],
+      "note": "Configurable parameters for ModelSamplingSD3"
+    },
+    "7_CLIP_Text_Encode_(Negative_Prompt)": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 7,
+      "title": "CLIP Text Encode (Negative Prompt)",
+      "values": [
+        "low quality, lowres, bad hands, extra limbs, missing fingers, poorly drawn face, bad anatomy, blurred, jpeg artifacts, deformed, ugly, bad proportions, disfigured, watermark, text, logo, signature, unrealistic eyes, cross-eyed, lopsided, bad lighting, harsh shadows, flat shading, unshapely body, pixelated, duplicate limbs, bad perspective, morphed, distorted, glitch, malformed hands, distorted fingers, noisy background, overly saturated, unnatural colors, lens distortion, grainy, low detail,"
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "6_CLIP_Text_Encode_(Positive_Prompt)": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 6,
+      "title": "CLIP Text Encode (Positive Prompt)",
+      "values": [
+        "\nbeautuiful girl gives bl0wj0b to cock\n\n\n\n\n\n\n\n\n\n"
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "38_CLIPLoader_38": {
+      "node_type": "CLIPLoader",
+      "node_id": 38,
+      "title": "CLIPLoader_38",
+      "values": [
+        "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "wan",
+        "default"
+      ],
+      "note": "Configurable parameters for CLIPLoader"
+    },
+    "39_VAELoader_39": {
+      "node_type": "VAELoader",
+      "node_id": 39,
+      "title": "VAELoader_39",
+      "values": [
+        "wan_2.1_vae.safetensors"
+      ],
+      "note": "Configurable parameters for VAELoader"
+    },
+    "56_UNETLoader_56": {
+      "node_type": "UNETLoader",
+      "node_id": 56,
+      "title": "UNETLoader_56",
+      "values": [
+        "wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+        "fp8_e4m3fn"
+      ],
+      "note": "Configurable parameters for UNETLoader"
+    },
+    "37_UNETLoader_37": {
+      "node_type": "UNETLoader",
+      "node_id": 37,
+      "title": "UNETLoader_37",
+      "values": [
+        "wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+        "fp8_e4m3fn"
+      ],
+      "note": "Configurable parameters for UNETLoader"
+    },
+    "98_ImageCrop+_98": {
+      "node_type": "ImageCrop+",
+      "node_id": 98,
+      "title": "ImageCrop+_98",
+      "values": [
+        480,
+        848,
+        "center",
+        0,
+        0
+      ],
+      "note": "Configurable parameters for ImageCrop+"
+    },
+    "80_LoraLoaderModelOnly_80": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 80,
+      "title": "LoraLoaderModelOnly_80",
+      "values": [
+        "Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors",
+        1.0000000000000002
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "82_LoraLoaderModelOnly_82": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 82,
+      "title": "LoraLoaderModelOnly_82",
+      "values": [
+        "Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors",
+        1
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "105_LoraLoaderModelOnly_105": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 105,
+      "title": "LoraLoaderModelOnly_105",
+      "values": [
+        "my_lora.safetensors",
+        1
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "104_LoraLoaderModelOnly_104": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 104,
+      "title": "LoraLoaderModelOnly_104",
+      "values": [
+        "Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors",
+        0.7000000000000002
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "62_LoadImage_62": {
+      "node_type": "LoadImage",
+      "node_id": 62,
+      "title": "LoadImage_62",
+      "values": [
+        "Screenshot 2025-09-23 141858.png",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "63_WanImageToVideo_63": {
+      "node_type": "WanImageToVideo",
+      "node_id": 63,
+      "title": "WanImageToVideo_63",
+      "values": [
+        480,
+        848,
+        65,
+        1
+      ],
+      "note": "Configurable parameters for WanImageToVideo"
+    }
+  },
+  "_internal": {
+    "original_structure": {
+      "workflow_info": {
+        "id": "0af66379-c4c8-4008-a566-629249d828dd",
+        "name": "wan2-2-I2V-FP8-Lightning-Video-NSFW1-vertical",
+        "description": "Auto-generated configuration template"
+      },
+      "instance_config": {
+        "gpu_name": "RTX 5090",
+        "gpu_index": 0,
+        "provisioning_script": "wan2-2-I2V-FP8-Lightning-Video-NSFW1-vertical.sh",
+        "disk_size": 100,
+        "note": "Instance creation settings - used when creating new instances for this workflow"
+      },
+      "configurable_parameters": {
+        "ImageScale": {
+          "101_ImageScale_101": {
+            "node_id": 101,
+            "title": "ImageScale_101",
+            "parameters": {
+              "widgets_values": [
+                "nearest-exact",
+                630,
+                848,
+                "disabled"
+              ],
+              "input_widgets": {
+                "upscale_method": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "width": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "height": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "crop": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "KSamplerAdvanced": {
+          "58_2._KSampler_(Advanced)": {
+            "node_id": 58,
+            "title": "2. KSampler (Advanced)",
+            "parameters": {
+              "widgets_values": [
+                "disable",
+                0,
+                "fixed",
+                4,
+                1,
+                "euler",
+                "beta",
+                2,
+                10000,
+                "disable"
+              ],
+              "input_widgets": {
+                "add_noise": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "noise_seed": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "steps": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "cfg": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "sampler_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "scheduler": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "start_at_step": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "end_at_step": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "return_with_leftover_noise": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "57_1._KSampler_(Advanced)": {
+            "node_id": 57,
+            "title": "1. KSampler (Advanced)",
+            "parameters": {
+              "widgets_values": [
+                "enable",
+                509345585843347,
+                "randomize",
+                4,
+                1,
+                "euler",
+                "beta",
+                0,
+                2,
+                "enable"
+              ],
+              "input_widgets": {
+                "add_noise": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "noise_seed": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "steps": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "cfg": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "sampler_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "scheduler": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "start_at_step": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "end_at_step": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "return_with_leftover_noise": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "SaveVideo": {
+          "61_SaveVideo_61": {
+            "node_id": 61,
+            "title": "SaveVideo_61",
+            "parameters": {
+              "widgets_values": [
+                "video/ComfyUI",
+                "auto",
+                "h264"
+              ],
+              "input_widgets": {
+                "filename_prefix": {
+                  "type": "STRING",
+                  "current_value": null
+                },
+                "format": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "codec": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "CreateVideo": {
+          "60_CreateVideo_60": {
+            "node_id": 60,
+            "title": "CreateVideo_60",
+            "parameters": {
+              "widgets_values": [
+                16
+              ],
+              "input_widgets": {
+                "fps": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "RIFE VFI": {
+          "91_RIFE_VFI_91": {
+            "node_id": 91,
+            "title": "RIFE VFI_91",
+            "parameters": {
+              "widgets_values": [
+                "rife47.pth",
+                50,
+                2,
+                true,
+                true,
+                1
+              ],
+              "input_widgets": {
+                "ckpt_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "clear_cache_after_n_frames": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "multiplier": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "fast_mode": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "ensemble": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "scale_factor": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "ModelSamplingSD3": {
+          "55_ModelSamplingSD3_55": {
+            "node_id": 55,
+            "title": "ModelSamplingSD3_55",
+            "parameters": {
+              "widgets_values": [
+                8
+              ],
+              "input_widgets": {
+                "shift": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "54_ModelSamplingSD3_54": {
+            "node_id": 54,
+            "title": "ModelSamplingSD3_54",
+            "parameters": {
+              "widgets_values": [
+                8.000000000000002
+              ],
+              "input_widgets": {
+                "shift": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "CLIPTextEncode": {
+          "7_CLIP_Text_Encode_(Negative_Prompt)": {
+            "node_id": 7,
+            "title": "CLIP Text Encode (Negative Prompt)",
+            "parameters": {
+              "widgets_values": [
+                "low quality, lowres, bad hands, extra limbs, missing fingers, poorly drawn face, bad anatomy, blurred, jpeg artifacts, deformed, ugly, bad proportions, disfigured, watermark, text, logo, signature, unrealistic eyes, cross-eyed, lopsided, bad lighting, harsh shadows, flat shading, unshapely body, pixelated, duplicate limbs, bad perspective, morphed, distorted, glitch, malformed hands, distorted fingers, noisy background, overly saturated, unnatural colors, lens distortion, grainy, low detail,"
+              ],
+              "input_widgets": {
+                "text": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "6_CLIP_Text_Encode_(Positive_Prompt)": {
+            "node_id": 6,
+            "title": "CLIP Text Encode (Positive Prompt)",
+            "parameters": {
+              "widgets_values": [
+                "\nbeautuiful girl gives bl0wj0b to cock\n\n\n\n\n\n\n\n\n\n"
+              ],
+              "input_widgets": {
+                "text": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "CLIPLoader": {
+          "38_CLIPLoader_38": {
+            "node_id": 38,
+            "title": "CLIPLoader_38",
+            "parameters": {
+              "widgets_values": [
+                "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+                "wan",
+                "default"
+              ],
+              "input_widgets": {
+                "clip_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "type": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "device": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "VAELoader": {
+          "39_VAELoader_39": {
+            "node_id": 39,
+            "title": "VAELoader_39",
+            "parameters": {
+              "widgets_values": [
+                "wan_2.1_vae.safetensors"
+              ],
+              "input_widgets": {
+                "vae_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "UNETLoader": {
+          "56_UNETLoader_56": {
+            "node_id": 56,
+            "title": "UNETLoader_56",
+            "parameters": {
+              "widgets_values": [
+                "wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors",
+                "fp8_e4m3fn"
+              ],
+              "input_widgets": {
+                "unet_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "weight_dtype": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "37_UNETLoader_37": {
+            "node_id": 37,
+            "title": "UNETLoader_37",
+            "parameters": {
+              "widgets_values": [
+                "wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors",
+                "fp8_e4m3fn"
+              ],
+              "input_widgets": {
+                "unet_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "weight_dtype": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "ImageCrop+": {
+          "98_ImageCrop+_98": {
+            "node_id": 98,
+            "title": "ImageCrop+_98",
+            "parameters": {
+              "widgets_values": [
+                480,
+                848,
+                "center",
+                0,
+                0
+              ],
+              "input_widgets": {
+                "width": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "height": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "position": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "x_offset": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "y_offset": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "LoraLoaderModelOnly": {
+          "80_LoraLoaderModelOnly_80": {
+            "node_id": 80,
+            "title": "LoraLoaderModelOnly_80",
+            "parameters": {
+              "widgets_values": [
+                "Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors",
+                1.0000000000000002
+              ],
+              "input_widgets": {
+                "lora_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "strength_model": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "82_LoraLoaderModelOnly_82": {
+            "node_id": 82,
+            "title": "LoraLoaderModelOnly_82",
+            "parameters": {
+              "widgets_values": [
+                "Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors",
+                1
+              ],
+              "input_widgets": {
+                "lora_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "strength_model": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "105_LoraLoaderModelOnly_105": {
+            "node_id": 105,
+            "title": "LoraLoaderModelOnly_105",
+            "parameters": {
+              "widgets_values": [
+                "my_lora.safetensors",
+                1
+              ],
+              "input_widgets": {
+                "lora_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "strength_model": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "104_LoraLoaderModelOnly_104": {
+            "node_id": 104,
+            "title": "LoraLoaderModelOnly_104",
+            "parameters": {
+              "widgets_values": [
+                "Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors",
+                0.7000000000000002
+              ],
+              "input_widgets": {
+                "lora_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "strength_model": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "LoadImage": {
+          "62_LoadImage_62": {
+            "node_id": 62,
+            "title": "LoadImage_62",
+            "parameters": {
+              "widgets_values": [
+                "Screenshot 2025-09-23 141858.png",
+                "image"
+              ],
+              "input_widgets": {
+                "image": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "upload": {
+                  "type": "IMAGEUPLOAD",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "WanImageToVideo": {
+          "63_WanImageToVideo_63": {
+            "node_id": 63,
+            "title": "WanImageToVideo_63",
+            "parameters": {
+              "widgets_values": [
+                480,
+                848,
+                65,
+                1
+              ],
+              "input_widgets": {
+                "width": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "height": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "length": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "batch_size": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "workflow_links": [
+        [
+          76,
+          39,
+          0,
+          8,
+          1,
+          "VAE"
+        ],
+        [
+          113,
+          57,
+          0,
+          58,
+          3,
+          "LATENT"
+        ],
+        [
+          124,
+          58,
+          0,
+          8,
+          0,
+          "LATENT"
+        ],
+        [
+          132,
+          60,
+          0,
+          61,
+          0,
+          "VIDEO"
+        ],
+        [
+          134,
+          6,
+          0,
+          63,
+          0,
+          "CONDITIONING"
+        ],
+        [
+          135,
+          7,
+          0,
+          63,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          136,
+          63,
+          0,
+          57,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          137,
+          63,
+          1,
+          57,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          138,
+          63,
+          0,
+          58,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          139,
+          63,
+          1,
+          58,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          140,
+          63,
+          2,
+          57,
+          3,
+          "LATENT"
+        ],
+        [
+          141,
+          39,
+          0,
+          63,
+          2,
+          "VAE"
+        ],
+        [
+          147,
+          54,
+          0,
+          57,
+          0,
+          "MODEL"
+        ],
+        [
+          148,
+          55,
+          0,
+          58,
+          0,
+          "MODEL"
+        ],
+        [
+          176,
+          38,
+          0,
+          6,
+          0,
+          "CLIP"
+        ],
+        [
+          177,
+          38,
+          0,
+          7,
+          0,
+          "CLIP"
+        ],
+        [
+          180,
+          37,
+          0,
+          80,
+          0,
+          "MODEL"
+        ],
+        [
+          184,
+          56,
+          0,
+          82,
+          0,
+          "MODEL"
+        ],
+        [
+          204,
+          8,
+          0,
+          91,
+          0,
+          "IMAGE"
+        ],
+        [
+          205,
+          91,
+          0,
+          60,
+          0,
+          "IMAGE"
+        ],
+        [
+          208,
+          98,
+          0,
+          99,
+          0,
+          "IMAGE"
+        ],
+        [
+          212,
+          62,
+          0,
+          101,
+          0,
+          "IMAGE"
+        ],
+        [
+          213,
+          101,
+          0,
+          98,
+          0,
+          "IMAGE"
+        ],
+        [
+          215,
+          98,
+          0,
+          63,
+          4,
+          "IMAGE"
+        ],
+        [
+          216,
+          105,
+          0,
+          54,
+          0,
+          "MODEL"
+        ],
+        [
+          217,
+          80,
+          0,
+          105,
+          0,
+          "MODEL"
+        ],
+        [
+          218,
+          104,
+          0,
+          55,
+          0,
+          "MODEL"
+        ],
+        [
+          219,
+          82,
+          0,
+          104,
+          0,
+          "MODEL"
+        ]
+      ]
+    },
+    "note": "This section is used internally for workflow reconstruction"
+  }
+}
