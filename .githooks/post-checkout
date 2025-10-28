@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+echo "Hook ran: prev=$1 new=$2 branch_checkout=$3 pwd=$PWD" >&2
+# Copy .claude/ directory into fresh worktrees
+
+prev="$1"
+new="$2" 
+branch_checkout="$3"
+
+# Detect new worktree creation (prev HEAD is all zeros)
+if [[ "$prev" == "0000000000000000000000000000000000000000" && "$branch_checkout" -eq 1 ]]; then
+    # Find the main worktree's .claude directory
+    main_repo_dir=$(git worktree list --porcelain | awk '/worktree /{print $2; exit}')
+    src_claude="$main_repo_dir/.claude"
+    dest_claude="$PWD/.claude"
+    
+    echo "src: $src_claude exists? $(ls -d "$src_claude" 2>/dev/null)" >&2
+    echo "dest: $dest_claude exists? $(ls -d "$dest_claude" 2>/dev/null)" >&2
+
+
+    if [[ -d "$src_claude" && ! -d "$dest_claude" ]]; then
+        echo "🔧 Copying Claude configuration to new worktree..."
+        cp -r "$src_claude" "$dest_claude"
+        echo "✅ Claude settings copied successfully"
+    fi
+fi
+exit 0

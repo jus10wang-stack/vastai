@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "*",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json, sys, os; data=json.load(sys.stdin); path=data.get('tool_input',{}).get('file_path') or data.get('tool_input',{}).get('cwd') or os.getcwd(); sys.exit(2 if '-wt-' not in os.path.abspath(path) else 0)\""
+          }
+        ]
+      }
+    ]
+  }
+}
