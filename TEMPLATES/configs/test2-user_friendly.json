@@ -3,7 +3,7 @@
   "description": "Edit the values below, then use with execute_workflow_config.py",
   "instance_config": {
     "gpu_name": "RTX 5090",
-    "gpu_index": 2,
+    "gpu_index": 0,
     "provisioning_script": "test2.sh",
     "disk_size": 103,
     "note": "Instance creation settings - used when creating new instances for this workflow"

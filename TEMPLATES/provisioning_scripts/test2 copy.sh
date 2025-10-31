@@ -21,6 +21,11 @@ PIP_PACKAGES=(
 )
 
 NODES=(
+    "https://github.com/pythongosssss/ComfyUI-Custom-Scripts"
+    "https://github.com/rgthree/rgthree-comfy"
+    "https://github.com/chrisgoringe/cg-use-everywhere"
+    "https://github.com/orssorbit/ComfyUI-wanBlockswap"
+    "https://github.com/PGCRT/CRT-Nodes"
 )
 
 WORKFLOWS=(
@@ -34,15 +39,19 @@ CHECKPOINT_MODELS=(
 )
 
 CLIP_MODELS=(
+    "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
 )
 
 UNET_MODELS=(
 )
 
 LORA_MODELS=(
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors"
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors"
 )
 
 VAE_MODELS=(
+    "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors"
 )
 
 ESRGAN_MODELS=(
