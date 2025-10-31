@@ -1,0 +1,1720 @@
+{
+  "workflow_name": "test2",
+  "description": "Edit the values below, then use with execute_workflow_config.py",
+  "instance_config": {
+    "gpu_name": "RTX 5090",
+    "gpu_index": 0,
+    "provisioning_script": "test2.sh",
+    "disk_size": 100,
+    "note": "Instance creation settings - used when creating new instances for this workflow"
+  },
+  "parameters": {
+    "52_Get_LowModel": {
+      "node_type": "GetNode",
+      "node_id": 52,
+      "title": "Get_LowModel",
+      "values": [
+        "LowModel"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "54_Get_HighModel": {
+      "node_type": "GetNode",
+      "node_id": 54,
+      "title": "Get_HighModel",
+      "values": [
+        "HighModel"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "61_PlaySound|pysssss_61": {
+      "node_type": "PlaySound|pysssss",
+      "node_id": 61,
+      "title": "PlaySound|pysssss_61",
+      "values": [
+        "always",
+        0.5,
+        "notify.mp3"
+      ],
+      "note": "Configurable parameters for PlaySound|pysssss"
+    },
+    "80_SaveImage_80": {
+      "node_type": "SaveImage",
+      "node_id": 80,
+      "title": "SaveImage_80",
+      "values": [
+        "ComfyUI"
+      ],
+      "note": "Configurable parameters for SaveImage"
+    },
+    "83_CRT_Post-Process_Suite_83": {
+      "node_type": "CRT Post-Process Suite",
+      "node_id": 83,
+      "title": "CRT Post-Process Suite_83",
+      "values": [
+        false,
+        "4x_foolhardy_Remacri.pth",
+        0.5,
+        "bicubic",
+        "auto",
+        1,
+        false,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        false,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        false,
+        0,
+        0,
+        false,
+        2.5,
+        1.85,
+        0.015,
+        false,
+        0.015,
+        0.1,
+        0.25,
+        false,
+        0.25,
+        50,
+        0.3,
+        false,
+        "star_4",
+        0.65,
+        1.5,
+        0,
+        0.95,
+        16,
+        1,
+        false,
+        0.005,
+        2,
+        false,
+        0,
+        false,
+        0.5,
+        0.7,
+        2,
+        false,
+        "spin",
+        0.02,
+        0.5,
+        0.25,
+        0.25,
+        16,
+        false,
+        0.02,
+        1,
+        0,
+        false,
+        0,
+        ""
+      ],
+      "note": "Configurable parameters for CRT Post-Process Suite"
+    },
+    "13_Positive": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 13,
+      "title": "Positive",
+      "values": [
+        "A radiant woman with long, cascading silver hair flowing in shimmering, steampunk coils past her waist, wearing a form-fitting leather corset dress with brass cogs that clings to her curvy figure, accentuating her full breasts and toned hips, her smooth, porcelain skin glowing under warm, gaslit lanterns, adjusting a whirring mechanical arm | ducking under a burst of steam in a bustling airship workshop with a blurred background of copper pipes, spinning propellers, and smoky skies, her piercing blue eyes focused on her task, a delicate cog-shaped pendant glinting on her chest, the air thick with the scent of oil and steam, her nimble movements exuding ingenuity, the scene alive with the clank of gears, the hiss of steam, and distant airship horns, creating a candid, photorealistic steampunk video that captures her inventive focus and the vibrant, mechanical atmosphere of a retro-futuristic hangar at dusk."
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "14_Negative": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 14,
+      "title": "Negative",
+      "values": [
+        ""
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "15_EmptyHunyuanLatentVideo_15": {
+      "node_type": "EmptyHunyuanLatentVideo",
+      "node_id": 15,
+      "title": "EmptyHunyuanLatentVideo_15",
+      "values": [
+        960,
+        1536,
+        1,
+        1
+      ],
+      "note": "Configurable parameters for EmptyHunyuanLatentVideo"
+    },
+    "112_VAELoader_112": {
+      "node_type": "VAELoader",
+      "node_id": 112,
+      "title": "VAELoader_112",
+      "values": [
+        "wan_2.1_vae.safetensors"
+      ],
+      "note": "Configurable parameters for VAELoader"
+    },
+    "113_CLIPLoader_113": {
+      "node_type": "CLIPLoader",
+      "node_id": 113,
+      "title": "CLIPLoader_113",
+      "values": [
+        "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "wan",
+        "default"
+      ],
+      "note": "Configurable parameters for CLIPLoader"
+    },
+    "115_wanBlockSwap_115": {
+      "node_type": "wanBlockSwap",
+      "node_id": 115,
+      "title": "wanBlockSwap_115",
+      "values": [
+        10,
+        false,
+        false,
+        true
+      ],
+      "note": "Configurable parameters for wanBlockSwap"
+    },
+    "117_wanBlockSwap_117": {
+      "node_type": "wanBlockSwap",
+      "node_id": 117,
+      "title": "wanBlockSwap_117",
+      "values": [
+        10,
+        false,
+        false,
+        true
+      ],
+      "note": "Configurable parameters for wanBlockSwap"
+    },
+    "116_PathchSageAttentionKJ_116": {
+      "node_type": "PathchSageAttentionKJ",
+      "node_id": 116,
+      "title": "PathchSageAttentionKJ_116",
+      "values": [
+        "sageattn_qk_int8_pv_fp8_cuda++"
+      ],
+      "note": "Configurable parameters for PathchSageAttentionKJ"
+    },
+    "125_PathchSageAttentionKJ_125": {
+      "node_type": "PathchSageAttentionKJ",
+      "node_id": 125,
+      "title": "PathchSageAttentionKJ_125",
+      "values": [
+        "sageattn_qk_int8_pv_fp8_cuda++"
+      ],
+      "note": "Configurable parameters for PathchSageAttentionKJ"
+    },
+    "118_TorchCompileModelWanVideoV2_118": {
+      "node_type": "TorchCompileModelWanVideoV2",
+      "node_id": 118,
+      "title": "TorchCompileModelWanVideoV2_118",
+      "values": [
+        "inductor",
+        false,
+        "default",
+        false,
+        true,
+        64
+      ],
+      "note": "Configurable parameters for TorchCompileModelWanVideoV2"
+    },
+    "129_TorchCompileModelWanVideoV2_129": {
+      "node_type": "TorchCompileModelWanVideoV2",
+      "node_id": 129,
+      "title": "TorchCompileModelWanVideoV2_129",
+      "values": [
+        "inductor",
+        false,
+        "default",
+        false,
+        true,
+        64
+      ],
+      "note": "Configurable parameters for TorchCompileModelWanVideoV2"
+    },
+    "120_WanVideoTeaCacheKJ_120": {
+      "node_type": "WanVideoTeaCacheKJ",
+      "node_id": 120,
+      "title": "WanVideoTeaCacheKJ_120",
+      "values": [
+        0.275,
+        0.1,
+        1,
+        "offload_device",
+        "14B"
+      ],
+      "note": "Configurable parameters for WanVideoTeaCacheKJ"
+    },
+    "128_WanVideoTeaCacheKJ_128": {
+      "node_type": "WanVideoTeaCacheKJ",
+      "node_id": 128,
+      "title": "WanVideoTeaCacheKJ_128",
+      "values": [
+        0.275,
+        0.1,
+        1,
+        "offload_device",
+        "14B"
+      ],
+      "note": "Configurable parameters for WanVideoTeaCacheKJ"
+    },
+    "121_Set_HighModel": {
+      "node_type": "SetNode",
+      "node_id": 121,
+      "title": "Set_HighModel",
+      "values": [
+        "HighModel"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "127_Set_LowModel": {
+      "node_type": "SetNode",
+      "node_id": 127,
+      "title": "Set_LowModel",
+      "values": [
+        "LowModel"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "122_ModelPatchTorchSettings_122": {
+      "node_type": "ModelPatchTorchSettings",
+      "node_id": 122,
+      "title": "ModelPatchTorchSettings_122",
+      "values": [
+        true
+      ],
+      "note": "Configurable parameters for ModelPatchTorchSettings"
+    },
+    "124_ModelPatchTorchSettings_124": {
+      "node_type": "ModelPatchTorchSettings",
+      "node_id": 124,
+      "title": "ModelPatchTorchSettings_124",
+      "values": [
+        true
+      ],
+      "note": "Configurable parameters for ModelPatchTorchSettings"
+    },
+    "123_PatchModelPatcherOrder_123": {
+      "node_type": "PatchModelPatcherOrder",
+      "node_id": 123,
+      "title": "PatchModelPatcherOrder_123",
+      "values": [
+        "weight_patch_first",
+        "auto"
+      ],
+      "note": "Configurable parameters for PatchModelPatcherOrder"
+    },
+    "126_PatchModelPatcherOrder_126": {
+      "node_type": "PatchModelPatcherOrder",
+      "node_id": 126,
+      "title": "PatchModelPatcherOrder_126",
+      "values": [
+        "weight_patch_first",
+        "auto"
+      ],
+      "note": "Configurable parameters for PatchModelPatcherOrder"
+    },
+    "114_Low": {
+      "node_type": "UNETLoader",
+      "node_id": 114,
+      "title": "Low",
+      "values": [
+        "Wan2_2-T2V-A14B-LOW_fp8_e4m3fn_scaled_KJ.safetensors",
+        "fp8_e4m3fn"
+      ],
+      "note": "Configurable parameters for UNETLoader"
+    },
+    "119_High": {
+      "node_type": "UNETLoader",
+      "node_id": 119,
+      "title": "High",
+      "values": [
+        "Wan2_2-T2V-A14B_HIGH_fp8_e4m3fn_scaled_KJ.safetensors",
+        "fp8_e4m3fn"
+      ],
+      "note": "Configurable parameters for UNETLoader"
+    },
+    "109_Execution_Timer": {
+      "node_type": "FancyTimerNode",
+      "node_id": 109,
+      "title": "Execution Timer",
+      "values": [
+        ""
+      ],
+      "note": "Configurable parameters for FancyTimerNode"
+    },
+    "106_Note_106": {
+      "node_type": "Note",
+      "node_id": 106,
+      "title": "Note_106",
+      "values": [
+        "Enable BlockSwap if you have less than 24GB VRAM\n\nTorchCompile and SageAttention is recommended"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "131_HIGH_NOISE_LORA": {
+      "node_type": "Power Lora Loader (rgthree)",
+      "node_id": 131,
+      "title": "HIGH NOISE LORA",
+      "values": [
+        {},
+        {
+          "type": "PowerLoraLoaderHeaderWidget"
+        },
+        {
+          "on": true,
+          "lora": "Wan2.2-Lightning_T2V-v1.1-A14B-4steps-lora_HIGH_fp16.safetensors",
+          "strength": 1,
+          "strengthTwo": null
+        },
+        {},
+        ""
+      ],
+      "note": "Configurable parameters for Power Lora Loader (rgthree)"
+    },
+    "130_LOW_NOISE_LORA": {
+      "node_type": "Power Lora Loader (rgthree)",
+      "node_id": 130,
+      "title": "LOW NOISE LORA",
+      "values": [
+        {},
+        {
+          "type": "PowerLoraLoaderHeaderWidget"
+        },
+        {
+          "on": true,
+          "lora": "Wan2.2-Lightning_T2V-v1.1-A14B-4steps-lora_LOW_fp16.safetensors",
+          "strength": 1,
+          "strengthTwo": null
+        },
+        {},
+        ""
+      ],
+      "note": "Configurable parameters for Power Lora Loader (rgthree)"
+    },
+    "92_WanMoeKSamplerAdvanced_92": {
+      "node_type": "WanMoeKSamplerAdvanced",
+      "node_id": 92,
+      "title": "WanMoeKSamplerAdvanced_92",
+      "values": [
+        0.875,
+        "enable",
+        2,
+        "increment",
+        10,
+        1,
+        1,
+        "deis_2m",
+        "bong_tangent",
+        5,
+        0,
+        10000,
+        "disable"
+      ],
+      "note": "Configurable parameters for WanMoeKSamplerAdvanced"
+    }
+  },
+  "_internal": {
+    "original_structure": {
+      "workflow_info": {
+        "id": "7251eb07-488d-4950-bdc8-eec296575b5b",
+        "name": "test2",
+        "description": "Auto-generated configuration template"
+      },
+      "instance_config": {
+        "gpu_name": "RTX 5090",
+        "gpu_index": 0,
+        "provisioning_script": "test2.sh",
+        "disk_size": 100,
+        "note": "Instance creation settings - used when creating new instances for this workflow"
+      },
+      "configurable_parameters": {
+        "GetNode": {
+          "52_Get_LowModel": {
+            "node_id": 52,
+            "title": "Get_LowModel",
+            "parameters": {
+              "widgets_values": [
+                "LowModel"
+              ]
+            }
+          },
+          "54_Get_HighModel": {
+            "node_id": 54,
+            "title": "Get_HighModel",
+            "parameters": {
+              "widgets_values": [
+                "HighModel"
+              ]
+            }
+          }
+        },
+        "PlaySound|pysssss": {
+          "61_PlaySound|pysssss_61": {
+            "node_id": 61,
+            "title": "PlaySound|pysssss_61",
+            "parameters": {
+              "widgets_values": [
+                "always",
+                0.5,
+                "notify.mp3"
+              ],
+              "input_widgets": {
+                "mode": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "volume": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "file": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "SaveImage": {
+          "80_SaveImage_80": {
+            "node_id": 80,
+            "title": "SaveImage_80",
+            "parameters": {
+              "widgets_values": [
+                "ComfyUI"
+              ],
+              "input_widgets": {
+                "filename_prefix": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "CRT Post-Process Suite": {
+          "83_CRT_Post-Process_Suite_83": {
+            "node_id": 83,
+            "title": "CRT Post-Process Suite_83",
+            "parameters": {
+              "widgets_values": [
+                false,
+                "4x_foolhardy_Remacri.pth",
+                0.5,
+                "bicubic",
+                "auto",
+                1,
+                false,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                false,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                false,
+                0,
+                0,
+                false,
+                2.5,
+                1.85,
+                0.015,
+                false,
+                0.015,
+                0.1,
+                0.25,
+                false,
+                0.25,
+                50,
+                0.3,
+                false,
+                "star_4",
+                0.65,
+                1.5,
+                0,
+                0.95,
+                16,
+                1,
+                false,
+                0.005,
+                2,
+                false,
+                0,
+                false,
+                0.5,
+                0.7,
+                2,
+                false,
+                "spin",
+                0.02,
+                0.5,
+                0.25,
+                0.25,
+                16,
+                false,
+                0.02,
+                1,
+                0,
+                false,
+                0,
+                ""
+              ],
+              "input_widgets": {
+                "enable_upscale": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "upscale_model_path": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "downscale_by": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "rescale_method": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "precision": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "batch_size": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "enable_levels": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "exposure": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "gamma": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "brightness": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "contrast": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "saturation": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "vibrance": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_color_wheels": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "lift_r": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "lift_g": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "lift_b": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "gamma_r": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "gamma_g": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "gamma_b": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "gain_r": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "gain_g": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "gain_b": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_temp_tint": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "temperature": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "tint": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_sharpen": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "sharpen_strength": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "sharpen_radius": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "sharpen_threshold": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_small_glow": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "small_glow_intensity": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "small_glow_radius": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "small_glow_threshold": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_large_glow": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "large_glow_intensity": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "large_glow_radius": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "large_glow_threshold": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_glare": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "glare_type": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "glare_intensity": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "glare_length": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "glare_angle": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "glare_threshold": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "glare_quality": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "glare_ray_width": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_chromatic_aberration": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "ca_strength": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "ca_edge_falloff": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_ca_hue_shift": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "ca_hue_shift_degrees": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_vignette": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "vignette_strength": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "vignette_radius": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "vignette_softness": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_radial_blur": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "radial_blur_type": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "radial_blur_strength": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "radial_blur_center_x": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "radial_blur_center_y": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "radial_blur_falloff": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "radial_blur_samples": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "enable_film_grain": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "grain_intensity": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "grain_size": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "grain_color_amount": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "enable_lens_distortion": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "barrel_distortion": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "CLIPTextEncode": {
+          "13_Positive": {
+            "node_id": 13,
+            "title": "Positive",
+            "parameters": {
+              "widgets_values": [
+                "A radiant woman with long, cascading silver hair flowing in shimmering, steampunk coils past her waist, wearing a form-fitting leather corset dress with brass cogs that clings to her curvy figure, accentuating her full breasts and toned hips, her smooth, porcelain skin glowing under warm, gaslit lanterns, adjusting a whirring mechanical arm | ducking under a burst of steam in a bustling airship workshop with a blurred background of copper pipes, spinning propellers, and smoky skies, her piercing blue eyes focused on her task, a delicate cog-shaped pendant glinting on her chest, the air thick with the scent of oil and steam, her nimble movements exuding ingenuity, the scene alive with the clank of gears, the hiss of steam, and distant airship horns, creating a candid, photorealistic steampunk video that captures her inventive focus and the vibrant, mechanical atmosphere of a retro-futuristic hangar at dusk."
+              ],
+              "input_widgets": {
+                "text": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "14_Negative": {
+            "node_id": 14,
+            "title": "Negative",
+            "parameters": {
+              "widgets_values": [
+                ""
+              ],
+              "input_widgets": {
+                "text": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "EmptyHunyuanLatentVideo": {
+          "15_EmptyHunyuanLatentVideo_15": {
+            "node_id": 15,
+            "title": "EmptyHunyuanLatentVideo_15",
+            "parameters": {
+              "widgets_values": [
+                960,
+                1536,
+                1,
+                1
+              ],
+              "input_widgets": {
+                "width": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "height": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "length": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "batch_size": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "VAELoader": {
+          "112_VAELoader_112": {
+            "node_id": 112,
+            "title": "VAELoader_112",
+            "parameters": {
+              "widgets_values": [
+                "wan_2.1_vae.safetensors"
+              ],
+              "input_widgets": {
+                "vae_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "CLIPLoader": {
+          "113_CLIPLoader_113": {
+            "node_id": 113,
+            "title": "CLIPLoader_113",
+            "parameters": {
+              "widgets_values": [
+                "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+                "wan",
+                "default"
+              ],
+              "input_widgets": {
+                "clip_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "type": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "device": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "wanBlockSwap": {
+          "115_wanBlockSwap_115": {
+            "node_id": 115,
+            "title": "wanBlockSwap_115",
+            "parameters": {
+              "widgets_values": [
+                10,
+                false,
+                false,
+                true
+              ],
+              "input_widgets": {
+                "blocks_to_swap": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "offload_img_emb": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "offload_txt_emb": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "use_non_blocking": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "117_wanBlockSwap_117": {
+            "node_id": 117,
+            "title": "wanBlockSwap_117",
+            "parameters": {
+              "widgets_values": [
+                10,
+                false,
+                false,
+                true
+              ],
+              "input_widgets": {
+                "blocks_to_swap": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "offload_img_emb": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "offload_txt_emb": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "use_non_blocking": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "PathchSageAttentionKJ": {
+          "116_PathchSageAttentionKJ_116": {
+            "node_id": 116,
+            "title": "PathchSageAttentionKJ_116",
+            "parameters": {
+              "widgets_values": [
+                "sageattn_qk_int8_pv_fp8_cuda++"
+              ],
+              "input_widgets": {
+                "sage_attention": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "125_PathchSageAttentionKJ_125": {
+            "node_id": 125,
+            "title": "PathchSageAttentionKJ_125",
+            "parameters": {
+              "widgets_values": [
+                "sageattn_qk_int8_pv_fp8_cuda++"
+              ],
+              "input_widgets": {
+                "sage_attention": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "TorchCompileModelWanVideoV2": {
+          "118_TorchCompileModelWanVideoV2_118": {
+            "node_id": 118,
+            "title": "TorchCompileModelWanVideoV2_118",
+            "parameters": {
+              "widgets_values": [
+                "inductor",
+                false,
+                "default",
+                false,
+                true,
+                64
+              ],
+              "input_widgets": {
+                "backend": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "fullgraph": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "mode": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "dynamic": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "compile_transformer_blocks_only": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "dynamo_cache_size_limit": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "129_TorchCompileModelWanVideoV2_129": {
+            "node_id": 129,
+            "title": "TorchCompileModelWanVideoV2_129",
+            "parameters": {
+              "widgets_values": [
+                "inductor",
+                false,
+                "default",
+                false,
+                true,
+                64
+              ],
+              "input_widgets": {
+                "backend": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "fullgraph": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "mode": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "dynamic": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "compile_transformer_blocks_only": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                },
+                "dynamo_cache_size_limit": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "WanVideoTeaCacheKJ": {
+          "120_WanVideoTeaCacheKJ_120": {
+            "node_id": 120,
+            "title": "WanVideoTeaCacheKJ_120",
+            "parameters": {
+              "widgets_values": [
+                0.275,
+                0.1,
+                1,
+                "offload_device",
+                "14B"
+              ],
+              "input_widgets": {
+                "rel_l1_thresh": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "start_percent": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "end_percent": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "cache_device": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "coefficients": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "128_WanVideoTeaCacheKJ_128": {
+            "node_id": 128,
+            "title": "WanVideoTeaCacheKJ_128",
+            "parameters": {
+              "widgets_values": [
+                0.275,
+                0.1,
+                1,
+                "offload_device",
+                "14B"
+              ],
+              "input_widgets": {
+                "rel_l1_thresh": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "start_percent": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "end_percent": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "cache_device": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "coefficients": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "SetNode": {
+          "121_Set_HighModel": {
+            "node_id": 121,
+            "title": "Set_HighModel",
+            "parameters": {
+              "widgets_values": [
+                "HighModel"
+              ]
+            }
+          },
+          "127_Set_LowModel": {
+            "node_id": 127,
+            "title": "Set_LowModel",
+            "parameters": {
+              "widgets_values": [
+                "LowModel"
+              ]
+            }
+          }
+        },
+        "ModelPatchTorchSettings": {
+          "122_ModelPatchTorchSettings_122": {
+            "node_id": 122,
+            "title": "ModelPatchTorchSettings_122",
+            "parameters": {
+              "widgets_values": [
+                true
+              ],
+              "input_widgets": {
+                "enable_fp16_accumulation": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "124_ModelPatchTorchSettings_124": {
+            "node_id": 124,
+            "title": "ModelPatchTorchSettings_124",
+            "parameters": {
+              "widgets_values": [
+                true
+              ],
+              "input_widgets": {
+                "enable_fp16_accumulation": {
+                  "type": "BOOLEAN",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "PatchModelPatcherOrder": {
+          "123_PatchModelPatcherOrder_123": {
+            "node_id": 123,
+            "title": "PatchModelPatcherOrder_123",
+            "parameters": {
+              "widgets_values": [
+                "weight_patch_first",
+                "auto"
+              ],
+              "input_widgets": {
+                "patch_order": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "full_load": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "126_PatchModelPatcherOrder_126": {
+            "node_id": 126,
+            "title": "PatchModelPatcherOrder_126",
+            "parameters": {
+              "widgets_values": [
+                "weight_patch_first",
+                "auto"
+              ],
+              "input_widgets": {
+                "patch_order": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "full_load": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "UNETLoader": {
+          "114_Low": {
+            "node_id": 114,
+            "title": "Low",
+            "parameters": {
+              "widgets_values": [
+                "Wan2_2-T2V-A14B-LOW_fp8_e4m3fn_scaled_KJ.safetensors",
+                "fp8_e4m3fn"
+              ],
+              "input_widgets": {
+                "unet_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "weight_dtype": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "119_High": {
+            "node_id": 119,
+            "title": "High",
+            "parameters": {
+              "widgets_values": [
+                "Wan2_2-T2V-A14B_HIGH_fp8_e4m3fn_scaled_KJ.safetensors",
+                "fp8_e4m3fn"
+              ],
+              "input_widgets": {
+                "unet_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "weight_dtype": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "FancyTimerNode": {
+          "109_Execution_Timer": {
+            "node_id": 109,
+            "title": "Execution Timer",
+            "parameters": {
+              "widgets_values": [
+                ""
+              ]
+            }
+          }
+        },
+        "Note": {
+          "106_Note_106": {
+            "node_id": 106,
+            "title": "Note_106",
+            "parameters": {
+              "widgets_values": [
+                "Enable BlockSwap if you have less than 24GB VRAM\n\nTorchCompile and SageAttention is recommended"
+              ]
+            }
+          }
+        },
+        "Power Lora Loader (rgthree)": {
+          "131_HIGH_NOISE_LORA": {
+            "node_id": 131,
+            "title": "HIGH NOISE LORA",
+            "parameters": {
+              "widgets_values": [
+                {},
+                {
+                  "type": "PowerLoraLoaderHeaderWidget"
+                },
+                {
+                  "on": true,
+                  "lora": "Wan2.2-Lightning_T2V-v1.1-A14B-4steps-lora_HIGH_fp16.safetensors",
+                  "strength": 1,
+                  "strengthTwo": null
+                },
+                {},
+                ""
+              ]
+            }
+          },
+          "130_LOW_NOISE_LORA": {
+            "node_id": 130,
+            "title": "LOW NOISE LORA",
+            "parameters": {
+              "widgets_values": [
+                {},
+                {
+                  "type": "PowerLoraLoaderHeaderWidget"
+                },
+                {
+                  "on": true,
+                  "lora": "Wan2.2-Lightning_T2V-v1.1-A14B-4steps-lora_LOW_fp16.safetensors",
+                  "strength": 1,
+                  "strengthTwo": null
+                },
+                {},
+                ""
+              ]
+            }
+          }
+        },
+        "WanMoeKSamplerAdvanced": {
+          "92_WanMoeKSamplerAdvanced_92": {
+            "node_id": 92,
+            "title": "WanMoeKSamplerAdvanced_92",
+            "parameters": {
+              "widgets_values": [
+                0.875,
+                "enable",
+                2,
+                "increment",
+                10,
+                1,
+                1,
+                "deis_2m",
+                "bong_tangent",
+                5,
+                0,
+                10000,
+                "disable"
+              ],
+              "input_widgets": {
+                "boundary": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "add_noise": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "noise_seed": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "steps": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "cfg_high_noise": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "cfg_low_noise": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "sampler_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "scheduler": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "sigma_shift": {
+                  "type": "FLOAT",
+                  "current_value": null
+                },
+                "start_at_step": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "end_at_step": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "return_with_leftover_noise": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "workflow_links": [
+        [
+          24,
+          13,
+          0,
+          20,
+          0,
+          "CONDITIONING"
+        ],
+        [
+          25,
+          14,
+          0,
+          22,
+          0,
+          "CONDITIONING"
+        ],
+        [
+          35,
+          15,
+          0,
+          33,
+          0,
+          "LATENT"
+        ],
+        [
+          2142,
+          60,
+          0,
+          83,
+          0,
+          "IMAGE"
+        ],
+        [
+          2170,
+          54,
+          0,
+          92,
+          0,
+          "MODEL"
+        ],
+        [
+          2171,
+          52,
+          0,
+          92,
+          1,
+          "MODEL"
+        ],
+        [
+          2213,
+          92,
+          0,
+          60,
+          0,
+          "LATENT"
+        ],
+        [
+          2255,
+          83,
+          0,
+          61,
+          0,
+          "*"
+        ],
+        [
+          2256,
+          83,
+          0,
+          80,
+          0,
+          "IMAGE"
+        ],
+        [
+          2258,
+          60,
+          0,
+          102,
+          0,
+          "IMAGE"
+        ],
+        [
+          2391,
+          113,
+          0,
+          110,
+          0,
+          "CLIP"
+        ],
+        [
+          2392,
+          112,
+          0,
+          111,
+          0,
+          "VAE"
+        ],
+        [
+          2393,
+          122,
+          0,
+          115,
+          0,
+          "MODEL"
+        ],
+        [
+          2394,
+          126,
+          0,
+          116,
+          0,
+          "MODEL"
+        ],
+        [
+          2395,
+          124,
+          0,
+          117,
+          0,
+          "MODEL"
+        ],
+        [
+          2396,
+          131,
+          0,
+          118,
+          0,
+          "MODEL"
+        ],
+        [
+          2397,
+          118,
+          0,
+          120,
+          0,
+          "MODEL"
+        ],
+        [
+          2398,
+          120,
+          0,
+          121,
+          0,
+          "*"
+        ],
+        [
+          2399,
+          125,
+          0,
+          122,
+          0,
+          "MODEL"
+        ],
+        [
+          2400,
+          114,
+          0,
+          123,
+          0,
+          "MODEL"
+        ],
+        [
+          2401,
+          116,
+          0,
+          124,
+          0,
+          "MODEL"
+        ],
+        [
+          2402,
+          123,
+          0,
+          125,
+          0,
+          "MODEL"
+        ],
+        [
+          2403,
+          119,
+          0,
+          126,
+          0,
+          "MODEL"
+        ],
+        [
+          2404,
+          128,
+          0,
+          127,
+          0,
+          "*"
+        ],
+        [
+          2405,
+          129,
+          0,
+          128,
+          0,
+          "MODEL"
+        ],
+        [
+          2406,
+          130,
+          0,
+          129,
+          0,
+          "MODEL"
+        ],
+        [
+          2407,
+          115,
+          0,
+          130,
+          0,
+          "MODEL"
+        ],
+        [
+          2408,
+          117,
+          0,
+          131,
+          0,
+          "MODEL"
+        ]
+      ]
+    },
+    "note": "This section is used internally for workflow reconstruction"
+  }
+}
