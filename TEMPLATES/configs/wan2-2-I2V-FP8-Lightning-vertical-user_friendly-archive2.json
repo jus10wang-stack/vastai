@@ -2,7 +2,7 @@
   "workflow_name": "wan2-2-I2V-FP8-Lightning-vertical",
   "description": "Edit the values below, then use with execute_workflow_config.py",
   "instance_config": {
-    "gpu_name": "RTX 5090",
+    "gpu_name": "RTX 4080",
     "gpu_index": 0,
     "provisioning_script": "wan2-2-I2V-FP8-Lightning-vertical.sh",
     "disk_size": 100,
@@ -145,7 +145,7 @@
       "node_id": 6,
       "title": "CLIP Text Encode (Positive Prompt)",
       "values": [
-        "sample-prompt.txt"
+        "\n\n\n\n\n\n\n\n\n\n\n"
       ],
       "note": "Configurable parameters for CLIPTextEncode"
     },
