@@ -304,7 +304,7 @@ def main():
         else:
             workflow_name = Path(args.workflow_file).stem
             script_dir = Path(__file__).parent.parent.parent.parent
-            output_path = script_dir / "TEMPLATES" / "configs" / f"{workflow_name}-{args.format}.json"
+            output_path = script_dir / "TEMPLATES" / "3_configs" / f"{workflow_name}-{args.format}.json"
         
         # Save result
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -337,7 +337,7 @@ def main():
         
         # Get the script directory (where vai is located)
         script_dir = Path(__file__).parent.parent.parent.parent
-        provisioning_path = script_dir / "TEMPLATES" / "provisioning_scripts" / provisioning_script
+        provisioning_path = script_dir / "TEMPLATES" / "2_provisioning_scripts" / provisioning_script
         
         if provisioning_path.exists():
             print(f"\n🔄 Auto-calculating disk size for {provisioning_script}...")

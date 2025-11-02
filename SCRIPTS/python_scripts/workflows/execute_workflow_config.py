@@ -88,8 +88,8 @@ def find_files_in_config(config):
 
 def validate_and_prepare_files(image_files, text_files, script_dir):
     """Validate that all required files exist and prepare them for upload."""
-    images_dir = os.path.join(script_dir, "TEMPLATES", "images")
-    prompts_dir = os.path.join(script_dir, "TEMPLATES", "prompts")
+    images_dir = os.path.join(script_dir, "TEMPLATES", "4_images")
+    prompts_dir = os.path.join(script_dir, "TEMPLATES", "5_prompts")
     
     # Validate image files
     missing_images = []
@@ -131,7 +131,7 @@ def validate_and_prepare_files(image_files, text_files, script_dir):
 
 def load_original_workflow(workflow_name, script_dir):
     """Load the original workflow template for comparison."""
-    workflow_path = os.path.join(script_dir, "TEMPLATES", "workflows", f"{workflow_name}.json")
+    workflow_path = os.path.join(script_dir, "TEMPLATES", "1_workflows", f"{workflow_name}.json")
     
     if not os.path.exists(workflow_path):
         raise FileNotFoundError(f"Original workflow not found: {workflow_path}")
@@ -252,7 +252,7 @@ def upload_images_to_instance(controller, image_files, script_dir):
     
     print(f"📸 Uploading {len(image_files)} image(s) to instance...")
     
-    images_dir = os.path.join(script_dir, "TEMPLATES", "images")
+    images_dir = os.path.join(script_dir, "TEMPLATES", "4_images")
     
     for img_file in image_files:
         local_path = os.path.join(images_dir, img_file)
@@ -284,7 +284,7 @@ def main():
         
         # Show available config files
         script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        configs_dir = os.path.join(script_dir, "TEMPLATES", "configs")
+        configs_dir = os.path.join(script_dir, "TEMPLATES", "3_configs")
         if os.path.exists(configs_dir):
             for file in os.listdir(configs_dir):
                 if file.endswith('.json'):
@@ -299,7 +299,7 @@ def main():
     script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     
     # Load configuration file
-    config_path = os.path.join(script_dir, "TEMPLATES", "configs", config_filename)
+    config_path = os.path.join(script_dir, "TEMPLATES", "3_configs", config_filename)
     
     if not os.path.exists(config_path):
         print(f"❌ Config file not found: {config_path}")

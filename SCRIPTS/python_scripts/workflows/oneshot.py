@@ -25,7 +25,7 @@ from components.comfyui_api import ComfyUIController
 
 def load_instance_config(config_filename, script_dir):
     """Load instance configuration from config file."""
-    config_path = os.path.join(script_dir, "TEMPLATES", "configs", config_filename)
+    config_path = os.path.join(script_dir, "TEMPLATES", "3_configs", config_filename)
 
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"Config file not found: {config_path}")

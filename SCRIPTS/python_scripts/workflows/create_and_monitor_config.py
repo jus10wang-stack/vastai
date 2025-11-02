@@ -24,7 +24,7 @@ from utils.ssh_utils import get_ssh_command_string
 
 def load_instance_config(config_filename, script_dir):
     """Load instance configuration from config file."""
-    config_path = os.path.join(script_dir, "TEMPLATES", "configs", config_filename)
+    config_path = os.path.join(script_dir, "TEMPLATES", "3_configs", config_filename)
 
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"Config file not found: {config_path}")
@@ -314,7 +314,7 @@ def main():
         
         # Show available config files
         script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        configs_dir = os.path.join(script_dir, "TEMPLATES", "configs")
+        configs_dir = os.path.join(script_dir, "TEMPLATES", "3_configs")
         if os.path.exists(configs_dir):
             for file in os.listdir(configs_dir):
                 if file.endswith('.json'):

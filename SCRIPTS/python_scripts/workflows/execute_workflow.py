@@ -77,7 +77,7 @@ def main():
     workflow_path = f"/workspace/ComfyUI/user/default/workflows/{workflow_filename}"
     
     # Hardcode the image base path - always use TEMPLATES/4_images/
-    image_path = os.path.join(script_dir, "TEMPLATES", "images", image_filename)
+    image_path = os.path.join(script_dir, "TEMPLATES", "4_images", image_filename)
     
     try:
         # Auto-fetch SSH info from Vast.ai API
