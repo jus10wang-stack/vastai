@@ -20,6 +20,7 @@ from components.search_offers import search_gpu
 from components.create_instance import create_instance as create_vast_instance
 from components.monitor_instance import VastInstanceMonitor
 from components.destroy_instance import destroy_instance
+from utils.ssh_utils import get_ssh_command_string
 
 def load_instance_config(config_filename, script_dir):
     """Load instance configuration from config file."""
@@ -279,11 +280,13 @@ def start_monitoring_with_failsafe(instance_id, result_data=None):
                         if str(instance.get('id')) == str(instance_id):
                             ssh_host = instance.get('ssh_host')
                             ssh_port = instance.get('ssh_port', 0)
-                            ssh_key_path = '/home/ballsac/.ssh/id_ed25519_vastai'
-                            
+
+                            # Generate portable SSH command using utility function
+                            ssh_command = get_ssh_command_string(ssh_host, ssh_port, local_port=8188, remote_port=8188)
+
                             log_message(f"")
                             log_message(f"🔑 SSH Commands for ComfyUI Access:")
-                            log_message(f"ssh -i {ssh_key_path} -p {ssh_port} root@{ssh_host} -L 8188:localhost:8188")
+                            log_message(f"{ssh_command}")
                             log_message(f"Then open: http://localhost:8188")
                             log_message(f"")
                             break

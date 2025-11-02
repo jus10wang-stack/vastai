@@ -14,8 +14,9 @@ eval "$(ssh-agent -s)"
 echo "🔐 Adding your encrypted SSH key..."
 
 # Use expect to handle the passphrase automatically
-expect << 'EOF'
-spawn ssh-add /home/ballsac/.ssh/id_ed25519_jason_desktop
+# Use environment variable SSH_KEY_PATH with fallback to ~/.ssh/id_ed25519_vastai
+expect << EOF
+spawn ssh-add \${SSH_KEY_PATH:-~/.ssh/id_ed25519_vastai}
 expect {
     "Enter passphrase for key*" {
         send "Nipple123#\r"
@@ -32,7 +33,7 @@ expect {
 EOF
 
 # Check if the key was added successfully
-if ssh-add -l | grep -q "id_ed25519_jason_desktop"; then
+if ssh-add -l | grep -q "id_ed25519"; then
     echo "✅ SSH key added successfully!"
     echo "📋 Current loaded keys:"
     ssh-add -l
@@ -42,7 +43,7 @@ if ssh-add -l | grep -q "id_ed25519_jason_desktop"; then
     echo ""
     echo "🔄 To make this permanent, add these lines to your ~/.bashrc:"
     echo "   eval \"\$(ssh-agent -s)\" >/dev/null 2>&1"
-    echo "   ssh-add /home/ballsac/.ssh/id_ed25519_jason_desktop >/dev/null 2>&1"
+    echo "   ssh-add ~/.ssh/id_ed25519_vastai >/dev/null 2>&1"
 else
     echo "❌ Failed to add SSH key. Check your passphrase."
     exit 1
