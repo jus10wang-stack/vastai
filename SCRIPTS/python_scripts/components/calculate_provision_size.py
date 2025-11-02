@@ -152,7 +152,7 @@ def update_config_files(script_name, recommended_size):
     
     # Find config directory
     base_dir = Path(__file__).parent.parent.parent.parent
-    config_dir = base_dir / "TEMPLATES" / "configs"
+    config_dir = base_dir / "TEMPLATES" / "3_configs"
     
     if not config_dir.exists():
         return []
@@ -305,8 +305,8 @@ def main():
         # Try to find in provisioning scripts directory
         base_dir = Path(__file__).parent.parent.parent.parent
         possible_paths = [
-            base_dir / "TEMPLATES" / "provisioning_scripts" / args.script_path,
-            base_dir / "TEMPLATES" / "provisioning_scripts" / "archive" / args.script_path,
+            base_dir / "TEMPLATES" / "2_provisioning_scripts" / args.script_path,
+            base_dir / "TEMPLATES" / "2_provisioning_scripts" / "archive" / args.script_path,
         ]
         
         for path in possible_paths:
@@ -317,8 +317,8 @@ def main():
             print(f"Error: Script not found: {args.script_path}")
             print("Available scripts:")
             scripts_dirs = [
-                base_dir / "TEMPLATES" / "provisioning_scripts",
-                base_dir / "TEMPLATES" / "provisioning_scripts" / "archive"
+                base_dir / "TEMPLATES" / "2_provisioning_scripts",
+                base_dir / "TEMPLATES" / "2_provisioning_scripts" / "archive"
             ]
             all_scripts = []
             for scripts_dir in scripts_dirs:
