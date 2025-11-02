@@ -18,6 +18,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Add parent directory to path to import utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.ssh_utils import detect_ssh_key
+
 class ComfyUIController:
     def __init__(self, instance_id: str, ssh_host: str, ssh_port: int, ssh_key_path: Optional[str] = None):
         """
@@ -33,23 +37,16 @@ class ComfyUIController:
         self.ssh_host = ssh_host
         self.ssh_port = ssh_port
         
-        # Auto-detect SSH key if not provided
+        # Auto-detect SSH key if not provided using shared utility
         if ssh_key_path:
             self.ssh_key_path = ssh_key_path
         else:
-            possible_keys = [
-                "~/.ssh/id_ed25519_vastai",
-                "~/.ssh/id_ed25519",
-                "~/.ssh/id_rsa"
-            ]
-            
-            for key_path in possible_keys:
-                full_path = os.path.expanduser(key_path)
-                if os.path.exists(full_path):
-                    self.ssh_key_path = full_path
-                    break
-            else:
-                raise ValueError("No SSH key found. Please provide ssh_key_path.")
+            # Use shared SSH detection utility for consistency across all commands
+            self.ssh_key_path = detect_ssh_key()
+
+            # Verify key exists (critical for API operations)
+            if not os.path.exists(self.ssh_key_path):
+                raise ValueError(f"No SSH key found at {self.ssh_key_path}. Set VAST_SSH_KEY env var or provide ssh_key_path.")
         
         self.ssh_client = None
         self.comfyui_url = "http://127.0.0.1:8188"

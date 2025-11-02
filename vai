@@ -41,6 +41,9 @@ show_help() {
     echo "  vai search [index] [gpu] [min_disk]      - Search for GPU offers"
     echo "  vai calculate <provision_script>         - Calculate provisioning download size"
     echo ""
+    echo "DEBUGGING & CONFIGURATION:"
+    echo "  vai ssh-key                              - Show detected SSH key location"
+    echo ""
     echo "HELP & GUIDES:"
     echo "  vai guide                                - Show comprehensive workflow guide"
     echo "  vai help                                 - Show this help message"
@@ -710,7 +713,12 @@ case "$COMMAND" in
         echo ""
         echo "For more help: vai help <command>"
         ;;
-    
+
+    "ssh-key")
+        # Show SSH key detection information
+        python3 "$PYTHON_SCRIPTS_DIR/utils/show_ssh_key.py"
+        ;;
+
     *)
         echo "❌ Unknown command: $COMMAND"
         echo ""

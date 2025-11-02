@@ -17,33 +17,22 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Add parent directory to path to import utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.ssh_utils import detect_ssh_key
+
 class VastInstanceMonitor:
     def __init__(self, instance_id, ssh_key_path=None):
         self.instance_id = instance_id
         self.api_key = os.getenv("VAST_API_KEY")
         self.ssh_passphrase = os.getenv("SSH_PASSPHRASE")
-        
-        # Auto-detect SSH key if not provided
+
+        # Auto-detect SSH key if not provided using shared utility
         if ssh_key_path:
             self.ssh_key_path = ssh_key_path
         else:
-            # Check for common key names
-            possible_keys = [
-                "~/.ssh/id_ed25519_vastai",  # New unencrypted Vast.ai key
-                "~/.ssh/id_ed25519_jason_desktop",  # Your encrypted key
-                "~/.ssh/id_ed25519",
-                "~/.ssh/id_rsa"
-            ]
-            
-            self.ssh_key_path = None
-            for key_path in possible_keys:
-                full_path = os.path.expanduser(key_path)
-                if os.path.exists(full_path):
-                    self.ssh_key_path = full_path
-                    break
-            
-            if not self.ssh_key_path:
-                self.ssh_key_path = os.path.expanduser("~/.ssh/id_ed25519")  # fallback
+            # Use shared SSH detection utility for consistency across all commands
+            self.ssh_key_path = detect_ssh_key()
         
         if not self.api_key:
             raise ValueError("VAST_API_KEY not found in environment variables")
