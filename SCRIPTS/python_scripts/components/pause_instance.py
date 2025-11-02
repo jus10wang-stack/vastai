@@ -14,6 +14,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Add parent directory to path to import utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.ssh_utils import get_ssh_command_string
+
 def monitor_instance_startup(instance_id, log_file=None):
     """Monitor instance startup with detailed provisioning progress like create_and_monitor."""
     import sys
@@ -91,11 +95,13 @@ def monitor_instance_startup(instance_id, log_file=None):
                         if str(instance.get('id')) == str(instance_id):
                             ssh_host = instance.get('ssh_host')
                             ssh_port = instance.get('ssh_port', 0)  # Use correct API port
-                            ssh_key_path = '/home/ballsac/.ssh/id_ed25519_vastai'  # Default key
-                            
+
+                            # Generate portable SSH command using utility function
+                            ssh_command = get_ssh_command_string(ssh_host, ssh_port, local_port=8188, remote_port=8188)
+
                             log_message(f"")
                             log_message(f"🔑 SSH Commands for ComfyUI Access:")
-                            log_message(f"ssh -i {ssh_key_path} -p {ssh_port} root@{ssh_host} -L 8188:localhost:8188")
+                            log_message(f"{ssh_command}")
                             log_message(f"Then open: http://localhost:8188")
                             log_message(f"")
                             break

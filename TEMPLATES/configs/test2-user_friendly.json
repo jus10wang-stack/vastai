@@ -8,7 +8,8 @@
     "disk_size": 100,
     "github_user": "jiso007",
     "github_branch": "main",
-    "note": "Instance creation settings - auto-detected github_user from current repo"
+    "note": "Instance creation settings - auto-detected github_user from current repo, ssh_key_path is optional (will auto-detect if not specified)",
+    "ssh_key_path": "~/.ssh/id_ed25519_vastai"
   },
   "parameters": {
     "52_Get_LowModel": {
@@ -442,7 +443,8 @@
         "disk_size": 100,
         "github_user": "jiso007",
         "github_branch": "main",
-        "note": "Instance creation settings - auto-detected github_user from current repo"
+        "note": "Instance creation settings - auto-detected github_user from current repo",
+        "ssh_key_path": "~/.ssh/id_ed25519_vastai"
       },
       "configurable_parameters": {
         "GetNode": {

@@ -165,6 +165,9 @@ def format_for_easy_editing(cleaned_workflow):
         formatted["instance_config"]["note"] = "Instance creation settings - auto-detected github_user from current repo"
     else:
         formatted["instance_config"]["note"] = "Instance creation settings - used when creating new instances for this workflow"
+
+    # NEW: Add default ssh_key_path (optional - will auto-detect if not specified)
+    formatted["instance_config"]["ssh_key_path"] = "~/.ssh/id_ed25519_vastai"
     
     # Group nodes by type for easier editing
     for node_id, node_data in cleaned_workflow["nodes"].items():
@@ -216,10 +219,13 @@ def create_user_friendly_template(formatted_workflow):
     if detected_github_user:
         template["instance_config"]["github_user"] = detected_github_user
         template["instance_config"]["github_branch"] = "main"
-        template["instance_config"]["note"] = "Instance creation settings - auto-detected github_user from current repo"
+        template["instance_config"]["note"] = "Instance creation settings - auto-detected github_user from current repo, ssh_key_path is optional (will auto-detect if not specified)"
     else:
-        template["instance_config"]["note"] = "Instance creation settings - used when creating new instances for this workflow"
-    
+        template["instance_config"]["note"] = "Instance creation settings - used when creating new instances for this workflow, ssh_key_path is optional (will auto-detect if not specified)"
+
+    # NEW: Add default ssh_key_path (optional - will auto-detect if not specified)
+    template["instance_config"]["ssh_key_path"] = "~/.ssh/id_ed25519_vastai"
+
     # Extract common parameter patterns
     for node_type, instances in formatted_workflow["configurable_parameters"].items():
         

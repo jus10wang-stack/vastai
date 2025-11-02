@@ -20,6 +20,7 @@ from components.search_offers import search_gpu
 from components.create_instance import create_instance as create_vast_instance
 from components.monitor_instance import VastInstanceMonitor
 from components.destroy_instance import destroy_instance
+from utils.ssh_utils import get_ssh_command_string
 
 def load_instance_config(config_filename, script_dir):
     """Load instance configuration from config file."""
@@ -46,10 +47,13 @@ def load_instance_config(config_filename, script_dir):
     github_user = instance_config.get("github_user", None)
     github_branch = instance_config.get("github_branch", "main")
 
-    # NEW: Return 6 values instead of 4
-    return gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch
+    # NEW: Extract optional SSH key path (will use auto-detection if not specified)
+    ssh_key_path = instance_config.get("ssh_key_path", None)
 
-def start_monitoring_with_failsafe(instance_id, result_data=None):
+    # NEW: Return 7 values instead of 6
+    return gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch, ssh_key_path
+
+def start_monitoring_with_failsafe(instance_id, result_data=None, ssh_key_path=None):
     """Start monitoring the created instance using VastInstanceMonitor with log file"""
     import datetime
     import io
@@ -117,9 +121,9 @@ def start_monitoring_with_failsafe(instance_id, result_data=None):
     
     try:
         log_message(f"🔄 Starting detailed monitoring for instance {instance_id}...")
-        
-        # Create the monitor instance
-        monitor = VastInstanceMonitor(instance_id)
+
+        # Create the monitor instance with custom SSH key path if provided
+        monitor = VastInstanceMonitor(instance_id, ssh_key_path=ssh_key_path)
         
         # Custom monitoring with SSH failure tracking and logging
         start_time = time.time()
@@ -279,11 +283,13 @@ def start_monitoring_with_failsafe(instance_id, result_data=None):
                         if str(instance.get('id')) == str(instance_id):
                             ssh_host = instance.get('ssh_host')
                             ssh_port = instance.get('ssh_port', 0)
-                            ssh_key_path = '/home/ballsac/.ssh/id_ed25519_vastai'
-                            
+
+                            # Generate portable SSH command using utility function
+                            ssh_command = get_ssh_command_string(ssh_host, ssh_port, local_port=8188, remote_port=8188)
+
                             log_message(f"")
                             log_message(f"🔑 SSH Commands for ComfyUI Access:")
-                            log_message(f"ssh -i {ssh_key_path} -p {ssh_port} root@{ssh_host} -L 8188:localhost:8188")
+                            log_message(f"{ssh_command}")
                             log_message(f"Then open: http://localhost:8188")
                             log_message(f"")
                             break
@@ -323,7 +329,7 @@ def main():
     
     try:
         # Load instance configuration from config file
-        gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch = load_instance_config(config_filename, script_dir)
+        gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch, ssh_key_path = load_instance_config(config_filename, script_dir)
         
         print("🎯 Vast.ai Instance Creator & Monitor (Config-based)")
         print(f"📋 Config: {config_filename}")
@@ -359,7 +365,7 @@ def main():
                     time.sleep(30)
                     
                     # Step 3: Start monitoring
-                    success = start_monitoring_with_failsafe(instance_id, result)
+                    success = start_monitoring_with_failsafe(instance_id, result, ssh_key_path)
                     
                     if success:
                         print("\n🎉 Instance is ready and monitoring completed successfully!")
