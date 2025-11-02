@@ -6,7 +6,9 @@
     "gpu_index": 0,
     "provisioning_script": "test2.sh",
     "disk_size": 100,
-    "note": "Instance creation settings - used when creating new instances for this workflow"
+    "github_user": "jiso007",
+    "github_branch": "main",
+    "note": "Instance creation settings - auto-detected github_user from current repo"
   },
   "parameters": {
     "52_Get_LowModel": {
@@ -438,7 +440,9 @@
         "gpu_index": 0,
         "provisioning_script": "test2.sh",
         "disk_size": 100,
-        "note": "Instance creation settings - used when creating new instances for this workflow"
+        "github_user": "jiso007",
+        "github_branch": "main",
+        "note": "Instance creation settings - auto-detected github_user from current repo"
       },
       "configurable_parameters": {
         "GetNode": {

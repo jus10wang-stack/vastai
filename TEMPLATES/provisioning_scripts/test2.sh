@@ -5,6 +5,10 @@
 source /venv/main/bin/activate
 COMFYUI_DIR=${WORKSPACE}/ComfyUI
 
+# GitHub configuration - use environment variables or defaults
+GITHUB_USER=${GITHUB_USER:-"jiso007"}
+GITHUB_BRANCH=${GITHUB_BRANCH:-"main"}
+
 # Packages are installed after nodes so we can fix them...
 
 APT_PACKAGES=(
@@ -29,7 +33,7 @@ NODES=(
 )
 
 WORKFLOWS=(
-    "https://raw.githubusercontent.com/jus10wang-stack/vastai/refs/heads/main/TEMPLATES/workflows/test2.json"
+    "https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/workflows/test2.json"
 )
 
 INPUT=(
