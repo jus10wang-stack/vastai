@@ -10,6 +10,63 @@ import json
 import argparse
 from pathlib import Path
 
+def detect_github_user():
+    """
+    Auto-detect GitHub username from the current Git repository.
+
+    Returns:
+        str: GitHub username or None if not detectable
+
+    Examples:
+        https://github.com/jus10wang-stack/vastai.git → "jus10wang-stack"
+        git@github.com:jiso007/vastai.git → "jiso007"
+    """
+    import subprocess
+    import re
+
+    try:
+        # Get the remote origin URL
+        result = subprocess.run(
+            ['git', 'config', '--get', 'remote.origin.url'],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+
+        if result.returncode != 0:
+            return None
+
+        remote_url = result.stdout.strip()
+
+        if not remote_url:
+            return None
+
+        # Parse GitHub username from different URL formats
+        # Format 1: https://github.com/USERNAME/repo.git
+        # Format 2: git@github.com:USERNAME/repo.git
+        # Format 3: https://github.com/USERNAME/repo (no .git)
+
+        # Try both HTTPS and SSH formats
+        match = re.search(r'github\.com[:/]([^/]+)/([^/]+?)(?:\.git)?$', remote_url)
+        if match:
+            username = match.group(1)
+            print(f"🔍 Detected GitHub user: {username}")
+            return username
+
+        # If no match, return None
+        print(f"⚠️  Could not detect GitHub user from: {remote_url}")
+        return None
+
+    except subprocess.TimeoutExpired:
+        print(f"⚠️  Git command timeout - could not detect GitHub user")
+        return None
+    except FileNotFoundError:
+        print(f"ℹ️  Git not found - could not detect GitHub user")
+        return None
+    except Exception as e:
+        print(f"⚠️  Error detecting GitHub user: {e}")
+        return None
+
 def clean_workflow_for_config(workflow_data):
     """
     Clean workflow by removing UI clutter and extracting only configurable parts.
@@ -86,7 +143,10 @@ def format_for_easy_editing(cleaned_workflow):
     """
     workflow_name = cleaned_workflow["workflow_info"]["name"]
     default_provisioning_script = f"{workflow_name}.sh"
-    
+
+    # NEW: Auto-detect GitHub user
+    detected_github_user = detect_github_user()
+
     formatted = {
         "workflow_info": cleaned_workflow["workflow_info"],
         "instance_config": {
@@ -94,10 +154,17 @@ def format_for_easy_editing(cleaned_workflow):
             "gpu_index": 0,
             "provisioning_script": default_provisioning_script,
             "disk_size": 100,
-            "note": "Instance creation settings - used when creating new instances for this workflow"
         },
         "configurable_parameters": {}
     }
+
+    # NEW: Add github_user and github_branch if detected
+    if detected_github_user:
+        formatted["instance_config"]["github_user"] = detected_github_user
+        formatted["instance_config"]["github_branch"] = "main"
+        formatted["instance_config"]["note"] = "Instance creation settings - auto-detected github_user from current repo"
+    else:
+        formatted["instance_config"]["note"] = "Instance creation settings - used when creating new instances for this workflow"
     
     # Group nodes by type for easier editing
     for node_id, node_data in cleaned_workflow["nodes"].items():
@@ -129,7 +196,10 @@ def create_user_friendly_template(formatted_workflow):
     """
     workflow_name = formatted_workflow["workflow_info"]["name"]
     default_provisioning_script = f"{workflow_name}.sh"
-    
+
+    # NEW: Auto-detect GitHub user
+    detected_github_user = detect_github_user()
+
     template = {
         "workflow_name": workflow_name,
         "description": "Edit the values below, then use with execute_workflow_config.py",
@@ -138,10 +208,17 @@ def create_user_friendly_template(formatted_workflow):
             "gpu_index": 0,
             "provisioning_script": default_provisioning_script,
             "disk_size": 100,
-            "note": "Instance creation settings - used when creating new instances for this workflow"
         },
         "parameters": {}
     }
+
+    # NEW: Add github_user and github_branch if detected
+    if detected_github_user:
+        template["instance_config"]["github_user"] = detected_github_user
+        template["instance_config"]["github_branch"] = "main"
+        template["instance_config"]["note"] = "Instance creation settings - auto-detected github_user from current repo"
+    else:
+        template["instance_config"]["note"] = "Instance creation settings - used when creating new instances for this workflow"
     
     # Extract common parameter patterns
     for node_type, instances in formatted_workflow["configurable_parameters"].items():

@@ -26,25 +26,30 @@ from components.comfyui_api import ComfyUIController
 def load_instance_config(config_filename, script_dir):
     """Load instance configuration from config file."""
     config_path = os.path.join(script_dir, "TEMPLATES", "configs", config_filename)
-    
+
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"Config file not found: {config_path}")
-    
+
     with open(config_path, 'r') as f:
         config = json.load(f)
-    
+
     instance_config = config.get("instance_config", {})
-    
+
     if not instance_config:
         raise ValueError("No instance_config section found in config file")
-    
+
     # Extract required values with defaults
     gpu_name = instance_config.get("gpu_name", "RTX 5090")
     gpu_index = instance_config.get("gpu_index", 0)
     provisioning_script = instance_config.get("provisioning_script", "provision_test_3.sh")
     disk_size = instance_config.get("disk_size", 100)
-    
-    return gpu_name, gpu_index, provisioning_script, disk_size
+
+    # NEW: Extract optional GitHub configuration
+    github_user = instance_config.get("github_user", None)
+    github_branch = instance_config.get("github_branch", "main")
+
+    # NEW: Return 6 values instead of 4
+    return gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch
 
 def wait_for_workflow_completion(instance_id, max_wait_minutes=30):
     """Wait for any workflow to complete by monitoring job log files.
@@ -361,7 +366,7 @@ def main():
     
     try:
         # Load instance configuration from config file
-        gpu_name, gpu_index, provisioning_script, disk_size = load_instance_config(config_filename, script_dir)
+        gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch = load_instance_config(config_filename, script_dir)
         
         print("🚀 Vast.ai Oneshot - Complete Pipeline")
         print(f"📋 Config: {config_filename}")
@@ -384,7 +389,7 @@ def main():
         # Step 2: Create the instance
         print("\n🚀 Step 2: Creating instance...")
         try:
-            result = create_vast_instance(selected_offer_id, provisioning_script, disk_size)
+            result = create_vast_instance(selected_offer_id, provisioning_script, disk_size, github_user, github_branch)
             
             if result and isinstance(result, dict):
                 instance_id = result.get('new_contract')
