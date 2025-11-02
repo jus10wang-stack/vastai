@@ -8,16 +8,12 @@ COMFYUI_DIR=${WORKSPACE}/ComfyUI
 # Packages are installed after nodes so we can fix them...
 
 APT_PACKAGES=(
-    "python3"
-    "python3-venv"
-    "python3-pip"
+    "aria2"
 )
 
 PIP_PACKAGES=(
     "triton>=3.0.0"
     "sageattention==1.0.6"
-    "huggingface_hub"
-    "hf-transfer"
 )
 
 NODES=(
@@ -25,7 +21,7 @@ NODES=(
 )
 
 WORKFLOWS=(
-    "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/workflows/wan2-2-I2V-FP8-Lightning-vertical.json"
+    "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/1_workflows/wan2-2-I2V-FP8-Lightning.json"
 )
 
 INPUT=(
@@ -43,7 +39,6 @@ UNET_MODELS=(
 LORA_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors"
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors"
-    "https://civitai.com/api/download/models/2176505?type=Model&format=SafeTensor"
 )
 
 VAE_MODELS=(
@@ -70,10 +65,9 @@ DIFFUSION_MODELS=(
 function provisioning_start() {
     provisioning_print_header
     provisioning_get_apt_packages
-    provisioning_get_pip_packages
-    provisioning_setup_hf_transfer
     provisioning_update_comfyui
     provisioning_get_nodes
+    provisioning_get_pip_packages
     workflows_dir="${COMFYUI_DIR}/user/default/workflows"
     mkdir -p "${workflows_dir}"
     provisioning_get_files \
@@ -116,11 +110,6 @@ function provisioning_get_apt_packages() {
     if [[ -n $APT_PACKAGES ]]; then
             sudo apt-get update && sudo apt-get install -y ${APT_PACKAGES[@]}
     fi
-}
-
-function provisioning_setup_hf_transfer() {
-    export HF_HUB_ENABLE_HF_TRANSFER=1
-    echo "HF Transfer enabled for faster downloads"
 }
 
 function provisioning_get_pip_packages() {
@@ -222,135 +211,16 @@ function provisioning_has_valid_civitai_token() {
 
 # Download from $1 URL to $2 file path
 function provisioning_download() {
-    local url="$1"
-    local target_dir="$2"
-    
-    # Check if this is a Hugging Face URL
-    if [[ $url =~ ^https://huggingface\.co/([^/]+)/([^/]+)/resolve/[^/]+/(.+)$ ]]; then
-        local org_or_user="${BASH_REMATCH[1]}"
-        local repo="${BASH_REMATCH[2]}"
-        local file_path="${BASH_REMATCH[3]}"
-        
-        local repo_id="${org_or_user}/${repo}"
-        local filename=$(basename "$file_path")
-        
-        echo "Using HF Transfer for faster download..."
-        echo "Repository: $repo_id"
-        echo "File: $file_path"
-        
-        # Ensure HF Transfer is enabled
-        export HF_HUB_ENABLE_HF_TRANSFER=1
-        
-        # Use Python to download via huggingface_hub with hf_transfer
-        python - <<EOF
-import os
-import sys
-import shutil
-
-try:
-    from huggingface_hub import hf_hub_download
-except ImportError:
-    print("✗ Error: huggingface_hub not installed. Please ensure pip packages are installed.", file=sys.stderr)
-    sys.exit(1)
-
-import time
-
-# Enable HF Transfer
-os.environ['HF_HUB_ENABLE_HF_TRANSFER'] = '1'
-
-# Set token if available
-hf_token = os.environ.get('HF_TOKEN', '')
-
-try:
-    # Start timing
-    start_time = time.time()
-    
-    # Download file (cached internally)
-    print(f"Downloading with HF Transfer...")
-    cached_file = hf_hub_download(
-        repo_id="$repo_id",
-        filename="$file_path",
-        token=hf_token if hf_token else None,
-        force_download=False
-    )
-    
-    # Copy to target directory
-    target_path = os.path.join("$target_dir", "$filename")
-    os.makedirs("$target_dir", exist_ok=True)
-    shutil.copy2(cached_file, target_path)
-    
-    # Calculate download time
-    elapsed = time.time() - start_time
-    file_size = os.path.getsize(target_path) / (1024*1024)  # MB
-    speed = file_size / elapsed if elapsed > 0 else 0
-    
-    print(f"✓ Downloaded to: {target_path}")
-    print(f"  Size: {file_size:.1f} MB | Time: {elapsed:.1f}s | Speed: {speed:.1f} MB/s")
-    
-except Exception as e:
-    print(f"✗ Error downloading: {e}", file=sys.stderr)
-    sys.exit(1)
-EOF
-        # Check if the download succeeded
-        if [ $? -ne 0 ]; then
-            echo "Failed to download using HF Transfer, falling back to wget..."
-            wget -qnc --content-disposition --show-progress -e dotbytes="4M" -P "$target_dir" "$url"
-        fi
-        
-    elif [[ -n $CIVITAI_TOKEN && $url =~ ^https://([a-zA-Z0-9_-]+\.)?civitai\.com(/|$|\?) ]]; then
-        # Use curl for Civitai with Authorization header
-        echo "Using curl for Civitai download with API key..."
-        
-        # Extract filename from Content-Disposition header or URL
-        local temp_header_file=$(mktemp)
-        local filename=""
-        
-        # First, get headers to determine filename
-        curl -L -I -H "Authorization: Bearer $CIVITAI_TOKEN" "$url" > "$temp_header_file" 2>/dev/null
-        
-        # Try to extract filename from Content-Disposition header
-        if grep -qi "content-disposition" "$temp_header_file"; then
-            filename=$(grep -i "content-disposition" "$temp_header_file" | sed -n 's/.*filename[*]*=["]*\([^";]*\).*/\1/p' | tr -d '\r\n')
-        fi
-        
-        # Fallback: extract from URL or use generic name
-        if [[ -z "$filename" ]]; then
-            if [[ $url =~ \?.*$ ]]; then
-                # URL has query params, extract model ID and create filename
-                model_id=$(echo "$url" | sed -n 's/.*models\/\([0-9]*\).*/\1/p')
-                filename="civitai_model_${model_id}.safetensors"
-            else
-                filename=$(basename "$url")
-            fi
-        fi
-        
-        # Clean filename (remove any invalid characters)
-        filename=$(echo "$filename" | sed 's/[^a-zA-Z0-9._-]/_/g')
-        
-        local target_path="$target_dir/$filename"
-        
-        echo "Downloading to: $target_path"
-        
-        # Download with curl
-        curl -L -H "Authorization: Bearer $CIVITAI_TOKEN" \
-             --progress-bar \
-             -o "$target_path" \
-             "$url"
-        
-        # Clean up temp file
-        rm -f "$temp_header_file"
-        
-        # Show download result
-        if [[ -f "$target_path" ]]; then
-            local file_size=$(du -h "$target_path" | cut -f1)
-            echo "✓ Downloaded: $filename ($file_size)"
-        else
-            echo "✗ Download failed for: $url"
-            return 1
-        fi
+    if [[ -n $HF_TOKEN && $1 =~ ^https://([a-zA-Z0-9_-]+\.)?huggingface\.co(/|$|\?) ]]; then
+        auth_token="$HF_TOKEN"
+    elif 
+        [[ -n $CIVITAI_TOKEN && $1 =~ ^https://([a-zA-Z0-9_-]+\.)?civitai\.com(/|$|\?) ]]; then
+        auth_token="$CIVITAI_TOKEN"
+    fi
+    if [[ -n $auth_token ]];then
+        aria2c -x 16 -s 16 --header="Authorization: Bearer $auth_token" --auto-file-renaming=false --continue=true --dir="$2" "$1"
     else
-        # Fall back to wget for other URLs
-        wget -qnc --content-disposition --show-progress -e dotbytes="4M" -P "$target_dir" "$url"
+        aria2c -x 16 -s 16 --auto-file-renaming=false --continue=true --dir="$2" "$1"
     fi
 }
 

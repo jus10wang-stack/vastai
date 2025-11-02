@@ -99,7 +99,7 @@ def validate_and_prepare_files(image_files, text_files, script_dir):
             missing_images.append(img_file)
     
     if missing_images:
-        print(f"❌ Missing image files in TEMPLATES/images/:")
+        print(f"❌ Missing image files in TEMPLATES/4_images/:")
         for img in missing_images:
             print(f"  - {img}")
         raise FileNotFoundError(f"Missing {len(missing_images)} image file(s)")
@@ -116,7 +116,7 @@ def validate_and_prepare_files(image_files, text_files, script_dir):
                 text_content[txt_file] = f.read().strip()
     
     if missing_texts:
-        print(f"❌ Missing text files in TEMPLATES/prompts/:")
+        print(f"❌ Missing text files in TEMPLATES/5_prompts/:")
         for txt in missing_texts:
             print(f"  - {txt}")
         raise FileNotFoundError(f"Missing {len(missing_texts)} text file(s)")
@@ -279,7 +279,7 @@ def main():
         print("Usage: python execute_workflow_config.py <instance_id> <config_filename>")
         print("Example: python execute_workflow_config.py 26003629 wan2-2-I2V-FP8-Lightning-user_friendly.json")
         print("")
-        print("Config files should be located in: TEMPLATES/configs/")
+        print("Config files should be located in: TEMPLATES/3_configs/")
         print("Available configs:")
         
         # Show available config files

@@ -25,7 +25,7 @@ NODES=(
 )
 
 WORKFLOWS=(
-    "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/workflows/wan2-2-I2V-FP8-Lightning.json"
+    "https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/1_workflows/wan2-2-I2V-FP8-Lightning-vertical.json"
 )
 
 INPUT=(
@@ -43,6 +43,7 @@ UNET_MODELS=(
 LORA_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors"
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors"
+    "https://civitai.com/api/download/models/2176505?type=Model&format=SafeTensor"
 )
 
 VAE_MODELS=(
@@ -297,8 +298,56 @@ EOF
         fi
         
     elif [[ -n $CIVITAI_TOKEN && $url =~ ^https://([a-zA-Z0-9_-]+\.)?civitai\.com(/|$|\?) ]]; then
-        # Fall back to wget for Civitai
-        wget --header="Authorization: Bearer $CIVITAI_TOKEN" -qnc --content-disposition --show-progress -e dotbytes="4M" -P "$target_dir" "$url"
+        # Use curl for Civitai with Authorization header
+        echo "Using curl for Civitai download with API key..."
+        
+        # Extract filename from Content-Disposition header or URL
+        local temp_header_file=$(mktemp)
+        local filename=""
+        
+        # First, get headers to determine filename
+        curl -L -I -H "Authorization: Bearer $CIVITAI_TOKEN" "$url" > "$temp_header_file" 2>/dev/null
+        
+        # Try to extract filename from Content-Disposition header
+        if grep -qi "content-disposition" "$temp_header_file"; then
+            filename=$(grep -i "content-disposition" "$temp_header_file" | sed -n 's/.*filename[*]*=["]*\([^";]*\).*/\1/p' | tr -d '\r\n')
+        fi
+        
+        # Fallback: extract from URL or use generic name
+        if [[ -z "$filename" ]]; then
+            if [[ $url =~ \?.*$ ]]; then
+                # URL has query params, extract model ID and create filename
+                model_id=$(echo "$url" | sed -n 's/.*models\/\([0-9]*\).*/\1/p')
+                filename="civitai_model_${model_id}.safetensors"
+            else
+                filename=$(basename "$url")
+            fi
+        fi
+        
+        # Clean filename (remove any invalid characters)
+        filename=$(echo "$filename" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        
+        local target_path="$target_dir/$filename"
+        
+        echo "Downloading to: $target_path"
+        
+        # Download with curl
+        curl -L -H "Authorization: Bearer $CIVITAI_TOKEN" \
+             --progress-bar \
+             -o "$target_path" \
+             "$url"
+        
+        # Clean up temp file
+        rm -f "$temp_header_file"
+        
+        # Show download result
+        if [[ -f "$target_path" ]]; then
+            local file_size=$(du -h "$target_path" | cut -f1)
+            echo "✓ Downloaded: $filename ($file_size)"
+        else
+            echo "✗ Download failed for: $url"
+            return 1
+        fi
     else
         # Fall back to wget for other URLs
         wget -qnc --content-disposition --show-progress -e dotbytes="4M" -P "$target_dir" "$url"

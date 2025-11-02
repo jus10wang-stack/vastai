@@ -7,10 +7,10 @@ This guide walks through the complete workflow from creating a ComfyUI workflow 
 ### 1️⃣ Create your workflow in ComfyUI
 - Design and test locally
 - Export as `workflow.json`
-- Place in `TEMPLATES/workflows/`
+- Place in `TEMPLATES/1_workflows/`
 
 ### 2️⃣ Create provisioning script
-- Copy template: `TEMPLATES/provisioning_scripts/template.sh`
+- Copy template: `TEMPLATES/2_provisioning_scripts/template.sh`
 - Rename to match workflow: `workflow.sh`
 - Update script with required models
 
@@ -108,12 +108,12 @@ Let's walk through a real example:
      "node_modifications": {
        "6": {
          "inputs": {
-           "text": "TEMPLATES/prompts/sample-prompt.txt"
+           "text": "TEMPLATES/5_prompts/sample-prompt.txt"
          }
        },
        "62": {
          "inputs": {
-           "image": "TEMPLATES/images/test-image.png"
+           "image": "TEMPLATES/4_images/test-image.png"
          }
        }
      }
@@ -141,7 +141,7 @@ vai oneshot i2v-workflow.json --destroy
 
 ### Batch Processing
 ```bash
-for config in TEMPLATES/configs/*-user_friendly.json; do
+for config in TEMPLATES/3_configs/*-user_friendly.json; do
   vai oneshot "$config" --destroy
 done
 ```

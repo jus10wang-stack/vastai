@@ -358,7 +358,7 @@ def main():
         print("Options:")
         print("  --destroy    Automatically destroy instance after successful extraction")
         print("")
-        print("Config files should be located in: TEMPLATES/configs/")
+        print("Config files should be located in: TEMPLATES/3_configs/")
         sys.exit(1)
     
     config_filename = sys.argv[1]

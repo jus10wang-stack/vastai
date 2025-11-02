@@ -33,11 +33,11 @@ def get_provisioning_script_url(provisioning_script, github_user=None, github_br
         "https://raw.github.com/.../script.sh"  # Returns as-is
 
         >>> get_provisioning_script_url("test2.sh", github_user="jus10wang-stack")
-        "https://raw.githubusercontent.com/jus10wang-stack/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/test2.sh"
+        "https://raw.githubusercontent.com/jus10wang-stack/vastai/refs/heads/main/TEMPLATES/2_provisioning_scripts/test2.sh"
 
         >>> os.environ["VASTAI_GITHUB_USER"] = "alice"
         >>> get_provisioning_script_url("test.sh")
-        "https://raw.githubusercontent.com/alice/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/test.sh"
+        "https://raw.githubusercontent.com/alice/vastai/refs/heads/main/TEMPLATES/2_provisioning_scripts/test.sh"
     """
     # Mode 1: Full URL provided - use it directly
     if provisioning_script.startswith("http://") or provisioning_script.startswith("https://"):
@@ -53,7 +53,7 @@ def get_provisioning_script_url(provisioning_script, github_user=None, github_br
         github_branch = "main"
 
     # Construct the full URL
-    return f"https://raw.githubusercontent.com/{github_user}/vastai/refs/heads/{github_branch}/TEMPLATES/provisioning_scripts/{provisioning_script}"
+    return f"https://raw.githubusercontent.com/{github_user}/vastai/refs/heads/{github_branch}/TEMPLATES/2_provisioning_scripts/{provisioning_script}"
 
 def create_instance(offer_id, provisioning_script="provision_test_3.sh", disk_size=100, github_user=None, github_branch="main"):
     url = f"https://console.vast.ai/api/v0/asks/{offer_id}/"
@@ -68,7 +68,7 @@ def create_instance(offer_id, provisioning_script="provision_test_3.sh", disk_si
     #     "template_hash_id": "008d76dd092d69db5fab9af1a0f017e2",
     #     "disk": 100,  # Override disk size
     #     "env": {
-    #         "PROVISIONING_SCRIPT": f"https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/{provisioning_script}"
+    #         "PROVISIONING_SCRIPT": f"https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/2_provisioning_scripts/{provisioning_script}"
     #     }
     # })
     
