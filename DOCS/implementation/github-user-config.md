@@ -11,7 +11,7 @@
 
   ```python
   "PROVISIONING_SCRIPT":
-  f"https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/{provisioning_script}"
+  f"https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/2_provisioning_scripts/{provisioning_script}"
 
   This caused issues when:
   - Users forked the repo to their own GitHub accounts (e.g., jus10wang-stack/vastai)
@@ -72,11 +72,11 @@
           "https://raw.github.com/.../script.sh"  # Returns as-is
           
           >>> get_provisioning_script_url("test2.sh", github_user="jus10wang-stack")
-          "https://raw.githubusercontent.com/jus10wang-stack/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/test2.sh"
+          "https://raw.githubusercontent.com/jus10wang-stack/vastai/refs/heads/main/TEMPLATES/2_provisioning_scripts/test2.sh"
           
           >>> os.environ["VASTAI_GITHUB_USER"] = "alice"
           >>> get_provisioning_script_url("test.sh")
-          "https://raw.githubusercontent.com/alice/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/test.sh"
+          "https://raw.githubusercontent.com/alice/vastai/refs/heads/main/TEMPLATES/2_provisioning_scripts/test.sh"
       """
       # Mode 1: Full URL provided - use it directly
       if provisioning_script.startswith("http://") or provisioning_script.startswith("https://"):
@@ -112,7 +112,7 @@
 
   # BEFORE:
   "PROVISIONING_SCRIPT":
-  f"https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/{provisioning_script}"
+  f"https://raw.githubusercontent.com/jiso007/vastai/refs/heads/main/TEMPLATES/2_provisioning_scripts/{provisioning_script}"
 
   # AFTER:
   "PROVISIONING_SCRIPT": get_provisioning_script_url(provisioning_script, github_user, github_branch)
@@ -373,7 +373,7 @@
 
   {
     "instance_config": {
-      "provisioning_script": "https://raw.githubusercontent.com/bob/vastai/dev/TEMPLATES/provisioning_scripts/test2.sh"
+      "provisioning_script": "https://raw.githubusercontent.com/bob/vastai/dev/TEMPLATES/2_provisioning_scripts/test2.sh"
     }
   }
 
@@ -397,7 +397,7 @@
   vai workflow analyze test2.json
 
   # Check generated config
-  cat TEMPLATES/configs/test2-user_friendly.json | grep github_user
+  cat TEMPLATES/3_configs/test2-user_friendly.json | grep github_user
 
   # Should show:
   # "github_user": "YOUR_USERNAME",
@@ -409,7 +409,7 @@
 
   # Check instance logs on Vast.ai
   # Provisioning script URL should be:
-  # https://raw.githubusercontent.com/YOUR_USERNAME/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/test2.sh
+  # https://raw.githubusercontent.com/YOUR_USERNAME/vastai/refs/heads/main/TEMPLATES/2_provisioning_scripts/test2.sh
 
   Test 3: Backwards Compatibility
 
@@ -436,7 +436,7 @@
   Cause: github_user pointing to wrong repo
 
   Solution:
-  1. Check config: cat TEMPLATES/configs/your-config.json | grep github_user
+  1. Check config: cat TEMPLATES/3_configs/your-config.json | grep github_user
   2. Update to correct username
   3. Or use full URL in provisioning_script
 
@@ -445,10 +445,10 @@
   Cause: Provisioning script doesn't exist at the constructed URL
 
   Solution:
-  1. Verify script exists in your repo: ls TEMPLATES/provisioning_scripts/
+  1. Verify script exists in your repo: ls TEMPLATES/2_provisioning_scripts/
   2. Check GitHub repo has the file committed
   3. Verify URL manually: curl -I 
-  https://raw.githubusercontent.com/YOUR_USER/vastai/refs/heads/main/TEMPLATES/provisioning_scripts/test2.sh
+  https://raw.githubusercontent.com/YOUR_USER/vastai/refs/heads/main/TEMPLATES/2_provisioning_scripts/test2.sh
 
   Migration Guide
 
@@ -487,7 +487,7 @@
   - SCRIPTS/python_scripts/workflows/create_and_monitor_config.py
   - SCRIPTS/python_scripts/workflows/oneshot.py
   - SCRIPTS/python_scripts/workflows/analyze_workflow_generic.py
-  - TEMPLATES/configs/*.json (all config files)
+  - TEMPLATES/3_configs/*.json (all config files)
 
   Version History
 

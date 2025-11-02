@@ -12,7 +12,7 @@ A streamlined command-line interface for managing Vast.ai GPU instances and exec
 ./vai cm
 
 # Execute a workflow on an existing instance
-./vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/images/test-image.png "cat in space"
+./vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/4_images/test-image.png "cat in space"
 ```
 
 ## Commands
@@ -51,7 +51,7 @@ Executes a ComfyUI workflow on an existing instance.
 **Examples:**
 ```bash
 ./vai exec 26003629 wan2-2-I2V-FP8-Lightning.json ./image.png "beautiful landscape"
-./vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/images/test-image.png "cinematic cat video"
+./vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/4_images/test-image.png "cinematic cat video"
 ```
 
 **Parameters:**
@@ -78,7 +78,7 @@ This will:
 ### Step 2: Execute Workflow
 ```bash
 # Use the instance ID from step 1
-./vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/images/test-image.png "a majestic cat in space, cinematic lighting"
+./vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/4_images/test-image.png "a majestic cat in space, cinematic lighting"
 ```
 
 This will:
@@ -103,7 +103,7 @@ This will:
 ## Available Resources
 
 ### Provisioning Scripts
-Located in `TEMPLATES/provisioning_scripts/`:
+Located in `TEMPLATES/2_provisioning_scripts/`:
 - `provision_test_1.sh` - Basic setup
 - `provision_test_2.sh` - Enhanced setup 
 - `provision_test_3.sh` - Full setup (default)
@@ -113,7 +113,7 @@ Located on instance at `/workspace/ComfyUI/user/default/workflows/`:
 - `wan2-2-I2V-FP8-Lightning.json` - Image-to-video generation
 
 ### Template Images
-Located in `TEMPLATES/images/`:
+Located in `TEMPLATES/4_images/`:
 - `test-image.png` - Sample input image
 
 ## Prerequisites
@@ -142,7 +142,7 @@ Located in `TEMPLATES/images/`:
 ./vai cm
 
 # When instance is ready (use the instance ID shown)
-./vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/images/test-image.png "epic mountain landscape"
+./vai exec 26003629 wan2-2-I2V-FP8-Lightning.json TEMPLATES/4_images/test-image.png "epic mountain landscape"
 ```
 
 ### Advanced Usage

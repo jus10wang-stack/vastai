@@ -309,7 +309,7 @@ def main():
         print("Usage: python create_and_monitor_config.py <config_filename>")
         print("Example: python create_and_monitor_config.py wan2-2-I2V-FP8-Lightning-user_friendly.json")
         print("")
-        print("Config files should be located in: TEMPLATES/configs/")
+        print("Config files should be located in: TEMPLATES/3_configs/")
         print("Available configs:")
         
         # Show available config files

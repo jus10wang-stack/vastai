@@ -33,7 +33,7 @@ NODES=(
 )
 
 WORKFLOWS=(
-    "https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/workflows/test2.json"
+    "https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/1_workflows/test2.json"
 )
 
 INPUT=(

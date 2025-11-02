@@ -60,7 +60,7 @@ def main():
         print("Available workflows:")
         print("  - wan2-2-I2V-FP8-Lightning.json")
         print("")
-        print("Image files should be located in: TEMPLATES/images/")
+        print("Image files should be located in: TEMPLATES/4_images/")
         print("Available images:")
         print("  - test-image.png")
         sys.exit(1)
@@ -76,7 +76,7 @@ def main():
     # Hardcode the workflow base path - this is always the same
     workflow_path = f"/workspace/ComfyUI/user/default/workflows/{workflow_filename}"
     
-    # Hardcode the image base path - always use TEMPLATES/images/
+    # Hardcode the image base path - always use TEMPLATES/4_images/
     image_path = os.path.join(script_dir, "TEMPLATES", "images", image_filename)
     
     try:
