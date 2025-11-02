@@ -30,8 +30,12 @@ def main():
         print(f"VAST_SSH_KEY: Not set (using auto-detection)")
 
     print("=" * 60)
-    print("\n💡 To use a different key, set:")
-    print('   export VAST_SSH_KEY="~/.ssh/your_key"')
+    print("\n💡 To use a different key:")
+    print("   Option 1 (Recommended): Edit your config file")
+    print('      "ssh_key_path": "~/.ssh/your_key"')
+    print("")
+    print("   Option 2: Set environment variable")
+    print('      export VAST_SSH_KEY="~/.ssh/your_key"')
 
     # Show key details if it exists
     if os.path.exists(ssh_key):

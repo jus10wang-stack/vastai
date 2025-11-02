@@ -48,8 +48,11 @@ def load_instance_config(config_filename, script_dir):
     github_user = instance_config.get("github_user", None)
     github_branch = instance_config.get("github_branch", "main")
 
-    # NEW: Return 6 values instead of 4
-    return gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch
+    # NEW: Extract optional SSH key path (will use auto-detection if not specified)
+    ssh_key_path = instance_config.get("ssh_key_path", None)
+
+    # NEW: Return 7 values instead of 6
+    return gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch, ssh_key_path
 
 def wait_for_workflow_completion(instance_id, max_wait_minutes=30):
     """Wait for any workflow to complete by monitoring job log files.
@@ -183,7 +186,7 @@ def launch_background_monitoring_and_extraction(instance_id, script_dir, auto_de
         print(f"❌ Failed to start background monitoring: {e}")
         print(f"💡 You can manually monitor with: vai cancel {instance_id} --list")
 
-def start_monitoring_with_failsafe(instance_id, result_data=None):
+def start_monitoring_with_failsafe(instance_id, result_data=None, ssh_key_path=None):
     """Start monitoring the created instance using VastInstanceMonitor with full provisioning"""
     import datetime
     import io
@@ -207,9 +210,9 @@ def start_monitoring_with_failsafe(instance_id, result_data=None):
     
     try:
         print(f"🔄 Starting detailed monitoring for instance {instance_id}...")
-        
-        # Create the monitor instance
-        monitor = VastInstanceMonitor(instance_id)
+
+        # Create the monitor instance with custom SSH key path if provided
+        monitor = VastInstanceMonitor(instance_id, ssh_key_path=ssh_key_path)
         
         # Custom monitoring with SSH failure tracking
         start_time = time.time()
@@ -366,7 +369,7 @@ def main():
     
     try:
         # Load instance configuration from config file
-        gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch = load_instance_config(config_filename, script_dir)
+        gpu_name, gpu_index, provisioning_script, disk_size, github_user, github_branch, ssh_key_path = load_instance_config(config_filename, script_dir)
         
         print("🚀 Vast.ai Oneshot - Complete Pipeline")
         print(f"📋 Config: {config_filename}")
@@ -401,7 +404,7 @@ def main():
                     
                     # Step 3: Monitor until fully ready (same as vai create)
                     print("\n🔍 Step 3: Full monitoring until ComfyUI ready...")
-                    ready = start_monitoring_with_failsafe(instance_id, result)
+                    ready = start_monitoring_with_failsafe(instance_id, result, ssh_key_path)
                     
                     if ready:
                         print("\n⚡ Step 4: Executing workflow immediately...")
