@@ -390,8 +390,33 @@ def main():
                         except Exception as e:
                             print(f"⚠️ Auto-extract error: {e}")
                             print(f"💡 Instance is ready - you can manually run: vai extract {instance_id} content")
-                        
-                        print(f"\n💡 Ready to execute workflow:")
+
+                        # Display SSH commands for easy access
+                        try:
+                            import requests
+                            api_key = os.getenv("VAST_API_KEY")
+                            if api_key:
+                                headers = {"Authorization": f"Bearer {api_key}"}
+                                response = requests.get("https://console.vast.ai/api/v0/instances/", headers=headers)
+                                instances = response.json().get('instances', [])
+
+                                for instance in instances:
+                                    if str(instance.get('id')) == str(instance_id):
+                                        ssh_host = instance.get('ssh_host')
+                                        ssh_port = instance.get('ssh_port', 0)
+
+                                        # Generate portable SSH command using utility function
+                                        ssh_command = get_ssh_command_string(ssh_host, ssh_port, local_port=8188, remote_port=8188)
+
+                                        print(f"\n🔑 SSH Commands for ComfyUI Access:")
+                                        print(f"{ssh_command}")
+                                        print(f"Then open: http://localhost:8188")
+                                        print("")
+                                        break
+                        except Exception as e:
+                            pass  # Don't fail if we can't display SSH info
+
+                        print(f"💡 Ready to execute workflow:")
                         print(f"vai exec {instance_id} {config_filename}")
                     else:
                         print(f"\n⚠️ Monitoring completed with issues.")
