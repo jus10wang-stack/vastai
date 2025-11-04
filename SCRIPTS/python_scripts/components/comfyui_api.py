@@ -39,13 +39,14 @@ class ComfyUIController:
         
         # Auto-detect SSH key if not provided using shared utility
         if ssh_key_path:
-            self.ssh_key_path = ssh_key_path
+            # Expand ~ in path if provided from config
+            self.ssh_key_path = os.path.expanduser(ssh_key_path)
         else:
             # Use shared SSH detection utility for consistency across all commands
             self.ssh_key_path = detect_ssh_key()
 
-            # Verify key exists (critical for API operations)
-            if not os.path.exists(self.ssh_key_path):
+        # Verify key exists (critical for API operations)
+        if not os.path.exists(self.ssh_key_path):
                 raise ValueError(f"No SSH key found at {self.ssh_key_path}. Set VAST_SSH_KEY env var or provide ssh_key_path.")
         
         self.ssh_client = None

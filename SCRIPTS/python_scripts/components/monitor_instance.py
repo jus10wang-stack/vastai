@@ -29,7 +29,8 @@ class VastInstanceMonitor:
 
         # Auto-detect SSH key if not provided using shared utility
         if ssh_key_path:
-            self.ssh_key_path = ssh_key_path
+            # Expand ~ in path if provided from config
+            self.ssh_key_path = os.path.expanduser(ssh_key_path)
         else:
             # Use shared SSH detection utility for consistency across all commands
             self.ssh_key_path = detect_ssh_key()
