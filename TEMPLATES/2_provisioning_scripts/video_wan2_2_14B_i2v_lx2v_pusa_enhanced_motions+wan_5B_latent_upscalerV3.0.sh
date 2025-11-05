@@ -33,7 +33,7 @@ NODES=(
 )
 
 WORKFLOWS=(
-"https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/1_workflows/video_wan2_2_14B_i2v_lx2v_pusa_enhanced_motions + wan_5B_latent_upscalerV3.0.json"
+"https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/1_workflows/video_wan2_2_14B_i2v_lx2v_pusa_enhanced_motions+wan_5B_latent_upscalerV3.0.json"
 )
 
 INPUT=(
