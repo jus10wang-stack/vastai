@@ -6,10 +6,10 @@
     "gpu_index": 0,
     "provisioning_script": "test2.sh",
     "disk_size": 100,
-    "github_user": "jiso007",
+    "github_user": "jus10wang-stack",
     "github_branch": "main",
     "note": "Instance creation settings - auto-detected github_user from current repo, ssh_key_path is optional (will auto-detect if not specified)",
-    "ssh_key_path": "~/.ssh/id_ed25519_vastai"
+    "ssh_key_path": "~/.ssh/id_ed25519"
   },
   "parameters": {
     "52_Get_LowModel": {
@@ -441,7 +441,7 @@
         "gpu_index": 0,
         "provisioning_script": "test2.sh",
         "disk_size": 100,
-        "github_user": "jiso007",
+        "github_user": "jus10wang-stack",
         "github_branch": "main",
         "note": "Instance creation settings - auto-detected github_user from current repo",
         "ssh_key_path": "~/.ssh/id_ed25519_vastai"

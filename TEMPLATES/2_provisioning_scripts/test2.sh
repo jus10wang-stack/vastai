@@ -30,6 +30,8 @@ NODES=(
     "https://github.com/chrisgoringe/cg-use-everywhere"
     "https://github.com/orssorbit/ComfyUI-wanBlockswap"
     "https://github.com/PGCRT/CRT-Nodes"
+    "https://github.com/kijai/ComfyUI-KJNodes"
+    "https://github.com/stduhpf/ComfyUI-WanMoeKSampler"
 )
 
 WORKFLOWS=(
