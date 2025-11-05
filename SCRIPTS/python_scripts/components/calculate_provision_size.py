@@ -20,9 +20,24 @@ def extract_urls_from_script(script_path):
     
     # Extract URLs from array declarations
     arrays = [
-        'WORKFLOWS', 'INPUT', 'CHECKPOINT_MODELS', 'CLIP_MODELS', 
-        'UNET_MODELS', 'LORA_MODELS', 'VAE_MODELS', 'ESRGAN_MODELS',
-        'CONTROLNET_MODELS', 'TEXT_ENCODER_MODELS', 'DIFFUSION_MODELS', 'NODES'
+        # Basic arrays
+        'WORKFLOWS', 'INPUT', 'NODES',
+        # Core models
+        'CHECKPOINT_MODELS', 'UNET_MODELS', 'LORA_MODELS', 'VAE_MODELS',
+        'CLIP_MODELS', 'TEXT_ENCODER_MODELS', 'DIFFUSION_MODELS',
+        # Transformer models
+        'TRANSFORMERS_MODELS',
+        # Upscaling
+        'UPSCALE_MODELS', 'ESRGAN_MODELS',
+        # Conditioning & control
+        'CONTROLNET_MODELS', 'STYLE_MODELS', 'CLIP_VISION_MODELS', 'IPADAPTER_MODELS',
+        # Identity & face
+        'INSTANTID_MODELS', 'PHOTOMAKER_MODELS', 'PULID_MODELS', 'INSIGHTFACE_MODELS',
+        # Video & animation
+        'ANIMATEDIFF_MODELS',
+        # Specialized
+        'EMBEDDINGS', 'HYPERNETWORK_MODELS', 'GLIGEN_MODELS', 'SAMS_MODELS',
+        'REACTOR_MODELS', 'MMDET_MODELS'
     ]
     
     for array_name in arrays:
