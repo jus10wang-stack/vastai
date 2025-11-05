@@ -329,7 +329,7 @@ expect eof
                 echo "DETAILS: Downloading models ($DOWNLOAD_COUNT completed)"
                 
                 # Show current download progress (live updates)
-                current_download=$(grep "Downloading with HF Transfer\\|Progress:" "$ONSTART_LOG" 2>/dev/null | tail -n 3)
+                current_download=$(grep "Downloading with HF Transfer\\|Progress:\\|\\[Initializing\\|\\[Waiting\\|\\[Monitor" "$ONSTART_LOG" 2>/dev/null | tail -n 4)
                 if [ -n "$current_download" ]; then
                     echo "CURRENT_DOWNLOAD:"
                     echo "$current_download" | sed 's/^/  /'

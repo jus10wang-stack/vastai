@@ -433,6 +433,7 @@ def monitor_download_progress(repo_id, start_time):
 
     last_size = 0
     no_change_count = 0
+    first_check = True
 
     while not progress_stop.is_set():
         try:
@@ -454,13 +455,27 @@ def monitor_download_progress(repo_id, start_time):
                         print(f"  Progress: {size_mb:.1f} MB | Time: {elapsed:.1f}s | Speed: {speed:.1f} MB/s", flush=True)
                         last_size = current_size
                         no_change_count = 0
+                        first_check = False
                     else:
                         no_change_count += 1
                         # If no change for 30 seconds, stop monitoring (download might be done)
                         if no_change_count > 30:
                             break
-        except Exception:
-            pass
+                else:
+                    # blob_dir doesn't exist yet
+                    if first_check:
+                        print(f"  [Waiting for download to start...]", flush=True)
+                        first_check = False
+            else:
+                # repo_cache doesn't exist yet
+                if first_check:
+                    print(f"  [Initializing cache...]", flush=True)
+                    first_check = False
+        except Exception as e:
+            # Show first error for debugging
+            if first_check:
+                print(f"  [Monitor error: {e}]", flush=True)
+                first_check = False
 
         time.sleep(1)  # Check every second
 
