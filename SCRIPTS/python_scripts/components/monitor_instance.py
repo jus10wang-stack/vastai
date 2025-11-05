@@ -302,19 +302,35 @@ expect eof
             # Function to get elapsed time since provisioning started
             get_elapsed_time() {
                 if [ -f "$ONSTART_LOG" ]; then
-                    # Get the creation/modification time of the log file (when provisioning started)
-                    log_time=$(stat -c %Y "$ONSTART_LOG" 2>/dev/null || stat -f %m "$ONSTART_LOG" 2>/dev/null)
-                    current_time=$(date +%s)
-                    elapsed=$((current_time - log_time))
-
-                    # Convert to human readable format
-                    minutes=$((elapsed / 60))
-                    seconds=$((elapsed % 60))
-
-                    if [ $minutes -gt 0 ]; then
-                        echo "ELAPSED_TIME: ${minutes}m ${seconds}s"
+                    # Try to extract timestamp from first line of log (most accurate)
+                    first_line=$(head -n 1 "$ONSTART_LOG" 2>/dev/null)
+                    if [[ "$first_line" =~ ([0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]][0-9]{2}:[0-9]{2}:[0-9]{2}) ]]; then
+                        # Extract timestamp and convert to epoch
+                        log_timestamp="${BASH_REMATCH[1]}"
+                        log_time=$(date -d "$log_timestamp" +%s 2>/dev/null || date -j -f "%Y-%m-%d %H:%M:%S" "$log_timestamp" +%s 2>/dev/null)
                     else
-                        echo "ELAPSED_TIME: ${seconds}s"
+                        # Fallback: use file birth time (creation time) on systems that support it
+                        # Try birth time first (more accurate for file creation)
+                        log_time=$(stat -c %W "$ONSTART_LOG" 2>/dev/null)
+                        # If birth time is 0 or unavailable, use access time as approximation
+                        if [ "$log_time" = "0" ] || [ -z "$log_time" ]; then
+                            log_time=$(stat -c %X "$ONSTART_LOG" 2>/dev/null || stat -f %B "$ONSTART_LOG" 2>/dev/null)
+                        fi
+                    fi
+
+                    if [ -n "$log_time" ] && [ "$log_time" != "0" ]; then
+                        current_time=$(date +%s)
+                        elapsed=$((current_time - log_time))
+
+                        # Convert to human readable format
+                        minutes=$((elapsed / 60))
+                        seconds=$((elapsed % 60))
+
+                        if [ $minutes -gt 0 ]; then
+                            echo "ELAPSED_TIME: ${minutes}m ${seconds}s"
+                        else
+                            echo "ELAPSED_TIME: ${seconds}s"
+                        fi
                     fi
                 fi
             }
