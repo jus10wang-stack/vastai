@@ -1,0 +1,500 @@
+{
+  "workflow_name": "test3",
+  "description": "Edit the values below, then use with execute_workflow_config.py",
+  "instance_config": {
+    "gpu_name": "RTX 5090",
+    "gpu_index": 0,
+    "provisioning_script": "test3.sh",
+    "disk_size": 150,
+    "github_user": "jiso007",
+    "github_branch": "main",
+    "note": "Instance creation settings - auto-detected github_user from current repo, ssh_key_path is optional (will auto-detect if not specified)",
+    "ssh_key_path": "~/.ssh/id_ed25519_vastai"
+  },
+  "parameters": {
+    "140_Video_Combine_\ud83c\udfa5\ud83c\udd65\ud83c\udd57\ud83c\udd62_HD_OUTPUT_32fps": {
+      "node_type": "VHS_VideoCombine",
+      "node_id": 140,
+      "title": "Video Combine \ud83c\udfa5\ud83c\udd65\ud83c\udd57\ud83c\udd62 HD OUTPUT 32fps",
+      "values": {
+        "frame_rate": 32,
+        "loop_count": 0,
+        "filename_prefix": "Wan 2.2 5B Upscales\\Denoise 0.2_32fps ",
+        "format": "video/h264-mp4",
+        "pix_fmt": "yuv420p",
+        "crf": 17,
+        "save_metadata": true,
+        "trim_to_audio": false,
+        "pingpong": false,
+        "save_output": true,
+        "videopreview": {
+          "hidden": false,
+          "paused": true,
+          "params": {
+            "filename": "Denoise 0.2_32fps _00040.mp4",
+            "subfolder": "Wan 2.2 5B Upscales",
+            "type": "output",
+            "format": "video/h264-mp4",
+            "frame_rate": 32,
+            "workflow": "Denoise 0.2_32fps _00040.png",
+            "fullpath": "C:\\Users\\uscha\\Documents\\AI-Playground\\media\\Wan 2.2 5B Upscales\\Denoise 0.2_32fps _00040.mp4"
+          },
+          "muted": true
+        }
+      },
+      "note": "Configurable parameters for VHS_VideoCombine"
+    },
+    "63_Video_Combine_\ud83c\udfa5\ud83c\udd65\ud83c\udd57\ud83c\udd62_SD_OUTPUT_16fps": {
+      "node_type": "VHS_VideoCombine",
+      "node_id": 63,
+      "title": "Video Combine \ud83c\udfa5\ud83c\udd65\ud83c\udd57\ud83c\udd62 SD OUTPUT 16fps",
+      "values": {
+        "frame_rate": 16,
+        "loop_count": 0,
+        "filename_prefix": "Wan 2.2\\Lightx2v\\%date:yyyy-MM-dd%\\Lightx2v hns 5.6 - lns 1.5 ms 8 6 st ln end 4 - hn start 4",
+        "format": "video/h264-mp4",
+        "pix_fmt": "yuv420p",
+        "crf": 19,
+        "save_metadata": true,
+        "trim_to_audio": false,
+        "pingpong": false,
+        "save_output": true,
+        "videopreview": {
+          "hidden": false,
+          "paused": true,
+          "params": {
+            "filename": "Lightx2v hns 5.6 - lns 1.5 ms 8 6 st ln end 4 - hn start 4_00005.mp4",
+            "subfolder": "Wan 2.2\\Lightx2v\\2025-09-07",
+            "type": "output",
+            "format": "video/h264-mp4",
+            "frame_rate": 16,
+            "workflow": "Lightx2v hns 5.6 - lns 1.5 ms 8 6 st ln end 4 - hn start 4_00005.png",
+            "fullpath": "C:\\Users\\uscha\\Documents\\AI-Playground\\media\\Wan 2.2\\Lightx2v\\2025-09-07\\Lightx2v hns 5.6 - lns 1.5 ms 8 6 st ln end 4 - hn start 4_00005.mp4"
+          }
+        }
+      },
+      "note": "Configurable parameters for VHS_VideoCombine"
+    },
+    "7_CLIP_Text_Encode_(Negative_Prompt)": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 7,
+      "title": "CLIP Text Encode (Negative Prompt)",
+      "values": [
+        "\u8272\u8c03\u8273\u4e3d\uff0c\u8fc7\u66dd\uff0c\u9759\u6001\uff0c\u7ec6\u8282\u6a21\u7cca\u4e0d\u6e05\uff0c\u5b57\u5e55\uff0c\u98ce\u683c\uff0c\u4f5c\u54c1\uff0c\u753b\u4f5c\uff0c\u753b\u9762\uff0c\u9759\u6b62\uff0c\u6574\u4f53\u53d1\u7070\uff0c\u6700\u5dee\u8d28\u91cf\uff0c\u4f4e\u8d28\u91cf\uff0cJPEG\u538b\u7f29\u6b8b\u7559\uff0c\u4e11\u964b\u7684\uff0c\u6b8b\u7f3a\u7684\uff0c\u591a\u4f59\u7684\u624b\u6307\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u624b\u90e8\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u8138\u90e8\uff0c\u7578\u5f62\u7684\uff0c\u6bc1\u5bb9\u7684\uff0c\u5f62\u6001\u7578\u5f62\u7684\u80a2\u4f53\uff0c\u624b\u6307\u878d\u5408\uff0c\u9759\u6b62\u4e0d\u52a8\u7684\u753b\u9762\uff0c\u6742\u4e71\u7684\u80cc\u666f\uff0c\u4e09\u6761\u817f\uff0c\u80cc\u666f\u4eba\u5f88\u591a\uff0c\u5012\u7740\u8d70"
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "6_CLIP_Text_Encode_(Positive_Prompt)": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 6,
+      "title": "CLIP Text Encode (Positive Prompt)",
+      "values": [
+        "Futuristic fashion runway show in a sleek venue with dramatic blue lighting; models wearing luminescent iridescent jumpsuits in vibrant pink, teal, and purple that pulse and shift colors, all wearing white VR headsets, walking confidently down a glossy illuminated catwalk, photoreal 4K texture, high fashion cinematography.\n\nBeat 1 (0-1.5s): Lead model in glowing pink jumpsuit strides forward with perfect runway posture, her outfit shifting between pink and magenta hues, fabric flowing naturally, VR headset gleaming under stage lights.\n\nBeat 2 (1.5-3s): Camera dollies alongside with smooth tracking as she reaches the runway's end, turns with fluid motion, while second model in teal jumpsuit enters frame from behind, audience silhouettes visible on both sides.\n\nBeat 3 (3-4.2s): Models synchronize their walks back up the runway, jumpsuits continue color-shifting effects, subtle fog drifts across the glossy floor creating atmospheric reflections, professional runway lighting.\n\nBeat 4 (4.2-5s): Camera pulls back to reveal the full catwalk with multiple models, their glowing outfits creating a cascade of shifting light patterns, audience remains attentive in darkened seating.\n\nCamera work: Smooth dolly tracking, professional fashion show cinematography, low-angle hero shots, no crash-zoom, temporal consistency.\n\nphotorealistic 4K details, natural color, cinematic lighting, crisp textures, clean edges, no watercolor, fine surface detail, high microcontrast, realistic shading, accurate tone mapping, smooth gradients, realistic highlights, detailed fabric and hair, sharp but natural.\n"
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "147_Note_147": {
+      "node_type": "Note",
+      "node_id": 147,
+      "title": "Note_147",
+      "values": [
+        "Always append the following text after your positive prompt:\n\nphotorealistic 4K details, natural color, cinematic lighting, crisp textures, clean edges, no watercolor, temporal consistency, fine surface detail, high microcontrast, realistic shading, accurate tone mapping, smooth gradients, realistic highlights, detailed fabric and hair, sharp but natural."
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "163_Note_163": {
+      "node_type": "Note",
+      "node_id": 163,
+      "title": "Note_163",
+      "values": [
+        "Open this Subgraph to Load your own Loras."
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "165_Note_165": {
+      "node_type": "Note",
+      "node_id": 165,
+      "title": "Note_165",
+      "values": [
+        "-Choose your Wan2.2 ti2v 5B  and VAE Models\n\n-Set the steps of your choice (min 8).\n\n-Set the upscaler model of your choice."
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "164_Note_164": {
+      "node_type": "Note",
+      "node_id": 164,
+      "title": "Note_164",
+      "values": [
+        "-Choose your Models here High and Low Noise, Clip  and VAE\n-Set the length of your choice.\n-Set the resolution in megapixels:\nFor Low VRAM : 0.21\nFor High VRAM: 0.50"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "52_LoadImage_52": {
+      "node_type": "LoadImage",
+      "node_id": 52,
+      "title": "LoadImage_52",
+      "values": [
+        "flux_krea_00165_.png",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "161_3dcf1f10-4323-4580-99e7-43d6385311cd_161": {
+      "node_type": "3dcf1f10-4323-4580-99e7-43d6385311cd",
+      "node_id": 161,
+      "title": "3dcf1f10-4323-4580-99e7-43d6385311cd_161",
+      "values": [
+        "Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
+        "Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+      ],
+      "note": "Configurable parameters for 3dcf1f10-4323-4580-99e7-43d6385311cd"
+    },
+    "141_80e281cc-9227-4353-aa29-26f4809243bb_141": {
+      "node_type": "80e281cc-9227-4353-aa29-26f4809243bb",
+      "node_id": 141,
+      "title": "80e281cc-9227-4353-aa29-26f4809243bb_141",
+      "values": [
+        "Wan2.2-TI2V-5B-Q8_0.gguf",
+        8
+      ],
+      "note": "Configurable parameters for 80e281cc-9227-4353-aa29-26f4809243bb"
+    }
+  },
+  "_internal": {
+    "original_structure": {
+      "workflow_info": {
+        "id": "e9390b97-0bcc-4dbc-95d8-c13275f0bfd8",
+        "name": "test3",
+        "description": "Auto-generated configuration template"
+      },
+      "instance_config": {
+        "gpu_name": "RTX 5090",
+        "gpu_index": 0,
+        "provisioning_script": "test3.sh",
+        "disk_size": 100,
+        "github_user": "jiso007",
+        "github_branch": "main",
+        "note": "Instance creation settings - auto-detected github_user from current repo",
+        "ssh_key_path": "~/.ssh/id_ed25519_vastai"
+      },
+      "configurable_parameters": {
+        "VHS_VideoCombine": {
+          "140_Video_Combine_\ud83c\udfa5\ud83c\udd65\ud83c\udd57\ud83c\udd62_HD_OUTPUT_32fps": {
+            "node_id": 140,
+            "title": "Video Combine \ud83c\udfa5\ud83c\udd65\ud83c\udd57\ud83c\udd62 HD OUTPUT 32fps",
+            "parameters": {
+              "widgets_values": {
+                "frame_rate": 32,
+                "loop_count": 0,
+                "filename_prefix": "Wan 2.2 5B Upscales\\Denoise 0.2_32fps ",
+                "format": "video/h264-mp4",
+                "pix_fmt": "yuv420p",
+                "crf": 17,
+                "save_metadata": true,
+                "trim_to_audio": false,
+                "pingpong": false,
+                "save_output": true,
+                "videopreview": {
+                  "hidden": false,
+                  "paused": true,
+                  "params": {
+                    "filename": "Denoise 0.2_32fps _00040.mp4",
+                    "subfolder": "Wan 2.2 5B Upscales",
+                    "type": "output",
+                    "format": "video/h264-mp4",
+                    "frame_rate": 32,
+                    "workflow": "Denoise 0.2_32fps _00040.png",
+                    "fullpath": "C:\\Users\\uscha\\Documents\\AI-Playground\\media\\Wan 2.2 5B Upscales\\Denoise 0.2_32fps _00040.mp4"
+                  },
+                  "muted": true
+                }
+              }
+            }
+          },
+          "63_Video_Combine_\ud83c\udfa5\ud83c\udd65\ud83c\udd57\ud83c\udd62_SD_OUTPUT_16fps": {
+            "node_id": 63,
+            "title": "Video Combine \ud83c\udfa5\ud83c\udd65\ud83c\udd57\ud83c\udd62 SD OUTPUT 16fps",
+            "parameters": {
+              "widgets_values": {
+                "frame_rate": 16,
+                "loop_count": 0,
+                "filename_prefix": "Wan 2.2\\Lightx2v\\%date:yyyy-MM-dd%\\Lightx2v hns 5.6 - lns 1.5 ms 8 6 st ln end 4 - hn start 4",
+                "format": "video/h264-mp4",
+                "pix_fmt": "yuv420p",
+                "crf": 19,
+                "save_metadata": true,
+                "trim_to_audio": false,
+                "pingpong": false,
+                "save_output": true,
+                "videopreview": {
+                  "hidden": false,
+                  "paused": true,
+                  "params": {
+                    "filename": "Lightx2v hns 5.6 - lns 1.5 ms 8 6 st ln end 4 - hn start 4_00005.mp4",
+                    "subfolder": "Wan 2.2\\Lightx2v\\2025-09-07",
+                    "type": "output",
+                    "format": "video/h264-mp4",
+                    "frame_rate": 16,
+                    "workflow": "Lightx2v hns 5.6 - lns 1.5 ms 8 6 st ln end 4 - hn start 4_00005.png",
+                    "fullpath": "C:\\Users\\uscha\\Documents\\AI-Playground\\media\\Wan 2.2\\Lightx2v\\2025-09-07\\Lightx2v hns 5.6 - lns 1.5 ms 8 6 st ln end 4 - hn start 4_00005.mp4"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "CLIPTextEncode": {
+          "7_CLIP_Text_Encode_(Negative_Prompt)": {
+            "node_id": 7,
+            "title": "CLIP Text Encode (Negative Prompt)",
+            "parameters": {
+              "widgets_values": [
+                "\u8272\u8c03\u8273\u4e3d\uff0c\u8fc7\u66dd\uff0c\u9759\u6001\uff0c\u7ec6\u8282\u6a21\u7cca\u4e0d\u6e05\uff0c\u5b57\u5e55\uff0c\u98ce\u683c\uff0c\u4f5c\u54c1\uff0c\u753b\u4f5c\uff0c\u753b\u9762\uff0c\u9759\u6b62\uff0c\u6574\u4f53\u53d1\u7070\uff0c\u6700\u5dee\u8d28\u91cf\uff0c\u4f4e\u8d28\u91cf\uff0cJPEG\u538b\u7f29\u6b8b\u7559\uff0c\u4e11\u964b\u7684\uff0c\u6b8b\u7f3a\u7684\uff0c\u591a\u4f59\u7684\u624b\u6307\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u624b\u90e8\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u8138\u90e8\uff0c\u7578\u5f62\u7684\uff0c\u6bc1\u5bb9\u7684\uff0c\u5f62\u6001\u7578\u5f62\u7684\u80a2\u4f53\uff0c\u624b\u6307\u878d\u5408\uff0c\u9759\u6b62\u4e0d\u52a8\u7684\u753b\u9762\uff0c\u6742\u4e71\u7684\u80cc\u666f\uff0c\u4e09\u6761\u817f\uff0c\u80cc\u666f\u4eba\u5f88\u591a\uff0c\u5012\u7740\u8d70"
+              ],
+              "input_widgets": {
+                "text": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "6_CLIP_Text_Encode_(Positive_Prompt)": {
+            "node_id": 6,
+            "title": "CLIP Text Encode (Positive Prompt)",
+            "parameters": {
+              "widgets_values": [
+                "Futuristic fashion runway show in a sleek venue with dramatic blue lighting; models wearing luminescent iridescent jumpsuits in vibrant pink, teal, and purple that pulse and shift colors, all wearing white VR headsets, walking confidently down a glossy illuminated catwalk, photoreal 4K texture, high fashion cinematography.\n\nBeat 1 (0-1.5s): Lead model in glowing pink jumpsuit strides forward with perfect runway posture, her outfit shifting between pink and magenta hues, fabric flowing naturally, VR headset gleaming under stage lights.\n\nBeat 2 (1.5-3s): Camera dollies alongside with smooth tracking as she reaches the runway's end, turns with fluid motion, while second model in teal jumpsuit enters frame from behind, audience silhouettes visible on both sides.\n\nBeat 3 (3-4.2s): Models synchronize their walks back up the runway, jumpsuits continue color-shifting effects, subtle fog drifts across the glossy floor creating atmospheric reflections, professional runway lighting.\n\nBeat 4 (4.2-5s): Camera pulls back to reveal the full catwalk with multiple models, their glowing outfits creating a cascade of shifting light patterns, audience remains attentive in darkened seating.\n\nCamera work: Smooth dolly tracking, professional fashion show cinematography, low-angle hero shots, no crash-zoom, temporal consistency.\n\nphotorealistic 4K details, natural color, cinematic lighting, crisp textures, clean edges, no watercolor, fine surface detail, high microcontrast, realistic shading, accurate tone mapping, smooth gradients, realistic highlights, detailed fabric and hair, sharp but natural.\n"
+              ],
+              "input_widgets": {
+                "text": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "Note": {
+          "147_Note_147": {
+            "node_id": 147,
+            "title": "Note_147",
+            "parameters": {
+              "widgets_values": [
+                "Always append the following text after your positive prompt:\n\nphotorealistic 4K details, natural color, cinematic lighting, crisp textures, clean edges, no watercolor, temporal consistency, fine surface detail, high microcontrast, realistic shading, accurate tone mapping, smooth gradients, realistic highlights, detailed fabric and hair, sharp but natural."
+              ]
+            }
+          },
+          "163_Note_163": {
+            "node_id": 163,
+            "title": "Note_163",
+            "parameters": {
+              "widgets_values": [
+                "Open this Subgraph to Load your own Loras."
+              ]
+            }
+          },
+          "165_Note_165": {
+            "node_id": 165,
+            "title": "Note_165",
+            "parameters": {
+              "widgets_values": [
+                "-Choose your Wan2.2 ti2v 5B  and VAE Models\n\n-Set the steps of your choice (min 8).\n\n-Set the upscaler model of your choice."
+              ]
+            }
+          },
+          "164_Note_164": {
+            "node_id": 164,
+            "title": "Note_164",
+            "parameters": {
+              "widgets_values": [
+                "-Choose your Models here High and Low Noise, Clip  and VAE\n-Set the length of your choice.\n-Set the resolution in megapixels:\nFor Low VRAM : 0.21\nFor High VRAM: 0.50"
+              ]
+            }
+          }
+        },
+        "LoadImage": {
+          "52_LoadImage_52": {
+            "node_id": 52,
+            "title": "LoadImage_52",
+            "parameters": {
+              "widgets_values": [
+                "flux_krea_00165_.png",
+                "image"
+              ],
+              "input_widgets": {
+                "image": {
+                  "type": "COMBO",
+                  "current_value": null
+                },
+                "upload": {
+                  "type": "IMAGEUPLOAD",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "3dcf1f10-4323-4580-99e7-43d6385311cd": {
+          "161_3dcf1f10-4323-4580-99e7-43d6385311cd_161": {
+            "node_id": 161,
+            "title": "3dcf1f10-4323-4580-99e7-43d6385311cd_161",
+            "parameters": {
+              "widgets_values": [
+                "Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf",
+                "Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+              ],
+              "input_widgets": {
+                "length": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "megapixels": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "80e281cc-9227-4353-aa29-26f4809243bb": {
+          "141_80e281cc-9227-4353-aa29-26f4809243bb_141": {
+            "node_id": 141,
+            "title": "80e281cc-9227-4353-aa29-26f4809243bb_141",
+            "parameters": {
+              "widgets_values": [
+                "Wan2.2-TI2V-5B-Q8_0.gguf",
+                8
+              ],
+              "input_widgets": {
+                "steps": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "model_name": {
+                  "type": "COMBO",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "workflow_links": [
+        [
+          240,
+          6,
+          0,
+          141,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          241,
+          141,
+          0,
+          140,
+          0,
+          "IMAGE"
+        ],
+        [
+          307,
+          6,
+          0,
+          161,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          308,
+          7,
+          0,
+          161,
+          3,
+          "CONDITIONING"
+        ],
+        [
+          309,
+          52,
+          0,
+          161,
+          4,
+          "IMAGE"
+        ],
+        [
+          310,
+          161,
+          0,
+          6,
+          0,
+          "CLIP"
+        ],
+        [
+          311,
+          161,
+          0,
+          7,
+          0,
+          "CLIP"
+        ],
+        [
+          312,
+          161,
+          0,
+          141,
+          0,
+          "CLIP"
+        ],
+        [
+          313,
+          161,
+          1,
+          63,
+          0,
+          "IMAGE"
+        ],
+        [
+          314,
+          161,
+          1,
+          141,
+          1,
+          "IMAGE"
+        ],
+        [
+          321,
+          162,
+          0,
+          161,
+          0,
+          "MODEL"
+        ],
+        [
+          322,
+          162,
+          1,
+          161,
+          1,
+          "MODEL"
+        ],
+        [
+          323,
+          161,
+          2,
+          162,
+          0,
+          "MODEL"
+        ],
+        [
+          324,
+          161,
+          3,
+          162,
+          1,
+          "MODEL"
+        ]
+      ]
+    },
+    "note": "This section is used internally for workflow reconstruction"
+  }
+}
