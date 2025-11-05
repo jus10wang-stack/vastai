@@ -290,61 +290,92 @@ expect eof
             get_storage_info() {
                 echo "STORAGE_INFO:"
                 df -h / | tail -n 1 | awk '{
-                    used=$3; 
-                    total=$2; 
-                    avail=$4; 
-                    percent=$5; 
+                    used=$3;
+                    total=$2;
+                    avail=$4;
+                    percent=$5;
                     gsub(/%/, "", percent);
                     print "Used: " used " / " total " (" percent "% used, " avail " available)"
                 }'
+            }
+
+            # Function to get elapsed time since provisioning started
+            get_elapsed_time() {
+                if [ -f "$ONSTART_LOG" ]; then
+                    # Get the creation/modification time of the log file (when provisioning started)
+                    log_time=$(stat -c %Y "$ONSTART_LOG" 2>/dev/null || stat -f %m "$ONSTART_LOG" 2>/dev/null)
+                    current_time=$(date +%s)
+                    elapsed=$((current_time - log_time))
+
+                    # Convert to human readable format
+                    minutes=$((elapsed / 60))
+                    seconds=$((elapsed % 60))
+
+                    if [ $minutes -gt 0 ]; then
+                        echo "ELAPSED_TIME: ${minutes}m ${seconds}s"
+                    else
+                        echo "ELAPSED_TIME: ${seconds}s"
+                    fi
+                fi
             }
             
             # Check for final ready state
             if grep -q "To see the GUI go to:" "$ONSTART_LOG" 2>/dev/null; then
                 echo "STATUS: READY"
                 echo "DETAILS: ComfyUI is fully loaded and running"
+                get_elapsed_time
                 get_tunnel_urls
                 get_storage_info
                 echo "LAST_LOG:"
                 tail -n 3 "$ONSTART_LOG" | sed 's/^/  /'
                 exit 0
             fi
-            
+
             # Check if ComfyUI is starting after provisioning
             if grep -q "Provisioning complete!" "$ONSTART_LOG" 2>/dev/null; then
                 echo "STATUS: STARTING_APP"
                 echo "DETAILS: Provisioning complete, ComfyUI starting up"
+                get_elapsed_time
                 get_tunnel_urls
                 get_storage_info
                 echo "LAST_LOG:"
                 tail -n 5 "$ONSTART_LOG" | sed 's/^/  /'
                 exit 0
             fi
-            
+
             # Check if models are downloading
             DOWNLOAD_COUNT=$(grep -c "✓ Downloaded to:" "$ONSTART_LOG" 2>/dev/null)
             TOTAL_DOWNLOADS=$(grep -c "Downloading.*model(s) to" "$ONSTART_LOG" 2>/dev/null)
             if grep -q "Downloading.*model(s) to" "$ONSTART_LOG" 2>/dev/null; then
                 echo "STATUS: DOWNLOADING"
                 echo "DETAILS: Downloading models ($DOWNLOAD_COUNT completed)"
-                
-                # Show current download progress (live updates)
-                current_download=$(grep "Downloading with HF Transfer\\|Progress:\\|\\[Initializing\\|\\[Waiting\\|\\[Monitor" "$ONSTART_LOG" 2>/dev/null | tail -n 4)
+                get_elapsed_time
+
+                # Show current download progress - prioritize actual progress lines with MB/s
+                current_download=$(grep "Progress:\\|Speed:" "$ONSTART_LOG" 2>/dev/null | tail -n 2)
                 if [ -n "$current_download" ]; then
                     echo "CURRENT_DOWNLOAD:"
                     echo "$current_download" | sed 's/^/  /'
+                else
+                    # Fallback to debug messages if no progress yet
+                    current_download=$(grep "Downloading with HF Transfer\\|\\[Initializing\\|\\[Waiting\\|\\[Monitor" "$ONSTART_LOG" 2>/dev/null | tail -n 2)
+                    if [ -n "$current_download" ]; then
+                        echo "CURRENT_DOWNLOAD:"
+                        echo "$current_download" | sed 's/^/  /'
+                    fi
                 fi
-                
+
                 get_storage_info
                 echo "LAST_LOG:"
                 tail -n 3 "$ONSTART_LOG" | sed 's/^/  /'
                 exit 0
             fi
-            
+
             # Check if provisioning is in progress
             if [ -f "/.provisioning" ] || grep -q "Provisioning container" "$ONSTART_LOG" 2>/dev/null; then
                 echo "STATUS: PROVISIONING"
                 echo "DETAILS: Running initial provisioning script"
+                get_elapsed_time
                 get_storage_info
                 echo "LAST_LOG:"
                 tail -n 5 "$ONSTART_LOG" 2>/dev/null | sed 's/^/  /'
@@ -386,16 +417,19 @@ expect eof
             'last_log': [],
             'current_download': '',
             'error_details': [],
-            'storage_info': ''
+            'storage_info': '',
+            'elapsed_time': ''
         }
-        
+
         current_section = None
-        
+
         for line in lines:
             if line.startswith('STATUS:'):
                 status_data['status'] = line.replace('STATUS: ', '')
             elif line.startswith('DETAILS:'):
                 status_data['details'] = line.replace('DETAILS: ', '')
+            elif line.startswith('ELAPSED_TIME:'):
+                status_data['elapsed_time'] = line.replace('ELAPSED_TIME: ', '')
             elif line.startswith('TUNNEL_URLS:'):
                 current_section = 'urls'
             elif line.startswith('LAST_LOG:'):
@@ -444,14 +478,18 @@ expect eof
         
         print(f"\n{emoji} Instance {self.instance_id} - Status: {status}")
         print(f"   {status_data['details']}")
-        
+
+        # Show elapsed time if available
+        if status_data['elapsed_time']:
+            print(f"   ⏱️  Elapsed: {status_data['elapsed_time']}")
+
         # Show download progress if downloading
         if status == 'DOWNLOADING' and status_data['current_download']:
             print(f"\n📦 Current Download Progress:")
             for line in status_data['current_download'].strip().split('\n'):
                 if line.strip():
                     print(f"   {line}")
-        
+
         # Show storage info if available
         if status_data['storage_info']:
             print(f"\n💾 Storage: {status_data['storage_info']}")
