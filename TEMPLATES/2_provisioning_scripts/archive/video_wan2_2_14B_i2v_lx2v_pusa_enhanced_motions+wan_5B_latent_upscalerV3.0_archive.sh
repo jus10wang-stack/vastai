@@ -71,9 +71,6 @@ TEXT_ENCODER_MODELS=(
 )
 
 DIFFUSION_MODELS=(
-    "https://huggingface.co/QuantStack/Wan2.2-TI2V-5B-GGUF/resolve/main/Wan2.2-TI2V-5B-Q8_0.gguf"
-    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
-    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
 )
 
 # ============================================================
@@ -81,6 +78,9 @@ DIFFUSION_MODELS=(
 # ============================================================
 
 TRANSFORMERS_MODELS=(
+    "https://huggingface.co/QuantStack/Wan2.2-TI2V-5B-GGUF/resolve/main/Wan2.2-TI2V-5B-Q8_0.gguf"
+    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
 )
 
 # ============================================================
@@ -89,7 +89,7 @@ TRANSFORMERS_MODELS=(
 
 UPSCALE_MODELS=(
     # Generic upscalers - use this instead of ESRGAN_MODELS for newer models
-     "https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth"
+    "https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth"
 )
 
 ESRGAN_MODELS=(
@@ -413,8 +413,6 @@ function provisioning_download() {
 import os
 import sys
 import shutil
-import threading
-import glob
 
 try:
     from huggingface_hub import hf_hub_download
@@ -430,101 +428,24 @@ os.environ['HF_HUB_ENABLE_HF_TRANSFER'] = '1'
 # Set token if available
 hf_token = os.environ.get('HF_TOKEN', '')
 
-# Progress monitoring variables
-progress_stop = threading.Event()
-progress_thread = None
-
-def monitor_download_progress(repo_id, start_time):
-    """Monitor HF cache directory for download progress."""
-    # Convert repo_id to cache directory name
-    cache_dir = os.path.expanduser("~/.cache/huggingface/hub")
-    repo_cache = os.path.join(cache_dir, f"models--{repo_id.replace('/', '--')}")
-
-    last_size = 0
-    no_change_count = 0
-    first_check = True
-
-    while not progress_stop.is_set():
-        try:
-            # Find all blobs and incomplete files in cache
-            if os.path.exists(repo_cache):
-                blob_dir = os.path.join(repo_cache, "blobs")
-                if os.path.exists(blob_dir):
-                    # Get total size of all files in blobs directory
-                    current_size = 0
-                    for file in os.listdir(blob_dir):
-                        file_path = os.path.join(blob_dir, file)
-                        if os.path.isfile(file_path):
-                            current_size += os.path.getsize(file_path)
-
-                    if current_size > last_size:
-                        elapsed = time.time() - start_time
-                        size_mb = current_size / (1024 * 1024)
-                        speed = size_mb / elapsed if elapsed > 0 else 0
-                        print(f"  Progress: {size_mb:.1f} MB | Time: {elapsed:.1f}s | Speed: {speed:.1f} MB/s", flush=True)
-                        last_size = current_size
-                        no_change_count = 0
-                        first_check = False
-                    else:
-                        no_change_count += 1
-                        # If no change for 30 seconds, stop monitoring (download might be done)
-                        if no_change_count > 30:
-                            break
-                else:
-                    # blob_dir doesn't exist yet
-                    if first_check:
-                        print(f"  [Waiting for download to start...]", flush=True)
-                        first_check = False
-            else:
-                # repo_cache doesn't exist yet
-                if first_check:
-                    print(f"  [Initializing cache...]", flush=True)
-                    first_check = False
-        except Exception as e:
-            # Show first error for debugging
-            if first_check:
-                print(f"  [Monitor error: {e}]", flush=True)
-                first_check = False
-
-        time.sleep(1)  # Check every second
-
 try:
     # Start timing
     start_time = time.time()
-
-    # Start progress monitoring thread
-    progress_thread = threading.Thread(target=monitor_download_progress, args=("$repo_id", start_time), daemon=True)
-    progress_thread.start()
-
+    
     # Download file (cached internally)
-    print(f"Downloading with HF Transfer (live progress)...")
+    print(f"Downloading with HF Transfer...")
     cached_file = hf_hub_download(
         repo_id="$repo_id",
         filename="$file_path",
         token=hf_token if hf_token else None,
         force_download=False
     )
-
-    # Stop progress monitoring
-    progress_stop.set()
-    if progress_thread:
-        progress_thread.join(timeout=2)
     
     # Copy to target directory
     target_path = os.path.join("$target_dir", "$filename")
     os.makedirs("$target_dir", exist_ok=True)
     shutil.copy2(cached_file, target_path)
-
-    # Clear HF cache immediately to minimize disk usage
-    # cached_file might be a symlink to blob, resolve real path
-    real_cache_path = os.path.realpath(cached_file)
-    try:
-        if os.path.exists(real_cache_path):
-            os.remove(real_cache_path)
-            print(f"  ✓ Cleared cache to save space")
-    except Exception as cache_err:
-        pass  # Don't fail provisioning if cache cleanup fails
-
+    
     # Calculate download time
     elapsed = time.time() - start_time
     file_size = os.path.getsize(target_path) / (1024*1024)  # MB
