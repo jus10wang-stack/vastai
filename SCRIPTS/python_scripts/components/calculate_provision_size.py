@@ -20,9 +20,24 @@ def extract_urls_from_script(script_path):
     
     # Extract URLs from array declarations
     arrays = [
-        'WORKFLOWS', 'INPUT', 'CHECKPOINT_MODELS', 'CLIP_MODELS', 
-        'UNET_MODELS', 'LORA_MODELS', 'VAE_MODELS', 'ESRGAN_MODELS',
-        'CONTROLNET_MODELS', 'TEXT_ENCODER_MODELS', 'DIFFUSION_MODELS', 'NODES'
+        # Basic arrays
+        'WORKFLOWS', 'INPUT', 'NODES',
+        # Core models
+        'CHECKPOINT_MODELS', 'UNET_MODELS', 'LORA_MODELS', 'VAE_MODELS',
+        'CLIP_MODELS', 'TEXT_ENCODER_MODELS', 'DIFFUSION_MODELS',
+        # Transformer models
+        'TRANSFORMERS_MODELS',
+        # Upscaling
+        'UPSCALE_MODELS', 'ESRGAN_MODELS',
+        # Conditioning & control
+        'CONTROLNET_MODELS', 'STYLE_MODELS', 'CLIP_VISION_MODELS', 'IPADAPTER_MODELS',
+        # Identity & face
+        'INSTANTID_MODELS', 'PHOTOMAKER_MODELS', 'PULID_MODELS', 'INSIGHTFACE_MODELS',
+        # Video & animation
+        'ANIMATEDIFF_MODELS',
+        # Specialized
+        'EMBEDDINGS', 'HYPERNETWORK_MODELS', 'GLIGEN_MODELS', 'SAMS_MODELS',
+        'REACTOR_MODELS', 'MMDET_MODELS'
     ]
     
     for array_name in arrays:
@@ -62,9 +77,45 @@ def extract_urls_from_script(script_path):
     
     return unique_urls
 
+def get_github_repo_size(url):
+    """Get GitHub repository size using GitHub API."""
+    try:
+        # Parse GitHub repo URL
+        # Format: https://github.com/owner/repo or https://github.com/owner/repo.git
+        import re
+        match = re.match(r'https://github\.com/([^/]+)/([^/\.]+)', url)
+        if not match:
+            return None
+
+        owner = match.group(1)
+        repo = match.group(2)
+
+        # Use GitHub API to get repo info
+        api_url = f"https://api.github.com/repos/{owner}/{repo}"
+        response = requests.get(api_url, timeout=10)
+
+        if response.status_code == 200:
+            data = response.json()
+            # GitHub API returns size in KB
+            size_kb = data.get('size', 0)
+            # Convert to bytes
+            return size_kb * 1024
+        else:
+            return None
+    except Exception as e:
+        return None
+
 def get_file_size_from_url(url):
     """Get file size from URL using HEAD request."""
     try:
+        # Check if this is a GitHub repository URL (not a raw file)
+        if 'github.com' in url and '/raw/' not in url and '/releases/' not in url:
+            # This is a repo URL, use GitHub API
+            repo_size = get_github_repo_size(url)
+            if repo_size:
+                return repo_size
+            # Fall through to HEAD request if API fails
+
         # Handle GitHub raw URLs
         if 'github.com' in url and '/raw/' in url:
             response = requests.head(url, allow_redirects=True, timeout=10)
