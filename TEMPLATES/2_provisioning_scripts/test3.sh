@@ -30,6 +30,8 @@ NODES=(
     "https://github.com/Fannovel16/ComfyUI-Frame-Interpolation"
     "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite"
     "https://github.com/yolain/ComfyUI-Easy-Use" 
+    "https://github.com/kijai/ComfyUI-KJNodes"
+    "https://github.com/rgthree/rgthree-comfy"
 )
 
 WORKFLOWS=(
