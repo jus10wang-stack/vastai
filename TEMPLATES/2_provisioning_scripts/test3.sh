@@ -71,6 +71,9 @@ TEXT_ENCODER_MODELS=(
 )
 
 DIFFUSION_MODELS=(
+    "https://huggingface.co/QuantStack/Wan2.2-TI2V-5B-GGUF/resolve/main/Wan2.2-TI2V-5B-Q8_0.gguf"
+    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
 )
 
 # ============================================================
@@ -78,9 +81,6 @@ DIFFUSION_MODELS=(
 # ============================================================
 
 TRANSFORMERS_MODELS=(
-    "https://huggingface.co/QuantStack/Wan2.2-TI2V-5B-GGUF/resolve/main/Wan2.2-TI2V-5B-Q8_0.gguf"
-    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
-    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
 )
 
 # ============================================================
@@ -298,7 +298,7 @@ function provisioning_get_pip_packages() {
 
 # We must be at release tag v0.3.34 or greater for fp8 support
 provisioning_update_comfyui() {
-    required_tag="v0.3.34"
+    required_tag="v0.3.68"
     cd ${COMFYUI_DIR}
     git fetch --all --tags
     current_commit=$(git rev-parse HEAD)
