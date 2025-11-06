@@ -289,7 +289,7 @@ function provisioning_get_pip_packages() {
 
 # We must be at release tag v0.3.34 or greater for fp8 support
 provisioning_update_comfyui() {
-    required_tag="v0.3.34"
+    required_tag="v0.3.68"
     cd ${COMFYUI_DIR}
     git fetch --all --tags
     current_commit=$(git rev-parse HEAD)

@@ -33,7 +33,7 @@ NODES=(
 )
 
 WORKFLOWS=(
-"https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/1_workflows/video_wan2_2_14B_i2v_lx2v_pusa_enhanced_motions + wan_5B_latent_upscalerV3.0.json"
+"https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/1_workflows/test3.json"
 )
 
 INPUT=(
@@ -81,7 +81,6 @@ DIFFUSION_MODELS=(
 # ============================================================
 
 TRANSFORMERS_MODELS=(
-
 )
 
 # ============================================================
@@ -299,7 +298,7 @@ function provisioning_get_pip_packages() {
 
 # We must be at release tag v0.3.34 or greater for fp8 support
 provisioning_update_comfyui() {
-    required_tag="v0.3.34"
+    required_tag="v0.3.68"
     cd ${COMFYUI_DIR}
     git fetch --all --tags
     current_commit=$(git rev-parse HEAD)
