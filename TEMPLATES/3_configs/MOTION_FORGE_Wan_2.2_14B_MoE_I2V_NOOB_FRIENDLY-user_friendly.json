@@ -47,7 +47,7 @@
       "node_id": 21,
       "title": "LIGHTX2V LOW NOISE",
       "values": [
-        "wan_loras\\lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
+        "lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
         2
       ],
       "note": "Configurable parameters for LoraLoaderModelOnly"
@@ -57,7 +57,7 @@
       "node_id": 20,
       "title": "LIGHTX2V HIGH NOISE",
       "values": [
-        "wan_loras\\lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
+        "lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
         5.6
       ],
       "note": "Configurable parameters for LoraLoaderModelOnly"
@@ -310,7 +310,7 @@
             "title": "LIGHTX2V LOW NOISE",
             "parameters": {
               "widgets_values": [
-                "wan_loras\\lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
+                "lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
                 2
               ]
             }
@@ -320,7 +320,7 @@
             "title": "LIGHTX2V HIGH NOISE",
             "parameters": {
               "widgets_values": [
-                "wan_loras\\lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
+                "lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
                 5.6
               ]
             }

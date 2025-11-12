@@ -32,6 +32,7 @@ NODES=(
     "https://github.com/stduhpf/ComfyUI-WanMoeKSampler"
     "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite"
     "https://github.com/yolain/ComfyUI-Easy-Use"
+    "https://github.com/rgthree/rgthree-comfy"
 
 )
 
