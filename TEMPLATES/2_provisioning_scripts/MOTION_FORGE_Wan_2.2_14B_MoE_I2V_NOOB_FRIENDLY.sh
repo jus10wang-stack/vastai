@@ -28,14 +28,15 @@ NODES=(
     "https://github.com/calcuis/gguf"
     "https://github.com/LAOGOU-666/Comfyui-Memory_Cleanup"
     "https://github.com/Fannovel16/ComfyUI-Frame-Interpolation"
+    "https://github.com/stduhpf/ComfyUI--WanImageToVideoTiled"
+    "https://github.com/stduhpf/ComfyUI-WanMoeKSampler"
     "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite"
-    "https://github.com/yolain/ComfyUI-Easy-Use" 
-    "https://github.com/kijai/ComfyUI-KJNodes"
-    "https://github.com/rgthree/rgthree-comfy"
+    "https://github.com/yolain/ComfyUI-Easy-Use"
+
 )
 
 WORKFLOWS=(
-"https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/1_workflows/wanTI2V.fixed5.final.json"
+"https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/1_workflows/MOTION_FORGE_Wan_2.2_14B_MoE_I2V_NOOB_FRIENDLY.json"
 )
 
 INPUT=(
@@ -59,12 +60,11 @@ LORA_MODELS=(
 )
 
 VAE_MODELS=(
-     "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/VAE/Wan2.1_VAE.safetensors"
-     "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan2.2_vae.safetensors"
+    "https://huggingface.co/calcuis/pig-vae/resolve/main/pig_wan_vae_fp32-f16.gguf"
 )
 
 CLIP_MODELS=(
-    "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+    "https://huggingface.co/calcuis/cow-encoder/resolve/main/cow-umt5xxl-q8_0.gguf"
 )
 
 TEXT_ENCODER_MODELS=(
@@ -73,7 +73,6 @@ TEXT_ENCODER_MODELS=(
 )
 
 DIFFUSION_MODELS=(
-    "https://huggingface.co/QuantStack/Wan2.2-TI2V-5B-GGUF/resolve/main/Wan2.2-TI2V-5B-Q8_0.gguf"
     "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
     "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
 )
