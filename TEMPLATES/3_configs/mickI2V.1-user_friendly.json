@@ -1,0 +1,1084 @@
+{
+  "workflow_name": "mickI2V.1",
+  "description": "Edit the values below, then use with execute_workflow_config.py",
+  "instance_config": {
+    "gpu_name": "RTX 5090",
+    "gpu_index": 0,
+    "provisioning_script": "mickI2V.1.sh",
+    "disk_size": 188,
+    "github_user": "jus10wang-stack",
+    "github_branch": "main",
+    "note": "Instance creation settings - auto-detected github_user from current repo, ssh_key_path is optional (will auto-detect if not specified)",
+    "ssh_key_path": "~/.ssh/id_ed25519"
+  },
+  "parameters": {
+    "163_Models": {
+      "node_type": "MarkdownNote",
+      "node_id": 163,
+      "title": "Models",
+      "values": [
+        "**Text Encoder**   \n- [umt5_xxl_fp8_e4m3fn_scaled.safetensors](https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors)\n\n\ud83d\udcc1 ComfyUI\\models\\text_encoders\n"
+      ],
+      "note": "Configurable parameters for MarkdownNote"
+    },
+    "161_Models": {
+      "node_type": "MarkdownNote",
+      "node_id": 161,
+      "title": "Models",
+      "values": [
+        "**VAE**\n- [wan_2.1_vae.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors)\n\n\ud83d\udcc1 ComfyUI\\models\\vae\n"
+      ],
+      "note": "Configurable parameters for MarkdownNote"
+    },
+    "158_Models": {
+      "node_type": "MarkdownNote",
+      "node_id": 158,
+      "title": "Models",
+      "values": [
+        "**Diffusion Model**\n- [wan2.2_i2v_high_noise_14B_fp16.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp16.safetensors)\n\n\ud83d\udcc1 ComfyUI\\models\\diffusion_models"
+      ],
+      "note": "Configurable parameters for MarkdownNote"
+    },
+    "159_Models": {
+      "node_type": "MarkdownNote",
+      "node_id": 159,
+      "title": "Models",
+      "values": [
+        "**Diffusion Model**\n- [wan2.2_i2v_low_noise_14B_fp16.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp16.safetensors)\n\n\n\ud83d\udcc1 ComfyUI\\models\\diffusion_models"
+      ],
+      "note": "Configurable parameters for MarkdownNote"
+    },
+    "200_My_Loras:": {
+      "node_type": "MarkdownNote",
+      "node_id": 200,
+      "title": "My Loras:",
+      "values": [
+        "\n**LoRA**\n- [wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors)\n"
+      ],
+      "note": "Configurable parameters for MarkdownNote"
+    },
+    "151_My_Loras:": {
+      "node_type": "MarkdownNote",
+      "node_id": 151,
+      "title": "My Loras:",
+      "values": [
+        "\n**LoRA**\n\n- [wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors)\n"
+      ],
+      "note": "Configurable parameters for MarkdownNote"
+    },
+    "22_CLIPLoader_22": {
+      "node_type": "CLIPLoader",
+      "node_id": 22,
+      "title": "CLIPLoader_22",
+      "values": [
+        "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "wan",
+        "default"
+      ],
+      "note": "Configurable parameters for CLIPLoader"
+    },
+    "8_VAELoader_8": {
+      "node_type": "VAELoader",
+      "node_id": 8,
+      "title": "VAELoader_8",
+      "values": [
+        "wan\\wan_2.1_vae.safetensors"
+      ],
+      "note": "Configurable parameters for VAELoader"
+    },
+    "135_Power_Lora_Loader_(rgthree)_135": {
+      "node_type": "Power Lora Loader (rgthree)",
+      "node_id": 135,
+      "title": "Power Lora Loader (rgthree)_135",
+      "values": [
+        {},
+        {
+          "type": "PowerLoraLoaderHeaderWidget"
+        },
+        {
+          "on": true,
+          "lora": "wan\\wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
+          "strength": 1,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "wan\\Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors",
+          "strength": 0.8,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "wan\\Instareal_low.safetensors",
+          "strength": 0.85,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "wan\\Lenovo.safetensors",
+          "strength": 1,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "wan\\stock_photography_wan22_LOW_v1.safetensors",
+          "strength": 0.75,
+          "strengthTwo": null
+        },
+        {},
+        ""
+      ],
+      "note": "Configurable parameters for Power Lora Loader (rgthree)"
+    },
+    "136_Power_Lora_Loader_(rgthree)_136": {
+      "node_type": "Power Lora Loader (rgthree)",
+      "node_id": 136,
+      "title": "Power Lora Loader (rgthree)_136",
+      "values": [
+        {},
+        {
+          "type": "PowerLoraLoaderHeaderWidget"
+        },
+        {
+          "on": true,
+          "lora": "wan\\wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
+          "strength": 1,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "wan\\Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors",
+          "strength": 0.6,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "wan\\Instareal_high.safetensors",
+          "strength": 0.7,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "wan\\Lenovo.safetensors",
+          "strength": 0.85,
+          "strengthTwo": null
+        },
+        {},
+        ""
+      ],
+      "note": "Configurable parameters for Power Lora Loader (rgthree)"
+    },
+    "115_WanVideoNAG_115": {
+      "node_type": "WanVideoNAG",
+      "node_id": 115,
+      "title": "WanVideoNAG_115",
+      "values": [
+        11,
+        0.25,
+        2.5,
+        "default"
+      ],
+      "note": "Configurable parameters for WanVideoNAG"
+    },
+    "203_WanVideoNAG_203": {
+      "node_type": "WanVideoNAG",
+      "node_id": 203,
+      "title": "WanVideoNAG_203",
+      "values": [
+        11,
+        0.25,
+        2.5,
+        "default"
+      ],
+      "note": "Configurable parameters for WanVideoNAG"
+    },
+    "4_Negative_Prompt": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 4,
+      "title": "Negative Prompt",
+      "values": [
+        "\u8272\u8c03\u8273\u4e3d\uff0c\u8fc7\u66dd\uff0c\u9759\u6001\uff0c\u7ec6\u8282\u6a21\u7cca\u4e0d\u6e05\uff0c\u5b57\u5e55\uff0c\u98ce\u683c\uff0c\u4f5c\u54c1\uff0c\u753b\u4f5c\uff0c\u753b\u9762\uff0c\u9759\u6b62\uff0c\u6574\u4f53\u53d1\u7070\uff0c\u6700\u5dee\u8d28\u91cf\uff0c\u4f4e\u8d28\u91cf\uff0cJPEG\u538b\u7f29\u6b8b\u7559\uff0c\u4e11\u964b\u7684\uff0c\u6b8b\u7f3a\u7684\uff0c\u591a\u4f59\u7684\u624b\u6307\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u624b\u90e8\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u8138\u90e8\uff0c\u7578\u5f62\u7684\uff0c\u6bc1\u5bb9\u7684\uff0c\u5f62\u6001\u7578\u5f62\u7684\u80a2\u4f53\uff0c\u624b\u6307\u878d\u5408\uff0c\u9759\u6b62\u4e0d\u52a8\u7684\u753b\u9762\uff0c\u6742\u4e71\u7684\u80cc\u666f\uff0c\u4e09\u6761\u817f\uff0c\u80cc\u666f\u4eba\u5f88\u591a\uff0c\u5012\u7740\u8d70, 8k, UHD, hyper-realism, cinematic, glossy finish, talking, speaking, mouth movement"
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "3_Positive_Prompt": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 3,
+      "title": "Positive Prompt",
+      "values": [
+        "The two characters are leaning over the table to kiss each other. The camera slowly moves closer to their faces as they start kissing. An intimate romantic movie scene. The camera zooms in."
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "202_ModelSamplingSD3_202": {
+      "node_type": "ModelSamplingSD3",
+      "node_id": 202,
+      "title": "ModelSamplingSD3_202",
+      "values": [
+        5.000000000000001
+      ],
+      "note": "Configurable parameters for ModelSamplingSD3"
+    },
+    "201_ModelSamplingSD3_201": {
+      "node_type": "ModelSamplingSD3",
+      "node_id": 201,
+      "title": "ModelSamplingSD3_201",
+      "values": [
+        5.000000000000001
+      ],
+      "note": "Configurable parameters for ModelSamplingSD3"
+    },
+    "169_KSamplerAdvanced_169": {
+      "node_type": "KSamplerAdvanced",
+      "node_id": 169,
+      "title": "KSamplerAdvanced_169",
+      "values": [
+        "enable",
+        100,
+        "fixed",
+        4,
+        1,
+        "res_2m",
+        "beta57",
+        2,
+        999,
+        "disable"
+      ],
+      "note": "Configurable parameters for KSamplerAdvanced"
+    },
+    "168_KSamplerAdvanced_168": {
+      "node_type": "KSamplerAdvanced",
+      "node_id": 168,
+      "title": "KSamplerAdvanced_168",
+      "values": [
+        "enable",
+        100,
+        "fixed",
+        4,
+        1,
+        "res_2m",
+        "beta57",
+        0,
+        2,
+        "disable"
+      ],
+      "note": "Configurable parameters for KSamplerAdvanced"
+    },
+    "106_UNETLoader_106": {
+      "node_type": "UNETLoader",
+      "node_id": 106,
+      "title": "UNETLoader_106",
+      "values": [
+        "wan\\wan2.2_i2v_high_noise_14B_fp16.safetensors",
+        "fp8_e4m3fn"
+      ],
+      "note": "Configurable parameters for UNETLoader"
+    },
+    "104_UNETLoader_104": {
+      "node_type": "UNETLoader",
+      "node_id": 104,
+      "title": "UNETLoader_104",
+      "values": [
+        "wan\\wan2.2_i2v_low_noise_14B_fp16.safetensors",
+        "fp8_e4m3fn"
+      ],
+      "note": "Configurable parameters for UNETLoader"
+    },
+    "198_WanFirstLastFrameToVideo_198": {
+      "node_type": "WanFirstLastFrameToVideo",
+      "node_id": 198,
+      "title": "WanFirstLastFrameToVideo_198",
+      "values": [
+        1280,
+        720,
+        81,
+        1
+      ],
+      "note": "Configurable parameters for WanFirstLastFrameToVideo"
+    },
+    "67_Seed_Generator_67": {
+      "node_type": "Seed Generator",
+      "node_id": 67,
+      "title": "Seed Generator_67",
+      "values": [
+        105552262210580,
+        "fixed"
+      ],
+      "note": "Configurable parameters for Seed Generator"
+    },
+    "199_LoadImage_199": {
+      "node_type": "LoadImage",
+      "node_id": 199,
+      "title": "LoadImage_199",
+      "values": [
+        "Kiss_v01_00001_.png",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "204_LoadImage_204": {
+      "node_type": "LoadImage",
+      "node_id": 204,
+      "title": "LoadImage_204",
+      "values": [
+        "Kiss_v01_00035_.png",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "194_VHS_VideoCombine_194": {
+      "node_type": "VHS_VideoCombine",
+      "node_id": 194,
+      "title": "VHS_VideoCombine_194",
+      "values": {
+        "frame_rate": 32,
+        "loop_count": 0,
+        "filename_prefix": "IMG2VID",
+        "format": "video/h264-mp4",
+        "pix_fmt": "yuv420p",
+        "crf": 8,
+        "save_metadata": true,
+        "trim_to_audio": false,
+        "pingpong": false,
+        "save_output": true,
+        "videopreview": {
+          "hidden": false,
+          "paused": false,
+          "params": {
+            "filename": "AnimateDiff_01730.mp4",
+            "subfolder": "",
+            "type": "output",
+            "format": "video/h264-mp4",
+            "frame_rate": 32,
+            "workflow": "AnimateDiff_01730.png",
+            "fullpath": "C:\\01_AI_TOOLS\\ComfyUI_windows_portable_WAN\\ComfyUI\\output\\AnimateDiff_01730.mp4"
+          }
+        }
+      },
+      "note": "Configurable parameters for VHS_VideoCombine"
+    },
+    "193_FILM_VFI_193": {
+      "node_type": "FILM VFI",
+      "node_id": 193,
+      "title": "FILM VFI_193",
+      "values": [
+        "film_net_fp32.pt",
+        5,
+        2
+      ],
+      "note": "Configurable parameters for FILM VFI"
+    },
+    "140_Film_Grain_140": {
+      "node_type": "Film Grain",
+      "node_id": 140,
+      "title": "Film Grain_140",
+      "values": [
+        1,
+        0.04,
+        1,
+        5,
+        1
+      ],
+      "note": "Configurable parameters for Film Grain"
+    }
+  },
+  "_internal": {
+    "original_structure": {
+      "workflow_info": {
+        "id": "5daf90a6-e4ad-4553-98b7-90814f579e2e",
+        "name": "mickI2V.1",
+        "description": "Auto-generated configuration template"
+      },
+      "instance_config": {
+        "gpu_name": "RTX 5090",
+        "gpu_index": 0,
+        "provisioning_script": "mickI2V.1.sh",
+        "disk_size": 100,
+        "github_user": "jus10wang-stack",
+        "github_branch": "main",
+        "note": "Instance creation settings - auto-detected github_user from current repo",
+        "ssh_key_path": "~/.ssh/id_ed25519_vastai"
+      },
+      "configurable_parameters": {
+        "MarkdownNote": {
+          "163_Models": {
+            "node_id": 163,
+            "title": "Models",
+            "parameters": {
+              "widgets_values": [
+                "**Text Encoder**   \n- [umt5_xxl_fp8_e4m3fn_scaled.safetensors](https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors)\n\n\ud83d\udcc1 ComfyUI\\models\\text_encoders\n"
+              ]
+            }
+          },
+          "161_Models": {
+            "node_id": 161,
+            "title": "Models",
+            "parameters": {
+              "widgets_values": [
+                "**VAE**\n- [wan_2.1_vae.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors)\n\n\ud83d\udcc1 ComfyUI\\models\\vae\n"
+              ]
+            }
+          },
+          "158_Models": {
+            "node_id": 158,
+            "title": "Models",
+            "parameters": {
+              "widgets_values": [
+                "**Diffusion Model**\n- [wan2.2_i2v_high_noise_14B_fp16.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp16.safetensors)\n\n\ud83d\udcc1 ComfyUI\\models\\diffusion_models"
+              ]
+            }
+          },
+          "159_Models": {
+            "node_id": 159,
+            "title": "Models",
+            "parameters": {
+              "widgets_values": [
+                "**Diffusion Model**\n- [wan2.2_i2v_low_noise_14B_fp16.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp16.safetensors)\n\n\n\ud83d\udcc1 ComfyUI\\models\\diffusion_models"
+              ]
+            }
+          },
+          "200_My_Loras:": {
+            "node_id": 200,
+            "title": "My Loras:",
+            "parameters": {
+              "widgets_values": [
+                "\n**LoRA**\n- [wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors)\n"
+              ]
+            }
+          },
+          "151_My_Loras:": {
+            "node_id": 151,
+            "title": "My Loras:",
+            "parameters": {
+              "widgets_values": [
+                "\n**LoRA**\n\n- [wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors)\n"
+              ]
+            }
+          }
+        },
+        "CLIPLoader": {
+          "22_CLIPLoader_22": {
+            "node_id": 22,
+            "title": "CLIPLoader_22",
+            "parameters": {
+              "widgets_values": [
+                "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+                "wan",
+                "default"
+              ]
+            }
+          }
+        },
+        "VAELoader": {
+          "8_VAELoader_8": {
+            "node_id": 8,
+            "title": "VAELoader_8",
+            "parameters": {
+              "widgets_values": [
+                "wan\\wan_2.1_vae.safetensors"
+              ]
+            }
+          }
+        },
+        "Power Lora Loader (rgthree)": {
+          "135_Power_Lora_Loader_(rgthree)_135": {
+            "node_id": 135,
+            "title": "Power Lora Loader (rgthree)_135",
+            "parameters": {
+              "widgets_values": [
+                {},
+                {
+                  "type": "PowerLoraLoaderHeaderWidget"
+                },
+                {
+                  "on": true,
+                  "lora": "wan\\wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors",
+                  "strength": 1,
+                  "strengthTwo": null
+                },
+                {
+                  "on": false,
+                  "lora": "wan\\Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors",
+                  "strength": 0.8,
+                  "strengthTwo": null
+                },
+                {
+                  "on": false,
+                  "lora": "wan\\Instareal_low.safetensors",
+                  "strength": 0.85,
+                  "strengthTwo": null
+                },
+                {
+                  "on": false,
+                  "lora": "wan\\Lenovo.safetensors",
+                  "strength": 1,
+                  "strengthTwo": null
+                },
+                {
+                  "on": false,
+                  "lora": "wan\\stock_photography_wan22_LOW_v1.safetensors",
+                  "strength": 0.75,
+                  "strengthTwo": null
+                },
+                {},
+                ""
+              ]
+            }
+          },
+          "136_Power_Lora_Loader_(rgthree)_136": {
+            "node_id": 136,
+            "title": "Power Lora Loader (rgthree)_136",
+            "parameters": {
+              "widgets_values": [
+                {},
+                {
+                  "type": "PowerLoraLoaderHeaderWidget"
+                },
+                {
+                  "on": true,
+                  "lora": "wan\\wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
+                  "strength": 1,
+                  "strengthTwo": null
+                },
+                {
+                  "on": false,
+                  "lora": "wan\\Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors",
+                  "strength": 0.6,
+                  "strengthTwo": null
+                },
+                {
+                  "on": false,
+                  "lora": "wan\\Instareal_high.safetensors",
+                  "strength": 0.7,
+                  "strengthTwo": null
+                },
+                {
+                  "on": false,
+                  "lora": "wan\\Lenovo.safetensors",
+                  "strength": 0.85,
+                  "strengthTwo": null
+                },
+                {},
+                ""
+              ]
+            }
+          }
+        },
+        "WanVideoNAG": {
+          "115_WanVideoNAG_115": {
+            "node_id": 115,
+            "title": "WanVideoNAG_115",
+            "parameters": {
+              "widgets_values": [
+                11,
+                0.25,
+                2.5,
+                "default"
+              ]
+            }
+          },
+          "203_WanVideoNAG_203": {
+            "node_id": 203,
+            "title": "WanVideoNAG_203",
+            "parameters": {
+              "widgets_values": [
+                11,
+                0.25,
+                2.5,
+                "default"
+              ]
+            }
+          }
+        },
+        "CLIPTextEncode": {
+          "4_Negative_Prompt": {
+            "node_id": 4,
+            "title": "Negative Prompt",
+            "parameters": {
+              "widgets_values": [
+                "\u8272\u8c03\u8273\u4e3d\uff0c\u8fc7\u66dd\uff0c\u9759\u6001\uff0c\u7ec6\u8282\u6a21\u7cca\u4e0d\u6e05\uff0c\u5b57\u5e55\uff0c\u98ce\u683c\uff0c\u4f5c\u54c1\uff0c\u753b\u4f5c\uff0c\u753b\u9762\uff0c\u9759\u6b62\uff0c\u6574\u4f53\u53d1\u7070\uff0c\u6700\u5dee\u8d28\u91cf\uff0c\u4f4e\u8d28\u91cf\uff0cJPEG\u538b\u7f29\u6b8b\u7559\uff0c\u4e11\u964b\u7684\uff0c\u6b8b\u7f3a\u7684\uff0c\u591a\u4f59\u7684\u624b\u6307\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u624b\u90e8\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u8138\u90e8\uff0c\u7578\u5f62\u7684\uff0c\u6bc1\u5bb9\u7684\uff0c\u5f62\u6001\u7578\u5f62\u7684\u80a2\u4f53\uff0c\u624b\u6307\u878d\u5408\uff0c\u9759\u6b62\u4e0d\u52a8\u7684\u753b\u9762\uff0c\u6742\u4e71\u7684\u80cc\u666f\uff0c\u4e09\u6761\u817f\uff0c\u80cc\u666f\u4eba\u5f88\u591a\uff0c\u5012\u7740\u8d70, 8k, UHD, hyper-realism, cinematic, glossy finish, talking, speaking, mouth movement"
+              ]
+            }
+          },
+          "3_Positive_Prompt": {
+            "node_id": 3,
+            "title": "Positive Prompt",
+            "parameters": {
+              "widgets_values": [
+                "The two characters are leaning over the table to kiss each other. The camera slowly moves closer to their faces as they start kissing. An intimate romantic movie scene. The camera zooms in."
+              ]
+            }
+          }
+        },
+        "ModelSamplingSD3": {
+          "202_ModelSamplingSD3_202": {
+            "node_id": 202,
+            "title": "ModelSamplingSD3_202",
+            "parameters": {
+              "widgets_values": [
+                5.000000000000001
+              ]
+            }
+          },
+          "201_ModelSamplingSD3_201": {
+            "node_id": 201,
+            "title": "ModelSamplingSD3_201",
+            "parameters": {
+              "widgets_values": [
+                5.000000000000001
+              ]
+            }
+          }
+        },
+        "KSamplerAdvanced": {
+          "169_KSamplerAdvanced_169": {
+            "node_id": 169,
+            "title": "KSamplerAdvanced_169",
+            "parameters": {
+              "widgets_values": [
+                "enable",
+                100,
+                "fixed",
+                4,
+                1,
+                "res_2m",
+                "beta57",
+                2,
+                999,
+                "disable"
+              ],
+              "input_widgets": {
+                "noise_seed": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "168_KSamplerAdvanced_168": {
+            "node_id": 168,
+            "title": "KSamplerAdvanced_168",
+            "parameters": {
+              "widgets_values": [
+                "enable",
+                100,
+                "fixed",
+                4,
+                1,
+                "res_2m",
+                "beta57",
+                0,
+                2,
+                "disable"
+              ],
+              "input_widgets": {
+                "noise_seed": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "UNETLoader": {
+          "106_UNETLoader_106": {
+            "node_id": 106,
+            "title": "UNETLoader_106",
+            "parameters": {
+              "widgets_values": [
+                "wan\\wan2.2_i2v_high_noise_14B_fp16.safetensors",
+                "fp8_e4m3fn"
+              ]
+            }
+          },
+          "104_UNETLoader_104": {
+            "node_id": 104,
+            "title": "UNETLoader_104",
+            "parameters": {
+              "widgets_values": [
+                "wan\\wan2.2_i2v_low_noise_14B_fp16.safetensors",
+                "fp8_e4m3fn"
+              ]
+            }
+          }
+        },
+        "WanFirstLastFrameToVideo": {
+          "198_WanFirstLastFrameToVideo_198": {
+            "node_id": 198,
+            "title": "WanFirstLastFrameToVideo_198",
+            "parameters": {
+              "widgets_values": [
+                1280,
+                720,
+                81,
+                1
+              ]
+            }
+          }
+        },
+        "Seed Generator": {
+          "67_Seed_Generator_67": {
+            "node_id": 67,
+            "title": "Seed Generator_67",
+            "parameters": {
+              "widgets_values": [
+                105552262210580,
+                "fixed"
+              ]
+            }
+          }
+        },
+        "LoadImage": {
+          "199_LoadImage_199": {
+            "node_id": 199,
+            "title": "LoadImage_199",
+            "parameters": {
+              "widgets_values": [
+                "Kiss_v01_00001_.png",
+                "image"
+              ]
+            }
+          },
+          "204_LoadImage_204": {
+            "node_id": 204,
+            "title": "LoadImage_204",
+            "parameters": {
+              "widgets_values": [
+                "Kiss_v01_00035_.png",
+                "image"
+              ]
+            }
+          }
+        },
+        "VHS_VideoCombine": {
+          "194_VHS_VideoCombine_194": {
+            "node_id": 194,
+            "title": "VHS_VideoCombine_194",
+            "parameters": {
+              "widgets_values": {
+                "frame_rate": 32,
+                "loop_count": 0,
+                "filename_prefix": "IMG2VID",
+                "format": "video/h264-mp4",
+                "pix_fmt": "yuv420p",
+                "crf": 8,
+                "save_metadata": true,
+                "trim_to_audio": false,
+                "pingpong": false,
+                "save_output": true,
+                "videopreview": {
+                  "hidden": false,
+                  "paused": false,
+                  "params": {
+                    "filename": "AnimateDiff_01730.mp4",
+                    "subfolder": "",
+                    "type": "output",
+                    "format": "video/h264-mp4",
+                    "frame_rate": 32,
+                    "workflow": "AnimateDiff_01730.png",
+                    "fullpath": "C:\\01_AI_TOOLS\\ComfyUI_windows_portable_WAN\\ComfyUI\\output\\AnimateDiff_01730.mp4"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "FILM VFI": {
+          "193_FILM_VFI_193": {
+            "node_id": 193,
+            "title": "FILM VFI_193",
+            "parameters": {
+              "widgets_values": [
+                "film_net_fp32.pt",
+                5,
+                2
+              ]
+            }
+          }
+        },
+        "Film Grain": {
+          "140_Film_Grain_140": {
+            "node_id": 140,
+            "title": "Film Grain_140",
+            "parameters": {
+              "widgets_values": [
+                1,
+                0.04,
+                1,
+                5,
+                1
+              ]
+            }
+          }
+        }
+      },
+      "workflow_links": [
+        [
+          9,
+          8,
+          0,
+          9,
+          1,
+          "VAE"
+        ],
+        [
+          203,
+          4,
+          0,
+          115,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          252,
+          104,
+          0,
+          135,
+          0,
+          "MODEL"
+        ],
+        [
+          253,
+          22,
+          0,
+          135,
+          1,
+          "CLIP"
+        ],
+        [
+          254,
+          135,
+          0,
+          115,
+          0,
+          "MODEL"
+        ],
+        [
+          260,
+          22,
+          0,
+          136,
+          1,
+          "CLIP"
+        ],
+        [
+          281,
+          106,
+          0,
+          136,
+          0,
+          "MODEL"
+        ],
+        [
+          282,
+          22,
+          0,
+          3,
+          0,
+          "CLIP"
+        ],
+        [
+          283,
+          22,
+          0,
+          4,
+          0,
+          "CLIP"
+        ],
+        [
+          314,
+          168,
+          0,
+          169,
+          3,
+          "LATENT"
+        ],
+        [
+          322,
+          169,
+          0,
+          9,
+          0,
+          "LATENT"
+        ],
+        [
+          323,
+          67,
+          0,
+          168,
+          4,
+          "INT"
+        ],
+        [
+          324,
+          67,
+          0,
+          169,
+          4,
+          "INT"
+        ],
+        [
+          332,
+          9,
+          0,
+          182,
+          0,
+          "*"
+        ],
+        [
+          371,
+          9,
+          0,
+          193,
+          0,
+          "IMAGE"
+        ],
+        [
+          372,
+          193,
+          0,
+          140,
+          0,
+          "IMAGE"
+        ],
+        [
+          373,
+          140,
+          0,
+          194,
+          0,
+          "IMAGE"
+        ],
+        [
+          374,
+          3,
+          0,
+          198,
+          0,
+          "CONDITIONING"
+        ],
+        [
+          375,
+          4,
+          0,
+          198,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          376,
+          198,
+          0,
+          168,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          377,
+          198,
+          1,
+          168,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          378,
+          198,
+          0,
+          169,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          379,
+          198,
+          1,
+          169,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          380,
+          198,
+          2,
+          168,
+          3,
+          "LATENT"
+        ],
+        [
+          381,
+          8,
+          0,
+          198,
+          2,
+          "VAE"
+        ],
+        [
+          383,
+          115,
+          0,
+          201,
+          0,
+          "MODEL"
+        ],
+        [
+          384,
+          201,
+          0,
+          169,
+          0,
+          "MODEL"
+        ],
+        [
+          385,
+          136,
+          0,
+          203,
+          0,
+          "MODEL"
+        ],
+        [
+          386,
+          4,
+          0,
+          203,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          387,
+          203,
+          0,
+          202,
+          0,
+          "MODEL"
+        ],
+        [
+          388,
+          202,
+          0,
+          168,
+          0,
+          "MODEL"
+        ],
+        [
+          389,
+          199,
+          0,
+          198,
+          6,
+          "IMAGE"
+        ],
+        [
+          390,
+          204,
+          0,
+          198,
+          5,
+          "IMAGE"
+        ]
+      ]
+    },
+    "note": "This section is used internally for workflow reconstruction"
+  }
+}

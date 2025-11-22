@@ -17,7 +17,7 @@
       "node_id": 140,
       "title": "Video Combine \ud83c\udfa5\ud83c\udd65\ud83c\udd57\ud83c\udd62 HD OUTPUT 32fps",
       "values": {
-        "frame_rate": 32,
+        "frame_rate": 32, 
         "loop_count": 0,
         "filename_prefix": "Wan 2.2 5B Upscales\\Denoise 0.2_32fps ",
         "format": "video/h264-mp4",
