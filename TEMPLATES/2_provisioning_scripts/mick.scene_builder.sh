@@ -47,6 +47,7 @@ CHECKPOINT_MODELS=(
 )
 
 UNET_MODELS=(
+    "https://huggingface.co/QuantStack/Qwen-Image-Edit-2509-GGUF/tree/main"
 )
 
 LORA_MODELS=(
@@ -71,7 +72,6 @@ TEXT_ENCODER_MODELS=(
 )
 
 DIFFUSION_MODELS=(
-    "https://huggingface.co/QuantStack/Qwen-Image-Edit-2509-GGUF/tree/main"
 )
 
 # ============================================================
