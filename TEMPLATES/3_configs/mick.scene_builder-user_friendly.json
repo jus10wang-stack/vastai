@@ -3,7 +3,7 @@
   "description": "Edit the values below, then use with execute_workflow_config.py",
   "instance_config": {
     "gpu_name": "RTX 5090",
-    "gpu_index": 0,
+    "gpu_index": 1,
     "provisioning_script": "mick.scene_builder.sh",
     "disk_size": 100,
     "github_user": "jus10wang-stack",
