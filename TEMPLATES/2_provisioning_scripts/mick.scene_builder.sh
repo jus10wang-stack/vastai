@@ -27,14 +27,13 @@ PIP_PACKAGES=(
 NODES=(
     "https://github.com/rgthree/rgthree-comfy.git"
     "https://github.com/kijai/ComfyUI-KJNodes.git"
-    "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git"
-    "https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git"
-    "https://github.com/ClownsharkBatwing/RES4LYF.git" 
-    "https://github.com/giriss/comfy-image-saver.git"
+    "https://github.com/Fannovel16/comfyui_controlnet_aux.git"
+    "https://github.com/calcuis/gguf.git"
+    "https://github.com/o-l-l-i/ComfyUI-Olm-DragCrop.git" 
 )
 
 WORKFLOWS=(
-"https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/1_workflows/mickI2V.1.json"
+"https://raw.githubusercontent.com/${GITHUB_USER}/vastai/refs/heads/${GITHUB_BRANCH}/TEMPLATES/1_workflows/mick.scene_builder.json"
 )
 
 INPUT=(
@@ -48,29 +47,31 @@ CHECKPOINT_MODELS=(
 )
 
 UNET_MODELS=(
+    "https://huggingface.co/QuantStack/Qwen-Image-Edit-2509-GGUF/tree/main"
 )
 
 LORA_MODELS=(
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors"
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors"
+    "https://huggingface.co/lightx2v/Qwen-Image-Lightning/blob/main/Qwen-Image-Lightning-4steps-V1.0-bf16.safetensors"
+    "https://huggingface.co/peteromallet/Qwen-Image-Edit-InSubject/tree/main"
+    "https://civitai.com/models/1927710?modelVersionId=2181880"
+    "https://civitai.com/models/1972643/studio-realism"
+    "https://www.patreon.com/file?h=142571395&m=557625494"
+    "https://huggingface.co/lovis93/next-scene-qwen-image-lora-2509/tree/main"
 )
 
 VAE_MODELS=(
-     "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors"
+     "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/tree/main/split_files/vae"
 )
 
 CLIP_MODELS=(
-    "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
 )
 
 TEXT_ENCODER_MODELS=(
-    "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+    "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/tree/main/split_files/text_encoders"
 
 )
 
 DIFFUSION_MODELS=(
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp16.safetensors"
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp16.safetensors"
 )
 
 # ============================================================
@@ -86,7 +87,6 @@ TRANSFORMERS_MODELS=(
 
 UPSCALE_MODELS=(
     # Generic upscalers - use this instead of ESRGAN_MODELS for newer models
-     "https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth"
 )
 
 ESRGAN_MODELS=(

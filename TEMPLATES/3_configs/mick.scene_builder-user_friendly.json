@@ -1,0 +1,4092 @@
+{
+  "workflow_name": "mick.scene_builder",
+  "description": "Edit the values below, then use with execute_workflow_config.py",
+  "instance_config": {
+    "gpu_name": "RTX 5090",
+    "gpu_index": 0,
+    "provisioning_script": "mick.scene_builder.sh",
+    "disk_size": 100,
+    "github_user": "jus10wang-stack",
+    "github_branch": "main",
+    "note": "Instance creation settings - auto-detected github_user from current repo, ssh_key_path is optional (will auto-detect if not specified)",
+    "ssh_key_path": "~/.ssh/id_ed25519_vastai"
+  },
+  "parameters": {
+    "191_Set_clip": {
+      "node_type": "SetNode",
+      "node_id": 191,
+      "title": "Set_clip",
+      "values": [
+        "clip"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "192_Set_vae": {
+      "node_type": "SetNode",
+      "node_id": 192,
+      "title": "Set_vae",
+      "values": [
+        "vae"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "845_Set_steps": {
+      "node_type": "SetNode",
+      "node_id": 845,
+      "title": "Set_steps",
+      "values": [
+        "steps"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "851_Set_cfg": {
+      "node_type": "SetNode",
+      "node_id": 851,
+      "title": "Set_cfg",
+      "values": [
+        "cfg"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1300_Set_Width": {
+      "node_type": "SetNode",
+      "node_id": 1300,
+      "title": "Set_Width",
+      "values": [
+        "Width"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1301_Set_Height": {
+      "node_type": "SetNode",
+      "node_id": 1301,
+      "title": "Set_Height",
+      "values": [
+        "Height"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1334_Set_IMG_01": {
+      "node_type": "SetNode",
+      "node_id": 1334,
+      "title": "Set_IMG_01",
+      "values": [
+        "IMG_01"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1590_Set_IMG_02": {
+      "node_type": "SetNode",
+      "node_id": 1590,
+      "title": "Set_IMG_02",
+      "values": [
+        "IMG_02"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1336_Set_IMG_03": {
+      "node_type": "SetNode",
+      "node_id": 1336,
+      "title": "Set_IMG_03",
+      "values": [
+        "IMG_03"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1612_Set_ENVIRONMENT": {
+      "node_type": "SetNode",
+      "node_id": 1612,
+      "title": "Set_ENVIRONMENT",
+      "values": [
+        "ENVIRONMENT"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1707_Set_360_IMAGE": {
+      "node_type": "SetNode",
+      "node_id": 1707,
+      "title": "Set_360 IMAGE",
+      "values": [
+        "360 IMAGE"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1709_Set_360_IMAGE_2x": {
+      "node_type": "SetNode",
+      "node_id": 1709,
+      "title": "Set_360 IMAGE_2x",
+      "values": [
+        "360 IMAGE_2x"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1816_Set_name": {
+      "node_type": "SetNode",
+      "node_id": 1816,
+      "title": "Set_name",
+      "values": [
+        "name"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1981_Set_IMG_POSE_01": {
+      "node_type": "SetNode",
+      "node_id": 1981,
+      "title": "Set_IMG_POSE_01",
+      "values": [
+        "IMG_POSE_01"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1555_Set_model_360": {
+      "node_type": "SetNode",
+      "node_id": 1555,
+      "title": "Set_model_360",
+      "values": [
+        "model_360"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1606_Set_model_nextScene": {
+      "node_type": "SetNode",
+      "node_id": 1606,
+      "title": "Set_model_nextScene",
+      "values": [
+        "model_nextScene"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1603_Set_REFERENCE": {
+      "node_type": "SetNode",
+      "node_id": 1603,
+      "title": "Set_REFERENCE",
+      "values": [
+        "REFERENCE"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "190_Set_model": {
+      "node_type": "SetNode",
+      "node_id": 190,
+      "title": "Set_model",
+      "values": [
+        "model"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1312_Set_OUT_01": {
+      "node_type": "SetNode",
+      "node_id": 1312,
+      "title": "Set_OUT_01",
+      "values": [
+        "OUT_01"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "1630_Set_OUT_02": {
+      "node_type": "SetNode",
+      "node_id": 1630,
+      "title": "Set_OUT_02",
+      "values": [
+        "OUT_02"
+      ],
+      "note": "Configurable parameters for SetNode"
+    },
+    "362_CLIPLoader_362": {
+      "node_type": "CLIPLoader",
+      "node_id": 362,
+      "title": "CLIPLoader_362",
+      "values": [
+        "qwen\\qwen_2.5_vl_7b_fp8_scaled.safetensors",
+        "qwen_image",
+        "cpu"
+      ],
+      "note": "Configurable parameters for CLIPLoader"
+    },
+    "360_VAELoader_360": {
+      "node_type": "VAELoader",
+      "node_id": 360,
+      "title": "VAELoader_360",
+      "values": [
+        "qwen\\qwen_image_vae.safetensors"
+      ],
+      "note": "Configurable parameters for VAELoader"
+    },
+    "1114_CFGNorm_1114": {
+      "node_type": "CFGNorm",
+      "node_id": 1114,
+      "title": "CFGNorm_1114",
+      "values": [
+        1
+      ],
+      "note": "Configurable parameters for CFGNorm"
+    },
+    "850_CFG": {
+      "node_type": "PrimitiveFloat",
+      "node_id": 850,
+      "title": "CFG",
+      "values": [
+        1
+      ],
+      "note": "Configurable parameters for PrimitiveFloat"
+    },
+    "1539_Mask_Blur": {
+      "node_type": "PrimitiveFloat",
+      "node_id": 1539,
+      "title": "Mask Blur",
+      "values": [
+        20
+      ],
+      "note": "Configurable parameters for PrimitiveFloat"
+    },
+    "206_Get_model": {
+      "node_type": "GetNode",
+      "node_id": 206,
+      "title": "Get_model",
+      "values": [
+        "model"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "853_Get_cfg": {
+      "node_type": "GetNode",
+      "node_id": 853,
+      "title": "Get_cfg",
+      "values": [
+        "cfg"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "846_Get_steps": {
+      "node_type": "GetNode",
+      "node_id": 846,
+      "title": "Get_steps",
+      "values": [
+        "steps"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1518_Get_vae": {
+      "node_type": "GetNode",
+      "node_id": 1518,
+      "title": "Get_vae",
+      "values": [
+        "vae"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1519_Get_cfg": {
+      "node_type": "GetNode",
+      "node_id": 1519,
+      "title": "Get_cfg",
+      "values": [
+        "cfg"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1520_Get_steps": {
+      "node_type": "GetNode",
+      "node_id": 1520,
+      "title": "Get_steps",
+      "values": [
+        "steps"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1523_Get_clip": {
+      "node_type": "GetNode",
+      "node_id": 1523,
+      "title": "Get_clip",
+      "values": [
+        "clip"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1528_Get_cfg": {
+      "node_type": "GetNode",
+      "node_id": 1528,
+      "title": "Get_cfg",
+      "values": [
+        "cfg"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1529_Get_steps": {
+      "node_type": "GetNode",
+      "node_id": 1529,
+      "title": "Get_steps",
+      "values": [
+        "steps"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1533_Get_vae": {
+      "node_type": "GetNode",
+      "node_id": 1533,
+      "title": "Get_vae",
+      "values": [
+        "vae"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1545_Get_model": {
+      "node_type": "GetNode",
+      "node_id": 1545,
+      "title": "Get_model",
+      "values": [
+        "model"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1521_Get_model_360": {
+      "node_type": "GetNode",
+      "node_id": 1521,
+      "title": "Get_model_360",
+      "values": [
+        "model_360"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "202_Get_vae": {
+      "node_type": "GetNode",
+      "node_id": 202,
+      "title": "Get_vae",
+      "values": [
+        "vae"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1311_Get_Height": {
+      "node_type": "GetNode",
+      "node_id": 1311,
+      "title": "Get_Height",
+      "values": [
+        "Height"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1310_Get_Width": {
+      "node_type": "GetNode",
+      "node_id": 1310,
+      "title": "Get_Width",
+      "values": [
+        "Width"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "193_Get_clip": {
+      "node_type": "GetNode",
+      "node_id": 193,
+      "title": "Get_clip",
+      "values": [
+        "clip"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1552_Get_ENVIRONMENT": {
+      "node_type": "GetNode",
+      "node_id": 1552,
+      "title": "Get_ENVIRONMENT",
+      "values": [
+        "ENVIRONMENT"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1614_Get_vae": {
+      "node_type": "GetNode",
+      "node_id": 1614,
+      "title": "Get_vae",
+      "values": [
+        "vae"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1615_Get_steps": {
+      "node_type": "GetNode",
+      "node_id": 1615,
+      "title": "Get_steps",
+      "values": [
+        "steps"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1616_Get_cfg": {
+      "node_type": "GetNode",
+      "node_id": 1616,
+      "title": "Get_cfg",
+      "values": [
+        "cfg"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1617_Get_Height": {
+      "node_type": "GetNode",
+      "node_id": 1617,
+      "title": "Get_Height",
+      "values": [
+        "Height"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1618_Get_Width": {
+      "node_type": "GetNode",
+      "node_id": 1618,
+      "title": "Get_Width",
+      "values": [
+        "Width"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1620_Get_model_nextScene": {
+      "node_type": "GetNode",
+      "node_id": 1620,
+      "title": "Get_model_nextScene",
+      "values": [
+        "model_nextScene"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1626_Get_clip": {
+      "node_type": "GetNode",
+      "node_id": 1626,
+      "title": "Get_clip",
+      "values": [
+        "clip"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1302_Get_Width": {
+      "node_type": "GetNode",
+      "node_id": 1302,
+      "title": "Get_Width",
+      "values": [
+        "Width"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1589_Get_IMG_01": {
+      "node_type": "GetNode",
+      "node_id": 1589,
+      "title": "Get_IMG_01",
+      "values": [
+        "IMG_01"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1599_Get_ENVIRONMENT": {
+      "node_type": "GetNode",
+      "node_id": 1599,
+      "title": "Get_ENVIRONMENT",
+      "values": [
+        "ENVIRONMENT"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1817_Get_name": {
+      "node_type": "GetNode",
+      "node_id": 1817,
+      "title": "Get_name",
+      "values": [
+        "name"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1820_Get_name": {
+      "node_type": "GetNode",
+      "node_id": 1820,
+      "title": "Get_name",
+      "values": [
+        "name"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1306_Get_Height": {
+      "node_type": "GetNode",
+      "node_id": 1306,
+      "title": "Get_Height",
+      "values": [
+        "Height"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1602_Get_IMG_02": {
+      "node_type": "GetNode",
+      "node_id": 1602,
+      "title": "Get_IMG_02",
+      "values": [
+        "IMG_02"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1598_Get_IMG_02": {
+      "node_type": "GetNode",
+      "node_id": 1598,
+      "title": "Get_IMG_02",
+      "values": [
+        "IMG_02"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1622_Get_IMG_01": {
+      "node_type": "GetNode",
+      "node_id": 1622,
+      "title": "Get_IMG_01",
+      "values": [
+        "IMG_01"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1601_Get_IMG_01": {
+      "node_type": "GetNode",
+      "node_id": 1601,
+      "title": "Get_IMG_01",
+      "values": [
+        "IMG_01"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1600_Get_IMG_03": {
+      "node_type": "GetNode",
+      "node_id": 1600,
+      "title": "Get_IMG_03",
+      "values": [
+        "IMG_03"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1982_Get_360_IMAGE": {
+      "node_type": "GetNode",
+      "node_id": 1982,
+      "title": "Get_360 IMAGE",
+      "values": [
+        "360 IMAGE"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1531_Get_clip": {
+      "node_type": "GetNode",
+      "node_id": 1531,
+      "title": "Get_clip",
+      "values": [
+        "clip"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1990_Get_360_IMAGE_2x": {
+      "node_type": "GetNode",
+      "node_id": 1990,
+      "title": "Get_360 IMAGE_2x",
+      "values": [
+        "360 IMAGE_2x"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1621_Get_OUT_01": {
+      "node_type": "GetNode",
+      "node_id": 1621,
+      "title": "Get_OUT_01",
+      "values": [
+        "OUT_01"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1623_Get_REFERENCE": {
+      "node_type": "GetNode",
+      "node_id": 1623,
+      "title": "Get_REFERENCE",
+      "values": [
+        "REFERENCE"
+      ],
+      "note": "Configurable parameters for GetNode"
+    },
+    "1522_SaveImage_1522": {
+      "node_type": "SaveImage",
+      "node_id": 1522,
+      "title": "SaveImage_1522",
+      "values": [
+        "ComfyUI"
+      ],
+      "note": "Configurable parameters for SaveImage"
+    },
+    "1526_SaveImage_1526": {
+      "node_type": "SaveImage",
+      "node_id": 1526,
+      "title": "SaveImage_1526",
+      "values": [
+        "ComfyUI"
+      ],
+      "note": "Configurable parameters for SaveImage"
+    },
+    "1530_SaveImage_1530": {
+      "node_type": "SaveImage",
+      "node_id": 1530,
+      "title": "SaveImage_1530",
+      "values": [
+        "ComfyUI"
+      ],
+      "note": "Configurable parameters for SaveImage"
+    },
+    "208_SaveImage_208": {
+      "node_type": "SaveImage",
+      "node_id": 208,
+      "title": "SaveImage_208",
+      "values": [
+        "ComfyUI"
+      ],
+      "note": "Configurable parameters for SaveImage"
+    },
+    "1288_SaveImage_1288": {
+      "node_type": "SaveImage",
+      "node_id": 1288,
+      "title": "SaveImage_1288",
+      "values": [
+        "ComfyUI"
+      ],
+      "note": "Configurable parameters for SaveImage"
+    },
+    "1628_SaveImage_1628": {
+      "node_type": "SaveImage",
+      "node_id": 1628,
+      "title": "SaveImage_1628",
+      "values": [
+        "ComfyUI"
+      ],
+      "note": "Configurable parameters for SaveImage"
+    },
+    "1613_SaveImage_1613": {
+      "node_type": "SaveImage",
+      "node_id": 1613,
+      "title": "SaveImage_1613",
+      "values": [
+        "ComfyUI"
+      ],
+      "note": "Configurable parameters for SaveImage"
+    },
+    "1547_SaveImage_1547": {
+      "node_type": "SaveImage",
+      "node_id": 1547,
+      "title": "SaveImage_1547",
+      "values": [
+        "ComfyUI"
+      ],
+      "note": "Configurable parameters for SaveImage"
+    },
+    "1524_EmptySD3LatentImage_1524": {
+      "node_type": "EmptySD3LatentImage",
+      "node_id": 1524,
+      "title": "EmptySD3LatentImage_1524",
+      "values": [
+        2048,
+        1024,
+        1
+      ],
+      "note": "Configurable parameters for EmptySD3LatentImage"
+    },
+    "200_EmptySD3LatentImage_200": {
+      "node_type": "EmptySD3LatentImage",
+      "node_id": 200,
+      "title": "EmptySD3LatentImage_200",
+      "values": [
+        1920,
+        1088,
+        1
+      ],
+      "note": "Configurable parameters for EmptySD3LatentImage"
+    },
+    "1619_EmptySD3LatentImage_1619": {
+      "node_type": "EmptySD3LatentImage",
+      "node_id": 1619,
+      "title": "EmptySD3LatentImage_1619",
+      "values": [
+        1920,
+        1088,
+        1
+      ],
+      "note": "Configurable parameters for EmptySD3LatentImage"
+    },
+    "1534_ImageConcanate_1534": {
+      "node_type": "ImageConcanate",
+      "node_id": 1534,
+      "title": "ImageConcanate_1534",
+      "values": [
+        "right",
+        true
+      ],
+      "note": "Configurable parameters for ImageConcanate"
+    },
+    "1562_ImageConcanate_1562": {
+      "node_type": "ImageConcanate",
+      "node_id": 1562,
+      "title": "ImageConcanate_1562",
+      "values": [
+        "right",
+        true
+      ],
+      "note": "Configurable parameters for ImageConcanate"
+    },
+    "1535_CreateShapeMask_1535": {
+      "node_type": "CreateShapeMask",
+      "node_id": 1535,
+      "title": "CreateShapeMask_1535",
+      "values": [
+        "square",
+        1,
+        1024,
+        512,
+        0,
+        512,
+        512,
+        100,
+        1024
+      ],
+      "note": "Configurable parameters for CreateShapeMask"
+    },
+    "1537_GrowMaskWithBlur_1537": {
+      "node_type": "GrowMaskWithBlur",
+      "node_id": 1537,
+      "title": "GrowMaskWithBlur_1537",
+      "values": [
+        0,
+        0,
+        true,
+        false,
+        10,
+        1,
+        1,
+        false
+      ],
+      "note": "Configurable parameters for GrowMaskWithBlur"
+    },
+    "1538_ImageResizeKJv2_1538": {
+      "node_type": "ImageResizeKJv2",
+      "node_id": 1538,
+      "title": "ImageResizeKJv2_1538",
+      "values": [
+        2048,
+        1024,
+        "lanczos",
+        "crop",
+        "0, 0, 0",
+        "center",
+        2,
+        "cpu",
+        0,
+        "<tr><td>Output: </td><td><b>1</b> x <b>2048</b> x <b>1024 | 24.00MB</b></td></tr>"
+      ],
+      "note": "Configurable parameters for ImageResizeKJv2"
+    },
+    "1559_ImageResizeKJv2_1559": {
+      "node_type": "ImageResizeKJv2",
+      "node_id": 1559,
+      "title": "ImageResizeKJv2_1559",
+      "values": [
+        1024,
+        512,
+        "lanczos",
+        "pad",
+        "127, 127, 127",
+        "center",
+        2,
+        "cpu",
+        0
+      ],
+      "note": "Configurable parameters for ImageResizeKJv2"
+    },
+    "1297_ImageResizeKJv2_1297": {
+      "node_type": "ImageResizeKJv2",
+      "node_id": 1297,
+      "title": "ImageResizeKJv2_1297",
+      "values": [
+        1920,
+        1080,
+        "nearest-exact",
+        "resize",
+        "0, 0, 0",
+        "center",
+        2,
+        "cpu",
+        "<tr><td>Output: </td><td><b>1</b> x <b>1920</b> x <b>1080 | 23.73MB</b></td></tr>"
+      ],
+      "note": "Configurable parameters for ImageResizeKJv2"
+    },
+    "1541_ImageBlend_1541": {
+      "node_type": "ImageBlend",
+      "node_id": 1541,
+      "title": "ImageBlend_1541",
+      "values": [
+        1,
+        "screen"
+      ],
+      "note": "Configurable parameters for ImageBlend"
+    },
+    "1542_KSampler_1542": {
+      "node_type": "KSampler",
+      "node_id": 1542,
+      "title": "KSampler_1542",
+      "values": [
+        1034973049061657,
+        "fixed",
+        20,
+        2.5,
+        "euler",
+        "simple",
+        1
+      ],
+      "note": "Configurable parameters for KSampler"
+    },
+    "1604_KSampler_1604": {
+      "node_type": "KSampler",
+      "node_id": 1604,
+      "title": "KSampler_1604",
+      "values": [
+        1034973049061589,
+        "fixed",
+        20,
+        2.5,
+        "euler",
+        "simple",
+        1
+      ],
+      "note": "Configurable parameters for KSampler"
+    },
+    "1629_KSampler_1629": {
+      "node_type": "KSampler",
+      "node_id": 1629,
+      "title": "KSampler_1629",
+      "values": [
+        1034973049061647,
+        "fixed",
+        20,
+        2.5,
+        "euler",
+        "simple",
+        1
+      ],
+      "note": "Configurable parameters for KSampler"
+    },
+    "1525_KSampler_1525": {
+      "node_type": "KSampler",
+      "node_id": 1525,
+      "title": "KSampler_1525",
+      "values": [
+        1034973049061656,
+        "fixed",
+        20,
+        2.5,
+        "euler",
+        "simple",
+        1
+      ],
+      "note": "Configurable parameters for KSampler"
+    },
+    "1556_ImagePadForOutpaint_1556": {
+      "node_type": "ImagePadForOutpaint",
+      "node_id": 1556,
+      "title": "ImagePadForOutpaint_1556",
+      "values": [
+        568,
+        280,
+        568,
+        280,
+        40
+      ],
+      "note": "Configurable parameters for ImagePadForOutpaint"
+    },
+    "1557_Padding": {
+      "node_type": "PrimitiveInt",
+      "node_id": 1557,
+      "title": "Padding",
+      "values": [
+        400,
+        "fixed"
+      ],
+      "note": "Configurable parameters for PrimitiveInt"
+    },
+    "844_STEPS": {
+      "node_type": "PrimitiveInt",
+      "node_id": 844,
+      "title": "STEPS",
+      "values": [
+        4,
+        "fixed"
+      ],
+      "note": "Configurable parameters for PrimitiveInt"
+    },
+    "1591_PrimitiveInt_1591": {
+      "node_type": "PrimitiveInt",
+      "node_id": 1591,
+      "title": "PrimitiveInt_1591",
+      "values": [
+        1034973049061649,
+        "fixed"
+      ],
+      "note": "Configurable parameters for PrimitiveInt"
+    },
+    "1624_PrimitiveInt_1624": {
+      "node_type": "PrimitiveInt",
+      "node_id": 1624,
+      "title": "PrimitiveInt_1624",
+      "values": [
+        1034973049061648,
+        "fixed"
+      ],
+      "note": "Configurable parameters for PrimitiveInt"
+    },
+    "1540_Mask_Size": {
+      "node_type": "PrimitiveInt",
+      "node_id": 1540,
+      "title": "Mask Size",
+      "values": [
+        200,
+        "fixed"
+      ],
+      "note": "Configurable parameters for PrimitiveInt"
+    },
+    "1298_WIDTH": {
+      "node_type": "PrimitiveInt",
+      "node_id": 1298,
+      "title": "WIDTH",
+      "values": [
+        1920,
+        "fixed"
+      ],
+      "note": "Configurable parameters for PrimitiveInt"
+    },
+    "1299_HEIGHT": {
+      "node_type": "PrimitiveInt",
+      "node_id": 1299,
+      "title": "HEIGHT",
+      "values": [
+        1080,
+        "fixed"
+      ],
+      "note": "Configurable parameters for PrimitiveInt"
+    },
+    "1560_ImageScaleToTotalPixels_1560": {
+      "node_type": "ImageScaleToTotalPixels",
+      "node_id": 1560,
+      "title": "ImageScaleToTotalPixels_1560",
+      "values": [
+        "lanczos",
+        1
+      ],
+      "note": "Configurable parameters for ImageScaleToTotalPixels"
+    },
+    "1286_ImageScaleToTotalPixels_1286": {
+      "node_type": "ImageScaleToTotalPixels",
+      "node_id": 1286,
+      "title": "ImageScaleToTotalPixels_1286",
+      "values": [
+        "lanczos",
+        1
+      ],
+      "note": "Configurable parameters for ImageScaleToTotalPixels"
+    },
+    "1287_ImageScaleToTotalPixels_1287": {
+      "node_type": "ImageScaleToTotalPixels",
+      "node_id": 1287,
+      "title": "ImageScaleToTotalPixels_1287",
+      "values": [
+        "lanczos",
+        1
+      ],
+      "note": "Configurable parameters for ImageScaleToTotalPixels"
+    },
+    "1290_ImageScaleToTotalPixels_1290": {
+      "node_type": "ImageScaleToTotalPixels",
+      "node_id": 1290,
+      "title": "ImageScaleToTotalPixels_1290",
+      "values": [
+        "lanczos",
+        1
+      ],
+      "note": "Configurable parameters for ImageScaleToTotalPixels"
+    },
+    "1610_ImageScaleToTotalPixels_1610": {
+      "node_type": "ImageScaleToTotalPixels",
+      "node_id": 1610,
+      "title": "ImageScaleToTotalPixels_1610",
+      "values": [
+        "lanczos",
+        1
+      ],
+      "note": "Configurable parameters for ImageScaleToTotalPixels"
+    },
+    "1293_ImageScaleToTotalPixels_1293": {
+      "node_type": "ImageScaleToTotalPixels",
+      "node_id": 1293,
+      "title": "ImageScaleToTotalPixels_1293",
+      "values": [
+        "lanczos",
+        1
+      ],
+      "note": "Configurable parameters for ImageScaleToTotalPixels"
+    },
+    "213_IMAGE_1": {
+      "node_type": "LoadImage",
+      "node_id": 213,
+      "title": "IMAGE 1",
+      "values": [
+        "a_candid_portrait_of_a_woman_with_natural_makeup_showcasing_her_unique_facial_features_captured_in__5837qamrn99y6vyf1nee_2.jpg",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "1284_IMAGE_2": {
+      "node_type": "LoadImage",
+      "node_id": 1284,
+      "title": "IMAGE 2",
+      "values": [
+        "a_unique-looking_fashion_model_with_distinct_facial_features_medium_close-up_shot_professional_stud_6dyrfa5j5bs6mo5guhf3_1.jpg",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "1285_IMAGE_3": {
+      "node_type": "LoadImage",
+      "node_id": 1285,
+      "title": "IMAGE 3",
+      "values": [
+        "a_cozy_modern_five_star_restaurant_with_glass_windows_overlooking_a_foggy_pine_forest_natural_mount_k69q6wfb2faiwi2cx42s_0.jpg",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "1292_IMAGE_4_POSE": {
+      "node_type": "LoadImage",
+      "node_id": 1292,
+      "title": "IMAGE 4 POSE",
+      "values": [
+        "istockphoto-1369129270-612x612.jpg",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "1611_IMAGE_3": {
+      "node_type": "LoadImage",
+      "node_id": 1611,
+      "title": "IMAGE 3",
+      "values": [
+        "a_cozy_modern_five_star_restaurant_with_glass_windows_overlooking_a_foggy_pine_forest_natural_mount_k69q6wfb2faiwi2cx42s_0.jpg",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "1115_ModelSamplingAuraFlow_1115": {
+      "node_type": "ModelSamplingAuraFlow",
+      "node_id": 1115,
+      "title": "ModelSamplingAuraFlow_1115",
+      "values": [
+        3
+      ],
+      "note": "Configurable parameters for ModelSamplingAuraFlow"
+    },
+    "1818_JoinStringMulti_1818": {
+      "node_type": "JoinStringMulti",
+      "node_id": 1818,
+      "title": "JoinStringMulti_1818",
+      "values": [
+        2,
+        "/",
+        false,
+        null
+      ],
+      "note": "Configurable parameters for JoinStringMulti"
+    },
+    "1819_JoinStringMulti_1819": {
+      "node_type": "JoinStringMulti",
+      "node_id": 1819,
+      "title": "JoinStringMulti_1819",
+      "values": [
+        2,
+        "/",
+        false,
+        null
+      ],
+      "note": "Configurable parameters for JoinStringMulti"
+    },
+    "1294_DWPreprocessor_1294": {
+      "node_type": "DWPreprocessor",
+      "node_id": 1294,
+      "title": "DWPreprocessor_1294",
+      "values": [
+        "enable",
+        "enable",
+        "enable",
+        1024,
+        "yolox_l.onnx",
+        "dw-ll_ucoco_384_bs5.torchscript.pt",
+        "disable"
+      ],
+      "note": "Configurable parameters for DWPreprocessor"
+    },
+    "1546_TextEncodeQwenImageEditPlus_1546": {
+      "node_type": "TextEncodeQwenImageEditPlus",
+      "node_id": 1546,
+      "title": "TextEncodeQwenImageEditPlus_1546",
+      "values": [
+        "Create a 360 panoramic image of the cozy modern restaurant, summer evening. An ultra-wide HDRI image captured on a ricoh 360 degree camera, insta 360, equirectagular projection. Keep the style the same."
+      ],
+      "note": "Configurable parameters for TextEncodeQwenImageEditPlus"
+    },
+    "1199_TextEncodeQwenImageEditPlus_1199": {
+      "node_type": "TextEncodeQwenImageEditPlus",
+      "node_id": 1199,
+      "title": "TextEncodeQwenImageEditPlus_1199",
+      "values": [
+        "The characters are at a table in a restaurant. They are sitting opposite of each other. A cinematic movie scene with professional lighting."
+      ],
+      "note": "Configurable parameters for TextEncodeQwenImageEditPlus"
+    },
+    "1625_TextEncodeQwenImageEditPlus_1625": {
+      "node_type": "TextEncodeQwenImageEditPlus",
+      "node_id": 1625,
+      "title": "TextEncodeQwenImageEditPlus_1625",
+      "values": [
+        "Next scene:  The camera is behind the man creating an over the shoulder shot showing a frontal view of the woman smiling. The back of the mans head. The back of the man filles the right side of the image. Half the photo is obstructed by the mans back. The large window is to the right. Behind the woman to the left is a bar."
+      ],
+      "note": "Configurable parameters for TextEncodeQwenImageEditPlus"
+    },
+    "1532_TextEncodeQwenImageEditPlus_1532": {
+      "node_type": "TextEncodeQwenImageEditPlus",
+      "node_id": 1532,
+      "title": "TextEncodeQwenImageEditPlus_1532",
+      "values": [
+        "Remove the visible seam in the middle of the image. Remove the white bar. Keep the rest of the image exactly the same."
+      ],
+      "note": "Configurable parameters for TextEncodeQwenImageEditPlus"
+    },
+    "547_LoraLoaderModelOnly_547": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 547,
+      "title": "LoraLoaderModelOnly_547",
+      "values": [
+        "qwen\\Qwen-Image-Lightning-4steps-V2.0.safetensors",
+        1
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "1483_LoraLoaderModelOnly_1483": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 1483,
+      "title": "LoraLoaderModelOnly_1483",
+      "values": [
+        "qwen\\InSubject-0.5.safetensors",
+        0.7
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "1289_LoraLoaderModelOnly_1289": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 1289,
+      "title": "LoraLoaderModelOnly_1289",
+      "values": [
+        "qwen\\qwen-boreal-general-discrete-low-rank.safetensors",
+        0.85
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "1554_LoraLoaderModelOnly_1554": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 1554,
+      "title": "LoraLoaderModelOnly_1554",
+      "values": [
+        "qwen\\251018_MICKMUMPITZ_QWEN-EDIT_360_03.safetensors",
+        0.9
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "1607_LoraLoaderModelOnly_1607": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 1607,
+      "title": "LoraLoaderModelOnly_1607",
+      "values": [
+        "qwen\\next-scene_lora-v2-3000.safetensors",
+        0.9
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "1482_LoraLoaderModelOnly_1482": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 1482,
+      "title": "LoraLoaderModelOnly_1482",
+      "values": [
+        "qwen\\qwen-studio-realism.safetensors",
+        0.7
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "1342_ImageConcatMulti_1342": {
+      "node_type": "ImageConcatMulti",
+      "node_id": 1342,
+      "title": "ImageConcatMulti_1342",
+      "values": [
+        2,
+        "right",
+        true,
+        null
+      ],
+      "note": "Configurable parameters for ImageConcatMulti"
+    },
+    "1515_ImageConcatMulti_1515": {
+      "node_type": "ImageConcatMulti",
+      "node_id": 1515,
+      "title": "ImageConcatMulti_1515",
+      "values": [
+        2,
+        "down",
+        true,
+        null
+      ],
+      "note": "Configurable parameters for ImageConcatMulti"
+    },
+    "1543_InpaintModelConditioning_1543": {
+      "node_type": "InpaintModelConditioning",
+      "node_id": 1543,
+      "title": "InpaintModelConditioning_1543",
+      "values": [
+        true
+      ],
+      "note": "Configurable parameters for InpaintModelConditioning"
+    },
+    "1989_OlmDragCrop_1989": {
+      "node_type": "OlmDragCrop",
+      "node_id": 1989,
+      "title": "OlmDragCrop_1989",
+      "values": [
+        1762191237378,
+        2175,
+        1433,
+        378,
+        371,
+        488,
+        275,
+        4096,
+        1024,
+        "none",
+        "16:9",
+        true,
+        "set_ratio",
+        "refresh",
+        null,
+        "Lime",
+        "reset"
+      ],
+      "note": "Configurable parameters for OlmDragCrop"
+    },
+    "551_Note_551": {
+      "node_type": "Note",
+      "node_id": 551,
+      "title": "Note_551",
+      "values": [
+        "https://huggingface.co/lightx2v/Qwen-Image-Lightning/blob/main/Qwen-Image-Lightning-4steps-V1.0-bf16.safetensors\n\n\ud83d\udcc1 ComfyUI/models/lora"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "1985_Note_1985": {
+      "node_type": "Note",
+      "node_id": 1985,
+      "title": "Note_1985",
+      "values": [
+        "InSubject-0.5.safetensors\n\nhttps://huggingface.co/peteromallet/Qwen-Image-Edit-InSubject/tree/main\n\n\ud83d\udcc1 ComfyUI/models/lora"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "1987_Note_1987": {
+      "node_type": "Note",
+      "node_id": 1987,
+      "title": "Note_1987",
+      "values": [
+        "251018_MICKMUMPITZ_QWEN-EDIT_360_03.safetensors\n\nDownload from the Patreon Post!\n\n\ud83d\udcc1 ComfyUI/models/lora"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "568_Note_568": {
+      "node_type": "Note",
+      "node_id": 568,
+      "title": "Note_568",
+      "values": [
+        "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/tree/main/split_files/text_encoders\n\n\ud83d\udcc1 ComfyUI\\models\\clip\\qwen"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "569_Note_569": {
+      "node_type": "Note",
+      "node_id": 569,
+      "title": "Note_569",
+      "values": [
+        "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/tree/main/split_files/vae\n\n\ud83d\udcc1 ComfyUI\\models\\vae"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "1991_Note_1991": {
+      "node_type": "Note",
+      "node_id": 1991,
+      "title": "Note_1991",
+      "values": [
+        "Qwen-Image-Boreal (Boring Reality LoRA for Qwen)\n\nhttps://civitai.com/models/1927710?modelVersionId=2181880\n\n\ud83d\udcc1 ComfyUI/models/lora"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "1993_Note_1993": {
+      "node_type": "Note",
+      "node_id": 1993,
+      "title": "Note_1993",
+      "values": [
+        "Studio Realism\n\nhttps://civitai.com/models/1972643/studio-realism\n\n\ud83d\udcc1 ComfyUI/models/lora"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "1996_Note_1996": {
+      "node_type": "Note",
+      "node_id": 1996,
+      "title": "Note_1996",
+      "values": [
+        " next-scene_lora-v2-3000.safetensors\n\nhttps://huggingface.co/lovis93/next-scene-qwen-image-lora-2509/tree/main\n\n\ud83d\udcc1 ComfyUI/models/lora"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "550_Note_550": {
+      "node_type": "Note",
+      "node_id": 550,
+      "title": "Note_550",
+      "values": [
+        "https://huggingface.co/QuantStack/Qwen-Image-Edit-2509-GGUF/tree/main\n\n\ud83d\udcc1 ComfyUI\\models\\unet\\gguf"
+      ],
+      "note": "Configurable parameters for Note"
+    },
+    "546_LoaderGGUF_546": {
+      "node_type": "LoaderGGUF",
+      "node_id": 546,
+      "title": "LoaderGGUF_546",
+      "values": [
+        "gguf\\Qwen-Image-Edit-2509-Q5_0.gguf"
+      ],
+      "note": "Configurable parameters for LoaderGGUF"
+    },
+    "1815_SCENE-NAME": {
+      "node_type": "PrimitiveStringMultiline",
+      "node_id": 1815,
+      "title": "SCENE-NAME",
+      "values": [
+        "SceneName"
+      ],
+      "note": "Configurable parameters for PrimitiveStringMultiline"
+    }
+  },
+  "_internal": {
+    "original_structure": {
+      "workflow_info": {
+        "id": "7cbcec68-7fa6-47bb-a38a-da689949a001",
+        "name": "mick.scene_builder",
+        "description": "Auto-generated configuration template"
+      },
+      "instance_config": {
+        "gpu_name": "RTX 5090",
+        "gpu_index": 0,
+        "provisioning_script": "mick.scene_builder.sh",
+        "disk_size": 100,
+        "github_user": "jus10wang-stack",
+        "github_branch": "main",
+        "note": "Instance creation settings - auto-detected github_user from current repo",
+        "ssh_key_path": "~/.ssh/id_ed25519_vastai"
+      },
+      "configurable_parameters": {
+        "SetNode": {
+          "191_Set_clip": {
+            "node_id": 191,
+            "title": "Set_clip",
+            "parameters": {
+              "widgets_values": [
+                "clip"
+              ]
+            }
+          },
+          "192_Set_vae": {
+            "node_id": 192,
+            "title": "Set_vae",
+            "parameters": {
+              "widgets_values": [
+                "vae"
+              ]
+            }
+          },
+          "845_Set_steps": {
+            "node_id": 845,
+            "title": "Set_steps",
+            "parameters": {
+              "widgets_values": [
+                "steps"
+              ]
+            }
+          },
+          "851_Set_cfg": {
+            "node_id": 851,
+            "title": "Set_cfg",
+            "parameters": {
+              "widgets_values": [
+                "cfg"
+              ]
+            }
+          },
+          "1300_Set_Width": {
+            "node_id": 1300,
+            "title": "Set_Width",
+            "parameters": {
+              "widgets_values": [
+                "Width"
+              ]
+            }
+          },
+          "1301_Set_Height": {
+            "node_id": 1301,
+            "title": "Set_Height",
+            "parameters": {
+              "widgets_values": [
+                "Height"
+              ]
+            }
+          },
+          "1334_Set_IMG_01": {
+            "node_id": 1334,
+            "title": "Set_IMG_01",
+            "parameters": {
+              "widgets_values": [
+                "IMG_01"
+              ]
+            }
+          },
+          "1590_Set_IMG_02": {
+            "node_id": 1590,
+            "title": "Set_IMG_02",
+            "parameters": {
+              "widgets_values": [
+                "IMG_02"
+              ]
+            }
+          },
+          "1336_Set_IMG_03": {
+            "node_id": 1336,
+            "title": "Set_IMG_03",
+            "parameters": {
+              "widgets_values": [
+                "IMG_03"
+              ]
+            }
+          },
+          "1612_Set_ENVIRONMENT": {
+            "node_id": 1612,
+            "title": "Set_ENVIRONMENT",
+            "parameters": {
+              "widgets_values": [
+                "ENVIRONMENT"
+              ]
+            }
+          },
+          "1707_Set_360_IMAGE": {
+            "node_id": 1707,
+            "title": "Set_360 IMAGE",
+            "parameters": {
+              "widgets_values": [
+                "360 IMAGE"
+              ]
+            }
+          },
+          "1709_Set_360_IMAGE_2x": {
+            "node_id": 1709,
+            "title": "Set_360 IMAGE_2x",
+            "parameters": {
+              "widgets_values": [
+                "360 IMAGE_2x"
+              ]
+            }
+          },
+          "1816_Set_name": {
+            "node_id": 1816,
+            "title": "Set_name",
+            "parameters": {
+              "widgets_values": [
+                "name"
+              ]
+            }
+          },
+          "1981_Set_IMG_POSE_01": {
+            "node_id": 1981,
+            "title": "Set_IMG_POSE_01",
+            "parameters": {
+              "widgets_values": [
+                "IMG_POSE_01"
+              ]
+            }
+          },
+          "1555_Set_model_360": {
+            "node_id": 1555,
+            "title": "Set_model_360",
+            "parameters": {
+              "widgets_values": [
+                "model_360"
+              ]
+            }
+          },
+          "1606_Set_model_nextScene": {
+            "node_id": 1606,
+            "title": "Set_model_nextScene",
+            "parameters": {
+              "widgets_values": [
+                "model_nextScene"
+              ]
+            }
+          },
+          "1603_Set_REFERENCE": {
+            "node_id": 1603,
+            "title": "Set_REFERENCE",
+            "parameters": {
+              "widgets_values": [
+                "REFERENCE"
+              ]
+            }
+          },
+          "190_Set_model": {
+            "node_id": 190,
+            "title": "Set_model",
+            "parameters": {
+              "widgets_values": [
+                "model"
+              ]
+            }
+          },
+          "1312_Set_OUT_01": {
+            "node_id": 1312,
+            "title": "Set_OUT_01",
+            "parameters": {
+              "widgets_values": [
+                "OUT_01"
+              ]
+            }
+          },
+          "1630_Set_OUT_02": {
+            "node_id": 1630,
+            "title": "Set_OUT_02",
+            "parameters": {
+              "widgets_values": [
+                "OUT_02"
+              ]
+            }
+          }
+        },
+        "CLIPLoader": {
+          "362_CLIPLoader_362": {
+            "node_id": 362,
+            "title": "CLIPLoader_362",
+            "parameters": {
+              "widgets_values": [
+                "qwen\\qwen_2.5_vl_7b_fp8_scaled.safetensors",
+                "qwen_image",
+                "cpu"
+              ]
+            }
+          }
+        },
+        "VAELoader": {
+          "360_VAELoader_360": {
+            "node_id": 360,
+            "title": "VAELoader_360",
+            "parameters": {
+              "widgets_values": [
+                "qwen\\qwen_image_vae.safetensors"
+              ]
+            }
+          }
+        },
+        "CFGNorm": {
+          "1114_CFGNorm_1114": {
+            "node_id": 1114,
+            "title": "CFGNorm_1114",
+            "parameters": {
+              "widgets_values": [
+                1
+              ]
+            }
+          }
+        },
+        "PrimitiveFloat": {
+          "850_CFG": {
+            "node_id": 850,
+            "title": "CFG",
+            "parameters": {
+              "widgets_values": [
+                1
+              ]
+            }
+          },
+          "1539_Mask_Blur": {
+            "node_id": 1539,
+            "title": "Mask Blur",
+            "parameters": {
+              "widgets_values": [
+                20
+              ]
+            }
+          }
+        },
+        "GetNode": {
+          "206_Get_model": {
+            "node_id": 206,
+            "title": "Get_model",
+            "parameters": {
+              "widgets_values": [
+                "model"
+              ]
+            }
+          },
+          "853_Get_cfg": {
+            "node_id": 853,
+            "title": "Get_cfg",
+            "parameters": {
+              "widgets_values": [
+                "cfg"
+              ]
+            }
+          },
+          "846_Get_steps": {
+            "node_id": 846,
+            "title": "Get_steps",
+            "parameters": {
+              "widgets_values": [
+                "steps"
+              ]
+            }
+          },
+          "1518_Get_vae": {
+            "node_id": 1518,
+            "title": "Get_vae",
+            "parameters": {
+              "widgets_values": [
+                "vae"
+              ]
+            }
+          },
+          "1519_Get_cfg": {
+            "node_id": 1519,
+            "title": "Get_cfg",
+            "parameters": {
+              "widgets_values": [
+                "cfg"
+              ]
+            }
+          },
+          "1520_Get_steps": {
+            "node_id": 1520,
+            "title": "Get_steps",
+            "parameters": {
+              "widgets_values": [
+                "steps"
+              ]
+            }
+          },
+          "1523_Get_clip": {
+            "node_id": 1523,
+            "title": "Get_clip",
+            "parameters": {
+              "widgets_values": [
+                "clip"
+              ]
+            }
+          },
+          "1528_Get_cfg": {
+            "node_id": 1528,
+            "title": "Get_cfg",
+            "parameters": {
+              "widgets_values": [
+                "cfg"
+              ]
+            }
+          },
+          "1529_Get_steps": {
+            "node_id": 1529,
+            "title": "Get_steps",
+            "parameters": {
+              "widgets_values": [
+                "steps"
+              ]
+            }
+          },
+          "1533_Get_vae": {
+            "node_id": 1533,
+            "title": "Get_vae",
+            "parameters": {
+              "widgets_values": [
+                "vae"
+              ]
+            }
+          },
+          "1545_Get_model": {
+            "node_id": 1545,
+            "title": "Get_model",
+            "parameters": {
+              "widgets_values": [
+                "model"
+              ]
+            }
+          },
+          "1521_Get_model_360": {
+            "node_id": 1521,
+            "title": "Get_model_360",
+            "parameters": {
+              "widgets_values": [
+                "model_360"
+              ]
+            }
+          },
+          "202_Get_vae": {
+            "node_id": 202,
+            "title": "Get_vae",
+            "parameters": {
+              "widgets_values": [
+                "vae"
+              ]
+            }
+          },
+          "1311_Get_Height": {
+            "node_id": 1311,
+            "title": "Get_Height",
+            "parameters": {
+              "widgets_values": [
+                "Height"
+              ]
+            }
+          },
+          "1310_Get_Width": {
+            "node_id": 1310,
+            "title": "Get_Width",
+            "parameters": {
+              "widgets_values": [
+                "Width"
+              ]
+            }
+          },
+          "193_Get_clip": {
+            "node_id": 193,
+            "title": "Get_clip",
+            "parameters": {
+              "widgets_values": [
+                "clip"
+              ]
+            }
+          },
+          "1552_Get_ENVIRONMENT": {
+            "node_id": 1552,
+            "title": "Get_ENVIRONMENT",
+            "parameters": {
+              "widgets_values": [
+                "ENVIRONMENT"
+              ]
+            }
+          },
+          "1614_Get_vae": {
+            "node_id": 1614,
+            "title": "Get_vae",
+            "parameters": {
+              "widgets_values": [
+                "vae"
+              ]
+            }
+          },
+          "1615_Get_steps": {
+            "node_id": 1615,
+            "title": "Get_steps",
+            "parameters": {
+              "widgets_values": [
+                "steps"
+              ]
+            }
+          },
+          "1616_Get_cfg": {
+            "node_id": 1616,
+            "title": "Get_cfg",
+            "parameters": {
+              "widgets_values": [
+                "cfg"
+              ]
+            }
+          },
+          "1617_Get_Height": {
+            "node_id": 1617,
+            "title": "Get_Height",
+            "parameters": {
+              "widgets_values": [
+                "Height"
+              ]
+            }
+          },
+          "1618_Get_Width": {
+            "node_id": 1618,
+            "title": "Get_Width",
+            "parameters": {
+              "widgets_values": [
+                "Width"
+              ]
+            }
+          },
+          "1620_Get_model_nextScene": {
+            "node_id": 1620,
+            "title": "Get_model_nextScene",
+            "parameters": {
+              "widgets_values": [
+                "model_nextScene"
+              ]
+            }
+          },
+          "1626_Get_clip": {
+            "node_id": 1626,
+            "title": "Get_clip",
+            "parameters": {
+              "widgets_values": [
+                "clip"
+              ]
+            }
+          },
+          "1302_Get_Width": {
+            "node_id": 1302,
+            "title": "Get_Width",
+            "parameters": {
+              "widgets_values": [
+                "Width"
+              ]
+            }
+          },
+          "1589_Get_IMG_01": {
+            "node_id": 1589,
+            "title": "Get_IMG_01",
+            "parameters": {
+              "widgets_values": [
+                "IMG_01"
+              ]
+            }
+          },
+          "1599_Get_ENVIRONMENT": {
+            "node_id": 1599,
+            "title": "Get_ENVIRONMENT",
+            "parameters": {
+              "widgets_values": [
+                "ENVIRONMENT"
+              ]
+            }
+          },
+          "1817_Get_name": {
+            "node_id": 1817,
+            "title": "Get_name",
+            "parameters": {
+              "widgets_values": [
+                "name"
+              ]
+            }
+          },
+          "1820_Get_name": {
+            "node_id": 1820,
+            "title": "Get_name",
+            "parameters": {
+              "widgets_values": [
+                "name"
+              ]
+            }
+          },
+          "1306_Get_Height": {
+            "node_id": 1306,
+            "title": "Get_Height",
+            "parameters": {
+              "widgets_values": [
+                "Height"
+              ]
+            }
+          },
+          "1602_Get_IMG_02": {
+            "node_id": 1602,
+            "title": "Get_IMG_02",
+            "parameters": {
+              "widgets_values": [
+                "IMG_02"
+              ]
+            }
+          },
+          "1598_Get_IMG_02": {
+            "node_id": 1598,
+            "title": "Get_IMG_02",
+            "parameters": {
+              "widgets_values": [
+                "IMG_02"
+              ]
+            }
+          },
+          "1622_Get_IMG_01": {
+            "node_id": 1622,
+            "title": "Get_IMG_01",
+            "parameters": {
+              "widgets_values": [
+                "IMG_01"
+              ]
+            }
+          },
+          "1601_Get_IMG_01": {
+            "node_id": 1601,
+            "title": "Get_IMG_01",
+            "parameters": {
+              "widgets_values": [
+                "IMG_01"
+              ]
+            }
+          },
+          "1600_Get_IMG_03": {
+            "node_id": 1600,
+            "title": "Get_IMG_03",
+            "parameters": {
+              "widgets_values": [
+                "IMG_03"
+              ]
+            }
+          },
+          "1982_Get_360_IMAGE": {
+            "node_id": 1982,
+            "title": "Get_360 IMAGE",
+            "parameters": {
+              "widgets_values": [
+                "360 IMAGE"
+              ]
+            }
+          },
+          "1531_Get_clip": {
+            "node_id": 1531,
+            "title": "Get_clip",
+            "parameters": {
+              "widgets_values": [
+                "clip"
+              ]
+            }
+          },
+          "1990_Get_360_IMAGE_2x": {
+            "node_id": 1990,
+            "title": "Get_360 IMAGE_2x",
+            "parameters": {
+              "widgets_values": [
+                "360 IMAGE_2x"
+              ]
+            }
+          },
+          "1621_Get_OUT_01": {
+            "node_id": 1621,
+            "title": "Get_OUT_01",
+            "parameters": {
+              "widgets_values": [
+                "OUT_01"
+              ]
+            }
+          },
+          "1623_Get_REFERENCE": {
+            "node_id": 1623,
+            "title": "Get_REFERENCE",
+            "parameters": {
+              "widgets_values": [
+                "REFERENCE"
+              ]
+            }
+          }
+        },
+        "SaveImage": {
+          "1522_SaveImage_1522": {
+            "node_id": 1522,
+            "title": "SaveImage_1522",
+            "parameters": {
+              "widgets_values": [
+                "ComfyUI"
+              ]
+            }
+          },
+          "1526_SaveImage_1526": {
+            "node_id": 1526,
+            "title": "SaveImage_1526",
+            "parameters": {
+              "widgets_values": [
+                "ComfyUI"
+              ]
+            }
+          },
+          "1530_SaveImage_1530": {
+            "node_id": 1530,
+            "title": "SaveImage_1530",
+            "parameters": {
+              "widgets_values": [
+                "ComfyUI"
+              ]
+            }
+          },
+          "208_SaveImage_208": {
+            "node_id": 208,
+            "title": "SaveImage_208",
+            "parameters": {
+              "widgets_values": [
+                "ComfyUI"
+              ],
+              "input_widgets": {
+                "filename_prefix": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "1288_SaveImage_1288": {
+            "node_id": 1288,
+            "title": "SaveImage_1288",
+            "parameters": {
+              "widgets_values": [
+                "ComfyUI"
+              ]
+            }
+          },
+          "1628_SaveImage_1628": {
+            "node_id": 1628,
+            "title": "SaveImage_1628",
+            "parameters": {
+              "widgets_values": [
+                "ComfyUI"
+              ]
+            }
+          },
+          "1613_SaveImage_1613": {
+            "node_id": 1613,
+            "title": "SaveImage_1613",
+            "parameters": {
+              "widgets_values": [
+                "ComfyUI"
+              ],
+              "input_widgets": {
+                "filename_prefix": {
+                  "type": "STRING",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "1547_SaveImage_1547": {
+            "node_id": 1547,
+            "title": "SaveImage_1547",
+            "parameters": {
+              "widgets_values": [
+                "ComfyUI"
+              ]
+            }
+          }
+        },
+        "EmptySD3LatentImage": {
+          "1524_EmptySD3LatentImage_1524": {
+            "node_id": 1524,
+            "title": "EmptySD3LatentImage_1524",
+            "parameters": {
+              "widgets_values": [
+                2048,
+                1024,
+                1
+              ]
+            }
+          },
+          "200_EmptySD3LatentImage_200": {
+            "node_id": 200,
+            "title": "EmptySD3LatentImage_200",
+            "parameters": {
+              "widgets_values": [
+                1920,
+                1088,
+                1
+              ],
+              "input_widgets": {
+                "width": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "height": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "1619_EmptySD3LatentImage_1619": {
+            "node_id": 1619,
+            "title": "EmptySD3LatentImage_1619",
+            "parameters": {
+              "widgets_values": [
+                1920,
+                1088,
+                1
+              ],
+              "input_widgets": {
+                "width": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "height": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "ImageConcanate": {
+          "1534_ImageConcanate_1534": {
+            "node_id": 1534,
+            "title": "ImageConcanate_1534",
+            "parameters": {
+              "widgets_values": [
+                "right",
+                true
+              ]
+            }
+          },
+          "1562_ImageConcanate_1562": {
+            "node_id": 1562,
+            "title": "ImageConcanate_1562",
+            "parameters": {
+              "widgets_values": [
+                "right",
+                true
+              ]
+            }
+          }
+        },
+        "CreateShapeMask": {
+          "1535_CreateShapeMask_1535": {
+            "node_id": 1535,
+            "title": "CreateShapeMask_1535",
+            "parameters": {
+              "widgets_values": [
+                "square",
+                1,
+                1024,
+                512,
+                0,
+                512,
+                512,
+                100,
+                1024
+              ],
+              "input_widgets": {
+                "frame_width": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "frame_height": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "shape_width": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "GrowMaskWithBlur": {
+          "1537_GrowMaskWithBlur_1537": {
+            "node_id": 1537,
+            "title": "GrowMaskWithBlur_1537",
+            "parameters": {
+              "widgets_values": [
+                0,
+                0,
+                true,
+                false,
+                10,
+                1,
+                1,
+                false
+              ],
+              "input_widgets": {
+                "blur_radius": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "ImageResizeKJv2": {
+          "1538_ImageResizeKJv2_1538": {
+            "node_id": 1538,
+            "title": "ImageResizeKJv2_1538",
+            "parameters": {
+              "widgets_values": [
+                2048,
+                1024,
+                "lanczos",
+                "crop",
+                "0, 0, 0",
+                "center",
+                2,
+                "cpu",
+                0,
+                "<tr><td>Output: </td><td><b>1</b> x <b>2048</b> x <b>1024 | 24.00MB</b></td></tr>"
+              ]
+            }
+          },
+          "1559_ImageResizeKJv2_1559": {
+            "node_id": 1559,
+            "title": "ImageResizeKJv2_1559",
+            "parameters": {
+              "widgets_values": [
+                1024,
+                512,
+                "lanczos",
+                "pad",
+                "127, 127, 127",
+                "center",
+                2,
+                "cpu",
+                0
+              ]
+            }
+          },
+          "1297_ImageResizeKJv2_1297": {
+            "node_id": 1297,
+            "title": "ImageResizeKJv2_1297",
+            "parameters": {
+              "widgets_values": [
+                1920,
+                1080,
+                "nearest-exact",
+                "resize",
+                "0, 0, 0",
+                "center",
+                2,
+                "cpu",
+                "<tr><td>Output: </td><td><b>1</b> x <b>1920</b> x <b>1080 | 23.73MB</b></td></tr>"
+              ],
+              "input_widgets": {
+                "width": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "height": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "ImageBlend": {
+          "1541_ImageBlend_1541": {
+            "node_id": 1541,
+            "title": "ImageBlend_1541",
+            "parameters": {
+              "widgets_values": [
+                1,
+                "screen"
+              ]
+            }
+          }
+        },
+        "KSampler": {
+          "1542_KSampler_1542": {
+            "node_id": 1542,
+            "title": "KSampler_1542",
+            "parameters": {
+              "widgets_values": [
+                1034973049061657,
+                "fixed",
+                20,
+                2.5,
+                "euler",
+                "simple",
+                1
+              ],
+              "input_widgets": {
+                "steps": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "cfg": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "1604_KSampler_1604": {
+            "node_id": 1604,
+            "title": "KSampler_1604",
+            "parameters": {
+              "widgets_values": [
+                1034973049061589,
+                "fixed",
+                20,
+                2.5,
+                "euler",
+                "simple",
+                1
+              ],
+              "input_widgets": {
+                "seed": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "steps": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "cfg": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "1629_KSampler_1629": {
+            "node_id": 1629,
+            "title": "KSampler_1629",
+            "parameters": {
+              "widgets_values": [
+                1034973049061647,
+                "fixed",
+                20,
+                2.5,
+                "euler",
+                "simple",
+                1
+              ],
+              "input_widgets": {
+                "seed": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "steps": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "cfg": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          },
+          "1525_KSampler_1525": {
+            "node_id": 1525,
+            "title": "KSampler_1525",
+            "parameters": {
+              "widgets_values": [
+                1034973049061656,
+                "fixed",
+                20,
+                2.5,
+                "euler",
+                "simple",
+                1
+              ],
+              "input_widgets": {
+                "steps": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "cfg": {
+                  "type": "FLOAT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "ImagePadForOutpaint": {
+          "1556_ImagePadForOutpaint_1556": {
+            "node_id": 1556,
+            "title": "ImagePadForOutpaint_1556",
+            "parameters": {
+              "widgets_values": [
+                568,
+                280,
+                568,
+                280,
+                40
+              ],
+              "input_widgets": {
+                "left": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "top": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "right": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "bottom": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "PrimitiveInt": {
+          "1557_Padding": {
+            "node_id": 1557,
+            "title": "Padding",
+            "parameters": {
+              "widgets_values": [
+                400,
+                "fixed"
+              ]
+            }
+          },
+          "844_STEPS": {
+            "node_id": 844,
+            "title": "STEPS",
+            "parameters": {
+              "widgets_values": [
+                4,
+                "fixed"
+              ]
+            }
+          },
+          "1591_PrimitiveInt_1591": {
+            "node_id": 1591,
+            "title": "PrimitiveInt_1591",
+            "parameters": {
+              "widgets_values": [
+                1034973049061649,
+                "fixed"
+              ]
+            }
+          },
+          "1624_PrimitiveInt_1624": {
+            "node_id": 1624,
+            "title": "PrimitiveInt_1624",
+            "parameters": {
+              "widgets_values": [
+                1034973049061648,
+                "fixed"
+              ]
+            }
+          },
+          "1540_Mask_Size": {
+            "node_id": 1540,
+            "title": "Mask Size",
+            "parameters": {
+              "widgets_values": [
+                200,
+                "fixed"
+              ]
+            }
+          },
+          "1298_WIDTH": {
+            "node_id": 1298,
+            "title": "WIDTH",
+            "parameters": {
+              "widgets_values": [
+                1920,
+                "fixed"
+              ]
+            }
+          },
+          "1299_HEIGHT": {
+            "node_id": 1299,
+            "title": "HEIGHT",
+            "parameters": {
+              "widgets_values": [
+                1080,
+                "fixed"
+              ]
+            }
+          }
+        },
+        "ImageScaleToTotalPixels": {
+          "1560_ImageScaleToTotalPixels_1560": {
+            "node_id": 1560,
+            "title": "ImageScaleToTotalPixels_1560",
+            "parameters": {
+              "widgets_values": [
+                "lanczos",
+                1
+              ]
+            }
+          },
+          "1286_ImageScaleToTotalPixels_1286": {
+            "node_id": 1286,
+            "title": "ImageScaleToTotalPixels_1286",
+            "parameters": {
+              "widgets_values": [
+                "lanczos",
+                1
+              ]
+            }
+          },
+          "1287_ImageScaleToTotalPixels_1287": {
+            "node_id": 1287,
+            "title": "ImageScaleToTotalPixels_1287",
+            "parameters": {
+              "widgets_values": [
+                "lanczos",
+                1
+              ]
+            }
+          },
+          "1290_ImageScaleToTotalPixels_1290": {
+            "node_id": 1290,
+            "title": "ImageScaleToTotalPixels_1290",
+            "parameters": {
+              "widgets_values": [
+                "lanczos",
+                1
+              ]
+            }
+          },
+          "1610_ImageScaleToTotalPixels_1610": {
+            "node_id": 1610,
+            "title": "ImageScaleToTotalPixels_1610",
+            "parameters": {
+              "widgets_values": [
+                "lanczos",
+                1
+              ]
+            }
+          },
+          "1293_ImageScaleToTotalPixels_1293": {
+            "node_id": 1293,
+            "title": "ImageScaleToTotalPixels_1293",
+            "parameters": {
+              "widgets_values": [
+                "lanczos",
+                1
+              ]
+            }
+          }
+        },
+        "LoadImage": {
+          "213_IMAGE_1": {
+            "node_id": 213,
+            "title": "IMAGE 1",
+            "parameters": {
+              "widgets_values": [
+                "a_candid_portrait_of_a_woman_with_natural_makeup_showcasing_her_unique_facial_features_captured_in__5837qamrn99y6vyf1nee_2.jpg",
+                "image"
+              ]
+            }
+          },
+          "1284_IMAGE_2": {
+            "node_id": 1284,
+            "title": "IMAGE 2",
+            "parameters": {
+              "widgets_values": [
+                "a_unique-looking_fashion_model_with_distinct_facial_features_medium_close-up_shot_professional_stud_6dyrfa5j5bs6mo5guhf3_1.jpg",
+                "image"
+              ]
+            }
+          },
+          "1285_IMAGE_3": {
+            "node_id": 1285,
+            "title": "IMAGE 3",
+            "parameters": {
+              "widgets_values": [
+                "a_cozy_modern_five_star_restaurant_with_glass_windows_overlooking_a_foggy_pine_forest_natural_mount_k69q6wfb2faiwi2cx42s_0.jpg",
+                "image"
+              ]
+            }
+          },
+          "1292_IMAGE_4_POSE": {
+            "node_id": 1292,
+            "title": "IMAGE 4 POSE",
+            "parameters": {
+              "widgets_values": [
+                "istockphoto-1369129270-612x612.jpg",
+                "image"
+              ]
+            }
+          },
+          "1611_IMAGE_3": {
+            "node_id": 1611,
+            "title": "IMAGE 3",
+            "parameters": {
+              "widgets_values": [
+                "a_cozy_modern_five_star_restaurant_with_glass_windows_overlooking_a_foggy_pine_forest_natural_mount_k69q6wfb2faiwi2cx42s_0.jpg",
+                "image"
+              ]
+            }
+          }
+        },
+        "ModelSamplingAuraFlow": {
+          "1115_ModelSamplingAuraFlow_1115": {
+            "node_id": 1115,
+            "title": "ModelSamplingAuraFlow_1115",
+            "parameters": {
+              "widgets_values": [
+                3
+              ]
+            }
+          }
+        },
+        "JoinStringMulti": {
+          "1818_JoinStringMulti_1818": {
+            "node_id": 1818,
+            "title": "JoinStringMulti_1818",
+            "parameters": {
+              "widgets_values": [
+                2,
+                "/",
+                false,
+                null
+              ]
+            }
+          },
+          "1819_JoinStringMulti_1819": {
+            "node_id": 1819,
+            "title": "JoinStringMulti_1819",
+            "parameters": {
+              "widgets_values": [
+                2,
+                "/",
+                false,
+                null
+              ]
+            }
+          }
+        },
+        "DWPreprocessor": {
+          "1294_DWPreprocessor_1294": {
+            "node_id": 1294,
+            "title": "DWPreprocessor_1294",
+            "parameters": {
+              "widgets_values": [
+                "enable",
+                "enable",
+                "enable",
+                1024,
+                "yolox_l.onnx",
+                "dw-ll_ucoco_384_bs5.torchscript.pt",
+                "disable"
+              ]
+            }
+          }
+        },
+        "TextEncodeQwenImageEditPlus": {
+          "1546_TextEncodeQwenImageEditPlus_1546": {
+            "node_id": 1546,
+            "title": "TextEncodeQwenImageEditPlus_1546",
+            "parameters": {
+              "widgets_values": [
+                "Create a 360 panoramic image of the cozy modern restaurant, summer evening. An ultra-wide HDRI image captured on a ricoh 360 degree camera, insta 360, equirectagular projection. Keep the style the same."
+              ]
+            }
+          },
+          "1199_TextEncodeQwenImageEditPlus_1199": {
+            "node_id": 1199,
+            "title": "TextEncodeQwenImageEditPlus_1199",
+            "parameters": {
+              "widgets_values": [
+                "The characters are at a table in a restaurant. They are sitting opposite of each other. A cinematic movie scene with professional lighting."
+              ]
+            }
+          },
+          "1625_TextEncodeQwenImageEditPlus_1625": {
+            "node_id": 1625,
+            "title": "TextEncodeQwenImageEditPlus_1625",
+            "parameters": {
+              "widgets_values": [
+                "Next scene:  The camera is behind the man creating an over the shoulder shot showing a frontal view of the woman smiling. The back of the mans head. The back of the man filles the right side of the image. Half the photo is obstructed by the mans back. The large window is to the right. Behind the woman to the left is a bar."
+              ]
+            }
+          },
+          "1532_TextEncodeQwenImageEditPlus_1532": {
+            "node_id": 1532,
+            "title": "TextEncodeQwenImageEditPlus_1532",
+            "parameters": {
+              "widgets_values": [
+                "Remove the visible seam in the middle of the image. Remove the white bar. Keep the rest of the image exactly the same."
+              ]
+            }
+          }
+        },
+        "LoraLoaderModelOnly": {
+          "547_LoraLoaderModelOnly_547": {
+            "node_id": 547,
+            "title": "LoraLoaderModelOnly_547",
+            "parameters": {
+              "widgets_values": [
+                "qwen\\Qwen-Image-Lightning-4steps-V2.0.safetensors",
+                1
+              ]
+            }
+          },
+          "1483_LoraLoaderModelOnly_1483": {
+            "node_id": 1483,
+            "title": "LoraLoaderModelOnly_1483",
+            "parameters": {
+              "widgets_values": [
+                "qwen\\InSubject-0.5.safetensors",
+                0.7
+              ]
+            }
+          },
+          "1289_LoraLoaderModelOnly_1289": {
+            "node_id": 1289,
+            "title": "LoraLoaderModelOnly_1289",
+            "parameters": {
+              "widgets_values": [
+                "qwen\\qwen-boreal-general-discrete-low-rank.safetensors",
+                0.85
+              ]
+            }
+          },
+          "1554_LoraLoaderModelOnly_1554": {
+            "node_id": 1554,
+            "title": "LoraLoaderModelOnly_1554",
+            "parameters": {
+              "widgets_values": [
+                "qwen\\251018_MICKMUMPITZ_QWEN-EDIT_360_03.safetensors",
+                0.9
+              ]
+            }
+          },
+          "1607_LoraLoaderModelOnly_1607": {
+            "node_id": 1607,
+            "title": "LoraLoaderModelOnly_1607",
+            "parameters": {
+              "widgets_values": [
+                "qwen\\next-scene_lora-v2-3000.safetensors",
+                0.9
+              ]
+            }
+          },
+          "1482_LoraLoaderModelOnly_1482": {
+            "node_id": 1482,
+            "title": "LoraLoaderModelOnly_1482",
+            "parameters": {
+              "widgets_values": [
+                "qwen\\qwen-studio-realism.safetensors",
+                0.7
+              ]
+            }
+          }
+        },
+        "ImageConcatMulti": {
+          "1342_ImageConcatMulti_1342": {
+            "node_id": 1342,
+            "title": "ImageConcatMulti_1342",
+            "parameters": {
+              "widgets_values": [
+                2,
+                "right",
+                true,
+                null
+              ]
+            }
+          },
+          "1515_ImageConcatMulti_1515": {
+            "node_id": 1515,
+            "title": "ImageConcatMulti_1515",
+            "parameters": {
+              "widgets_values": [
+                2,
+                "down",
+                true,
+                null
+              ]
+            }
+          }
+        },
+        "InpaintModelConditioning": {
+          "1543_InpaintModelConditioning_1543": {
+            "node_id": 1543,
+            "title": "InpaintModelConditioning_1543",
+            "parameters": {
+              "widgets_values": [
+                true
+              ]
+            }
+          }
+        },
+        "OlmDragCrop": {
+          "1989_OlmDragCrop_1989": {
+            "node_id": 1989,
+            "title": "OlmDragCrop_1989",
+            "parameters": {
+              "widgets_values": [
+                1762191237378,
+                2175,
+                1433,
+                378,
+                371,
+                488,
+                275,
+                4096,
+                1024,
+                "none",
+                "16:9",
+                true,
+                "set_ratio",
+                "refresh",
+                null,
+                "Lime",
+                "reset"
+              ]
+            }
+          }
+        },
+        "Note": {
+          "551_Note_551": {
+            "node_id": 551,
+            "title": "Note_551",
+            "parameters": {
+              "widgets_values": [
+                "https://huggingface.co/lightx2v/Qwen-Image-Lightning/blob/main/Qwen-Image-Lightning-4steps-V1.0-bf16.safetensors\n\n\ud83d\udcc1 ComfyUI/models/lora"
+              ]
+            }
+          },
+          "1985_Note_1985": {
+            "node_id": 1985,
+            "title": "Note_1985",
+            "parameters": {
+              "widgets_values": [
+                "InSubject-0.5.safetensors\n\nhttps://huggingface.co/peteromallet/Qwen-Image-Edit-InSubject/tree/main\n\n\ud83d\udcc1 ComfyUI/models/lora"
+              ]
+            }
+          },
+          "1987_Note_1987": {
+            "node_id": 1987,
+            "title": "Note_1987",
+            "parameters": {
+              "widgets_values": [
+                "251018_MICKMUMPITZ_QWEN-EDIT_360_03.safetensors\n\nDownload from the Patreon Post!\n\n\ud83d\udcc1 ComfyUI/models/lora"
+              ]
+            }
+          },
+          "568_Note_568": {
+            "node_id": 568,
+            "title": "Note_568",
+            "parameters": {
+              "widgets_values": [
+                "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/tree/main/split_files/text_encoders\n\n\ud83d\udcc1 ComfyUI\\models\\clip\\qwen"
+              ]
+            }
+          },
+          "569_Note_569": {
+            "node_id": 569,
+            "title": "Note_569",
+            "parameters": {
+              "widgets_values": [
+                "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/tree/main/split_files/vae\n\n\ud83d\udcc1 ComfyUI\\models\\vae"
+              ]
+            }
+          },
+          "1991_Note_1991": {
+            "node_id": 1991,
+            "title": "Note_1991",
+            "parameters": {
+              "widgets_values": [
+                "Qwen-Image-Boreal (Boring Reality LoRA for Qwen)\n\nhttps://civitai.com/models/1927710?modelVersionId=2181880\n\n\ud83d\udcc1 ComfyUI/models/lora"
+              ]
+            }
+          },
+          "1993_Note_1993": {
+            "node_id": 1993,
+            "title": "Note_1993",
+            "parameters": {
+              "widgets_values": [
+                "Studio Realism\n\nhttps://civitai.com/models/1972643/studio-realism\n\n\ud83d\udcc1 ComfyUI/models/lora"
+              ]
+            }
+          },
+          "1996_Note_1996": {
+            "node_id": 1996,
+            "title": "Note_1996",
+            "parameters": {
+              "widgets_values": [
+                " next-scene_lora-v2-3000.safetensors\n\nhttps://huggingface.co/lovis93/next-scene-qwen-image-lora-2509/tree/main\n\n\ud83d\udcc1 ComfyUI/models/lora"
+              ]
+            }
+          },
+          "550_Note_550": {
+            "node_id": 550,
+            "title": "Note_550",
+            "parameters": {
+              "widgets_values": [
+                "https://huggingface.co/QuantStack/Qwen-Image-Edit-2509-GGUF/tree/main\n\n\ud83d\udcc1 ComfyUI\\models\\unet\\gguf"
+              ]
+            }
+          }
+        },
+        "LoaderGGUF": {
+          "546_LoaderGGUF_546": {
+            "node_id": 546,
+            "title": "LoaderGGUF_546",
+            "parameters": {
+              "widgets_values": [
+                "gguf\\Qwen-Image-Edit-2509-Q5_0.gguf"
+              ]
+            }
+          }
+        },
+        "PrimitiveStringMultiline": {
+          "1815_SCENE-NAME": {
+            "node_id": 1815,
+            "title": "SCENE-NAME",
+            "parameters": {
+              "widgets_values": [
+                "SceneName"
+              ]
+            }
+          }
+        }
+      },
+      "workflow_links": [
+        [
+          546,
+          360,
+          0,
+          192,
+          0,
+          "VAE"
+        ],
+        [
+          720,
+          362,
+          0,
+          191,
+          0,
+          "CLIP"
+        ],
+        [
+          1216,
+          844,
+          0,
+          845,
+          0,
+          "*"
+        ],
+        [
+          1219,
+          850,
+          0,
+          851,
+          0,
+          "*"
+        ],
+        [
+          1618,
+          1115,
+          0,
+          1114,
+          0,
+          "MODEL"
+        ],
+        [
+          1620,
+          1114,
+          0,
+          547,
+          0,
+          "MODEL"
+        ],
+        [
+          1623,
+          546,
+          0,
+          1115,
+          0,
+          "MODEL"
+        ],
+        [
+          1764,
+          193,
+          0,
+          1199,
+          0,
+          "CLIP"
+        ],
+        [
+          1767,
+          202,
+          0,
+          1199,
+          1,
+          "VAE"
+        ],
+        [
+          1997,
+          1284,
+          0,
+          1287,
+          0,
+          "IMAGE"
+        ],
+        [
+          2000,
+          547,
+          0,
+          1289,
+          0,
+          "MODEL"
+        ],
+        [
+          2002,
+          1285,
+          0,
+          1290,
+          0,
+          "IMAGE"
+        ],
+        [
+          2010,
+          213,
+          0,
+          1286,
+          0,
+          "IMAGE"
+        ],
+        [
+          2013,
+          1294,
+          0,
+          1293,
+          0,
+          "IMAGE"
+        ],
+        [
+          2030,
+          1298,
+          0,
+          1300,
+          0,
+          "*"
+        ],
+        [
+          2031,
+          1299,
+          0,
+          1301,
+          0,
+          "*"
+        ],
+        [
+          2035,
+          1302,
+          0,
+          1297,
+          2,
+          "INT"
+        ],
+        [
+          2036,
+          1306,
+          0,
+          1297,
+          3,
+          "INT"
+        ],
+        [
+          2043,
+          1311,
+          0,
+          200,
+          1,
+          "INT"
+        ],
+        [
+          2044,
+          1310,
+          0,
+          200,
+          0,
+          "INT"
+        ],
+        [
+          2072,
+          1286,
+          0,
+          1334,
+          0,
+          "*"
+        ],
+        [
+          2074,
+          1290,
+          0,
+          1336,
+          0,
+          "*"
+        ],
+        [
+          2255,
+          1289,
+          0,
+          1482,
+          0,
+          "MODEL"
+        ],
+        [
+          2312,
+          1342,
+          0,
+          1515,
+          1,
+          "IMAGE"
+        ],
+        [
+          2313,
+          1515,
+          0,
+          1343,
+          0,
+          "IMAGE"
+        ],
+        [
+          2327,
+          1527,
+          0,
+          1522,
+          0,
+          "IMAGE"
+        ],
+        [
+          2328,
+          1521,
+          0,
+          1525,
+          0,
+          "MODEL"
+        ],
+        [
+          2329,
+          1546,
+          0,
+          1525,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          2330,
+          1546,
+          0,
+          1525,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          2331,
+          1524,
+          0,
+          1525,
+          3,
+          "LATENT"
+        ],
+        [
+          2332,
+          1520,
+          0,
+          1525,
+          4,
+          "INT"
+        ],
+        [
+          2333,
+          1519,
+          0,
+          1525,
+          5,
+          "FLOAT"
+        ],
+        [
+          2334,
+          1527,
+          0,
+          1526,
+          0,
+          "IMAGE"
+        ],
+        [
+          2335,
+          1525,
+          0,
+          1527,
+          0,
+          "LATENT"
+        ],
+        [
+          2336,
+          1518,
+          0,
+          1527,
+          1,
+          "VAE"
+        ],
+        [
+          2337,
+          1548,
+          0,
+          1530,
+          0,
+          "IMAGE"
+        ],
+        [
+          2338,
+          1531,
+          0,
+          1532,
+          0,
+          "CLIP"
+        ],
+        [
+          2339,
+          1533,
+          0,
+          1532,
+          1,
+          "VAE"
+        ],
+        [
+          2340,
+          1541,
+          0,
+          1532,
+          2,
+          "IMAGE"
+        ],
+        [
+          2341,
+          1527,
+          0,
+          1534,
+          0,
+          "IMAGE"
+        ],
+        [
+          2342,
+          1527,
+          0,
+          1534,
+          1,
+          "IMAGE"
+        ],
+        [
+          2343,
+          1538,
+          1,
+          1535,
+          0,
+          "INT"
+        ],
+        [
+          2344,
+          1538,
+          2,
+          1535,
+          1,
+          "INT"
+        ],
+        [
+          2345,
+          1540,
+          0,
+          1535,
+          2,
+          "INT"
+        ],
+        [
+          2346,
+          1537,
+          0,
+          1536,
+          0,
+          "MASK"
+        ],
+        [
+          2347,
+          1535,
+          0,
+          1537,
+          0,
+          "MASK"
+        ],
+        [
+          2348,
+          1539,
+          0,
+          1537,
+          1,
+          "FLOAT"
+        ],
+        [
+          2349,
+          1534,
+          0,
+          1538,
+          0,
+          "IMAGE"
+        ],
+        [
+          2350,
+          1538,
+          0,
+          1541,
+          0,
+          "IMAGE"
+        ],
+        [
+          2351,
+          1536,
+          0,
+          1541,
+          1,
+          "IMAGE"
+        ],
+        [
+          2352,
+          1545,
+          0,
+          1542,
+          0,
+          "MODEL"
+        ],
+        [
+          2353,
+          1543,
+          0,
+          1542,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          2354,
+          1543,
+          1,
+          1542,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          2355,
+          1543,
+          2,
+          1542,
+          3,
+          "LATENT"
+        ],
+        [
+          2356,
+          1529,
+          0,
+          1542,
+          4,
+          "INT"
+        ],
+        [
+          2357,
+          1528,
+          0,
+          1542,
+          5,
+          "FLOAT"
+        ],
+        [
+          2358,
+          1532,
+          0,
+          1543,
+          0,
+          "CONDITIONING"
+        ],
+        [
+          2359,
+          1532,
+          0,
+          1543,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          2360,
+          1533,
+          0,
+          1543,
+          2,
+          "VAE"
+        ],
+        [
+          2361,
+          1538,
+          0,
+          1543,
+          3,
+          "IMAGE"
+        ],
+        [
+          2362,
+          1535,
+          0,
+          1543,
+          4,
+          "MASK"
+        ],
+        [
+          2363,
+          1523,
+          0,
+          1546,
+          0,
+          "CLIP"
+        ],
+        [
+          2364,
+          1518,
+          0,
+          1546,
+          1,
+          "VAE"
+        ],
+        [
+          2365,
+          1548,
+          0,
+          1547,
+          0,
+          "IMAGE"
+        ],
+        [
+          2366,
+          1542,
+          0,
+          1548,
+          0,
+          "LATENT"
+        ],
+        [
+          2367,
+          1533,
+          0,
+          1548,
+          1,
+          "VAE"
+        ],
+        [
+          2368,
+          1541,
+          0,
+          1549,
+          0,
+          "IMAGE"
+        ],
+        [
+          2369,
+          1538,
+          0,
+          1550,
+          0,
+          "IMAGE"
+        ],
+        [
+          2376,
+          1560,
+          0,
+          1556,
+          0,
+          "IMAGE"
+        ],
+        [
+          2377,
+          1557,
+          0,
+          1556,
+          1,
+          "INT"
+        ],
+        [
+          2378,
+          1557,
+          0,
+          1556,
+          2,
+          "INT"
+        ],
+        [
+          2379,
+          1557,
+          0,
+          1556,
+          3,
+          "INT"
+        ],
+        [
+          2380,
+          1557,
+          0,
+          1556,
+          4,
+          "INT"
+        ],
+        [
+          2381,
+          1559,
+          0,
+          1558,
+          0,
+          "IMAGE"
+        ],
+        [
+          2382,
+          1556,
+          0,
+          1559,
+          0,
+          "IMAGE"
+        ],
+        [
+          2383,
+          1552,
+          0,
+          1560,
+          0,
+          "IMAGE"
+        ],
+        [
+          2384,
+          1559,
+          0,
+          1546,
+          2,
+          "IMAGE"
+        ],
+        [
+          2386,
+          1554,
+          0,
+          1555,
+          0,
+          "MODEL"
+        ],
+        [
+          2387,
+          547,
+          0,
+          1554,
+          0,
+          "MODEL"
+        ],
+        [
+          2393,
+          1548,
+          0,
+          1562,
+          0,
+          "IMAGE"
+        ],
+        [
+          2394,
+          1548,
+          0,
+          1562,
+          1,
+          "IMAGE"
+        ],
+        [
+          2438,
+          1589,
+          0,
+          1199,
+          2,
+          "IMAGE"
+        ],
+        [
+          2439,
+          1287,
+          0,
+          1590,
+          0,
+          "*"
+        ],
+        [
+          2458,
+          1599,
+          0,
+          1199,
+          4,
+          "IMAGE"
+        ],
+        [
+          2460,
+          1601,
+          0,
+          1342,
+          0,
+          "IMAGE"
+        ],
+        [
+          2462,
+          1515,
+          0,
+          1603,
+          0,
+          "*"
+        ],
+        [
+          2464,
+          1604,
+          0,
+          1605,
+          0,
+          "LATENT"
+        ],
+        [
+          2465,
+          206,
+          0,
+          1604,
+          0,
+          "MODEL"
+        ],
+        [
+          2466,
+          1199,
+          0,
+          1604,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          2467,
+          1199,
+          0,
+          1604,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          2468,
+          200,
+          0,
+          1604,
+          3,
+          "LATENT"
+        ],
+        [
+          2469,
+          1591,
+          0,
+          1604,
+          4,
+          "INT"
+        ],
+        [
+          2470,
+          846,
+          0,
+          1604,
+          5,
+          "INT"
+        ],
+        [
+          2471,
+          853,
+          0,
+          1604,
+          6,
+          "FLOAT"
+        ],
+        [
+          2472,
+          202,
+          0,
+          1605,
+          1,
+          "VAE"
+        ],
+        [
+          2479,
+          1605,
+          0,
+          208,
+          0,
+          "IMAGE"
+        ],
+        [
+          2480,
+          1605,
+          0,
+          1288,
+          0,
+          "IMAGE"
+        ],
+        [
+          2481,
+          1605,
+          0,
+          1312,
+          0,
+          "IMAGE"
+        ],
+        [
+          2482,
+          1607,
+          0,
+          1606,
+          0,
+          "*"
+        ],
+        [
+          2486,
+          1611,
+          0,
+          1610,
+          0,
+          "IMAGE"
+        ],
+        [
+          2487,
+          1610,
+          0,
+          1612,
+          0,
+          "*"
+        ],
+        [
+          2489,
+          1618,
+          0,
+          1619,
+          0,
+          "INT"
+        ],
+        [
+          2490,
+          1617,
+          0,
+          1619,
+          1,
+          "INT"
+        ],
+        [
+          2491,
+          1626,
+          0,
+          1625,
+          0,
+          "CLIP"
+        ],
+        [
+          2492,
+          1614,
+          0,
+          1625,
+          1,
+          "VAE"
+        ],
+        [
+          2495,
+          1629,
+          0,
+          1627,
+          0,
+          "LATENT"
+        ],
+        [
+          2496,
+          1614,
+          0,
+          1627,
+          1,
+          "VAE"
+        ],
+        [
+          2497,
+          1627,
+          0,
+          1628,
+          0,
+          "IMAGE"
+        ],
+        [
+          2498,
+          1620,
+          0,
+          1629,
+          0,
+          "MODEL"
+        ],
+        [
+          2499,
+          1625,
+          0,
+          1629,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          2500,
+          1625,
+          0,
+          1629,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          2501,
+          1619,
+          0,
+          1629,
+          3,
+          "LATENT"
+        ],
+        [
+          2502,
+          1624,
+          0,
+          1629,
+          4,
+          "INT"
+        ],
+        [
+          2503,
+          1615,
+          0,
+          1629,
+          5,
+          "INT"
+        ],
+        [
+          2504,
+          1616,
+          0,
+          1629,
+          6,
+          "FLOAT"
+        ],
+        [
+          2583,
+          1548,
+          0,
+          1706,
+          0,
+          "*"
+        ],
+        [
+          2584,
+          1706,
+          0,
+          1705,
+          0,
+          "IMAGE"
+        ],
+        [
+          2585,
+          1706,
+          0,
+          1707,
+          0,
+          "*"
+        ],
+        [
+          2586,
+          1562,
+          0,
+          1708,
+          0,
+          "*"
+        ],
+        [
+          2587,
+          1708,
+          0,
+          1709,
+          0,
+          "*"
+        ],
+        [
+          2588,
+          1708,
+          0,
+          1704,
+          0,
+          "IMAGE"
+        ],
+        [
+          2591,
+          1293,
+          0,
+          1295,
+          0,
+          "IMAGE"
+        ],
+        [
+          2705,
+          1815,
+          0,
+          1816,
+          0,
+          "*"
+        ],
+        [
+          2706,
+          1817,
+          0,
+          1818,
+          0,
+          "STRING"
+        ],
+        [
+          2707,
+          1817,
+          0,
+          1818,
+          1,
+          "STRING"
+        ],
+        [
+          2708,
+          1818,
+          0,
+          208,
+          1,
+          "STRING"
+        ],
+        [
+          2709,
+          1820,
+          0,
+          1819,
+          0,
+          "STRING"
+        ],
+        [
+          2710,
+          1820,
+          0,
+          1819,
+          1,
+          "STRING"
+        ],
+        [
+          2711,
+          1819,
+          0,
+          1613,
+          1,
+          "STRING"
+        ],
+        [
+          2769,
+          1292,
+          0,
+          1294,
+          0,
+          "IMAGE"
+        ],
+        [
+          2770,
+          1294,
+          0,
+          1297,
+          0,
+          "IMAGE"
+        ],
+        [
+          2774,
+          1602,
+          0,
+          1342,
+          1,
+          "IMAGE"
+        ],
+        [
+          2775,
+          1598,
+          0,
+          1199,
+          3,
+          "IMAGE"
+        ],
+        [
+          2776,
+          1621,
+          0,
+          1625,
+          2,
+          "IMAGE"
+        ],
+        [
+          2777,
+          1623,
+          0,
+          1625,
+          3,
+          "IMAGE"
+        ],
+        [
+          2911,
+          1293,
+          0,
+          1981,
+          0,
+          "*"
+        ],
+        [
+          2912,
+          547,
+          0,
+          1483,
+          0,
+          "MODEL"
+        ],
+        [
+          2913,
+          1482,
+          0,
+          190,
+          0,
+          "MODEL"
+        ],
+        [
+          2914,
+          1982,
+          0,
+          1515,
+          0,
+          "IMAGE"
+        ],
+        [
+          2919,
+          1990,
+          0,
+          1989,
+          0,
+          "IMAGE"
+        ],
+        [
+          2921,
+          1482,
+          0,
+          1607,
+          0,
+          "MODEL"
+        ],
+        [
+          2924,
+          1627,
+          0,
+          1630,
+          0,
+          "IMAGE"
+        ],
+        [
+          2925,
+          1627,
+          0,
+          1613,
+          0,
+          "IMAGE"
+        ]
+      ]
+    },
+    "note": "This section is used internally for workflow reconstruction"
+  }
+}

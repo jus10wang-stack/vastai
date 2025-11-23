@@ -3,7 +3,7 @@
   "description": "Edit the values below, then use with execute_workflow_config.py",
   "instance_config": {
     "gpu_name": "RTX 5090",
-    "gpu_index": 0,
+    "gpu_index": 1,
     "provisioning_script": "mickI2V.1.sh",
     "disk_size": 188,
     "github_user": "jus10wang-stack",
