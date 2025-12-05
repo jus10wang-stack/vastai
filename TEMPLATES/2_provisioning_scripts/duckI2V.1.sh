@@ -32,6 +32,7 @@ NODES=(
     "https://github.com/ClownsharkBatwing/RES4LYF.git" 
     "https://github.com/giriss/comfy-image-saver.git"
     "https://github.com/princepainter/ComfyUI-PainterI2V.git"
+    "https://github.com/princepainter/Comfyui-PainterFLF2V.git"
 )
 
 WORKFLOWS=(
