@@ -41,6 +41,12 @@ show_help() {
     echo "  vai search [index] [gpu] [min_disk]      - Search for GPU offers"
     echo "  vai calculate <provision_script>         - Calculate provisioning download size"
     echo ""
+    echo "SSH TUNNEL MANAGEMENT:"
+    echo "  vai tunnel <instance>                    - Create SSH tunnel with auto port assignment"
+    echo "  vai tunnel --list                        - List all active SSH tunnels"
+    echo "  vai tunnel --stop <instance>             - Close specific SSH tunnel"
+    echo "  vai tunnel --stop-all                    - Close all SSH tunnels"
+    echo ""
     echo "DEBUGGING & CONFIGURATION:"
     echo "  vai ssh-key                              - Show detected SSH key location"
     echo ""
@@ -735,6 +741,122 @@ case "$COMMAND" in
     "ssh-key")
         # Show SSH key detection information
         python3 "$PYTHON_SCRIPTS_DIR/utils/show_ssh_key.py"
+        ;;
+
+    "tunnel"|"t")
+        # Check if --help is requested
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            echo "🔗 SSH Tunnel Management Help"
+            echo "=============================="
+            echo "Usage: vai tunnel <INSTANCE_ID>"
+            echo "       vai tunnel --list"
+            echo "       vai tunnel --stop <INSTANCE_ID>"
+            echo "       vai tunnel --stop-all"
+            echo ""
+            echo "Arguments:"
+            echo "  INSTANCE_ID        Vast.ai instance ID"
+            echo ""
+            echo "Options:"
+            echo "  --list, -l         List all active SSH tunnels"
+            echo "  --stop, -s         Close tunnel for specific instance"
+            echo "  --stop-all         Close all active tunnels"
+            echo ""
+            echo "Examples:"
+            echo "  vai tunnel 26003629                      # Create tunnel for instance"
+            echo "  vai tunnel --list                        # List all active tunnels"
+            echo "  vai tunnel --stop 26003629               # Close specific tunnel"
+            echo "  vai tunnel --stop-all                    # Close all tunnels"
+            echo ""
+            echo "This command will:"
+            echo "  1. Auto-detect SSH connection details from Vast.ai API"
+            echo "  2. Allocate next available local port (8188, 8189, 8190...)"
+            echo "  3. Create SSH tunnel in background"
+            echo "  4. Track tunnel process for management"
+            echo "  5. Display localhost URL for ComfyUI access"
+            echo ""
+            echo "Features:"
+            echo "  - Automatic port allocation (no conflicts)"
+            echo "  - Background tunnel process (terminal stays free)"
+            echo "  - Persistent across sessions (saved to ~/.vai_tunnels.json)"
+            echo "  - Easy cleanup with --stop commands"
+        else
+            if [[ "$1" == "--list" || "$1" == "-l" ]]; then
+                echo "📡 Listing active SSH tunnels..."
+                cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/utils/tunnel_manager.py" list
+            elif [[ "$1" == "--stop" || "$1" == "-s" ]]; then
+                if [ -z "$2" ]; then
+                    echo "❌ Please provide instance ID to stop"
+                    echo "Usage: vai tunnel --stop <instance_id>"
+                    exit 1
+                fi
+                echo "🔒 Closing SSH tunnel for instance $2..."
+                cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/utils/tunnel_manager.py" close "$2"
+            elif [[ "$1" == "--stop-all" ]]; then
+                echo "🔒 Closing all SSH tunnels..."
+                cd "$SCRIPT_DIR" && poetry run python "$PYTHON_SCRIPTS_DIR/utils/tunnel_manager.py" close-all
+            else
+                # Create tunnel for specific instance
+                if [ -z "$1" ]; then
+                    echo "❌ Please provide instance ID"
+                    echo "Usage: vai tunnel <instance_id>"
+                    exit 1
+                fi
+
+                INSTANCE_ID="$1"
+                echo "🔗 Creating SSH tunnel for instance $INSTANCE_ID..."
+
+                # Fetch SSH info from Vast.ai API
+                cd "$SCRIPT_DIR" && poetry run python -c "
+import os
+import sys
+import requests
+from dotenv import load_dotenv
+sys.path.append('$PYTHON_SCRIPTS_DIR')
+from utils.tunnel_manager import TunnelManager
+
+load_dotenv()
+
+api_key = os.getenv('VAST_API_KEY')
+if not api_key:
+    print('❌ VAST_API_KEY not found in environment')
+    sys.exit(1)
+
+headers = {'Authorization': f'Bearer {api_key}'}
+response = requests.get('https://console.vast.ai/api/v0/instances/', headers=headers)
+instances = response.json().get('instances', [])
+
+instance_id = '$INSTANCE_ID'
+found = False
+
+for instance in instances:
+    if str(instance.get('id')) == instance_id:
+        ssh_host = instance.get('ssh_host')
+        ssh_port = instance.get('ssh_port')
+
+        if not ssh_host or not ssh_port:
+            print(f'❌ Instance {instance_id} is not ready for SSH yet')
+            sys.exit(1)
+
+        # Create tunnel
+        tunnel_manager = TunnelManager()
+        local_port = tunnel_manager.create_tunnel(
+            instance_id=instance_id,
+            ssh_host=ssh_host,
+            ssh_port=ssh_port,
+            remote_port=8188
+        )
+
+        print(f'\n🌐 Access ComfyUI at: http://localhost:{local_port}')
+        print(f'💡 To close: vai tunnel --stop {instance_id}')
+        found = True
+        break
+
+if not found:
+    print(f'❌ Instance {instance_id} not found')
+    sys.exit(1)
+"
+            fi
+        fi
         ;;
 
     *)
