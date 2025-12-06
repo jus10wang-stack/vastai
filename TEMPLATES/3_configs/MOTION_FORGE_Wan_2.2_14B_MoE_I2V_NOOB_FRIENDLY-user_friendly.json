@@ -1,0 +1,818 @@
+{
+  "workflow_name": "MOTION_FORGE_Wan_2.2_14B_MoE_I2V_NOOB_FRIENDLY",
+  "description": "Edit the values below, then use with execute_workflow_config.py",
+  "instance_config": {
+    "gpu_name": "RTX 5090",
+    "gpu_index": 0,
+    "provisioning_script": "MOTION_FORGE_Wan_2.2_14B_MoE_I2V_NOOB_FRIENDLY.sh",
+    "disk_size": 135,
+    "github_user": "jiso007",
+    "github_branch": "main",
+    "note": "Instance creation settings - auto-detected github_user from current repo, ssh_key_path is optional (will auto-detect if not specified)",
+    "ssh_key_path": "~/.ssh/id_ed25519_vastai"
+  },
+  "parameters": {
+    "17_LoaderGGUF_17": {
+      "node_type": "LoaderGGUF",
+      "node_id": 17,
+      "title": "LoaderGGUF_17",
+      "values": [
+        "Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+      ],
+      "note": "Configurable parameters for LoaderGGUF"
+    },
+    "16_LoaderGGUF_16": {
+      "node_type": "LoaderGGUF",
+      "node_id": 16,
+      "title": "LoaderGGUF_16",
+      "values": [
+        "Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
+      ],
+      "note": "Configurable parameters for LoaderGGUF"
+    },
+    "11_WanImageToVideo_11": {
+      "node_type": "WanImageToVideo",
+      "node_id": 11,
+      "title": "WanImageToVideo_11",
+      "values": [
+        960,
+        960,
+        65,
+        1
+      ],
+      "note": "Configurable parameters for WanImageToVideo"
+    },
+    "21_LIGHTX2V_LOW_NOISE": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 21,
+      "title": "LIGHTX2V LOW NOISE",
+      "values": [
+        "lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
+        2
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "20_LIGHTX2V_HIGH_NOISE": {
+      "node_type": "LoraLoaderModelOnly",
+      "node_id": 20,
+      "title": "LIGHTX2V HIGH NOISE",
+      "values": [
+        "lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
+        5.6
+      ],
+      "note": "Configurable parameters for LoraLoaderModelOnly"
+    },
+    "33_LORAS_LOADER_LOW_NOISE": {
+      "node_type": "Power Lora Loader (rgthree)",
+      "node_id": 33,
+      "title": "LORAS LOADER LOW NOISE",
+      "values": [
+        {},
+        {
+          "type": "PowerLoraLoaderHeaderWidget"
+        },
+        {},
+        ""
+      ],
+      "note": "Configurable parameters for Power Lora Loader (rgthree)"
+    },
+    "31_LORAS_LOADER_HIGH_NOISE": {
+      "node_type": "Power Lora Loader (rgthree)",
+      "node_id": 31,
+      "title": "LORAS LOADER HIGH NOISE",
+      "values": [
+        {},
+        {
+          "type": "PowerLoraLoaderHeaderWidget"
+        },
+        {},
+        ""
+      ],
+      "note": "Configurable parameters for Power Lora Loader (rgthree)"
+    },
+    "42_RAMCleanup_42": {
+      "node_type": "RAMCleanup",
+      "node_id": 42,
+      "title": "RAMCleanup_42",
+      "values": [
+        true,
+        true,
+        true,
+        3
+      ],
+      "note": "Configurable parameters for RAMCleanup"
+    },
+    "1_CLIP_Text_Encode_(Negative_Prompt)": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 1,
+      "title": "CLIP Text Encode (Negative Prompt)",
+      "values": [
+        "\u8272\u8c03\u8273\u4e3d\uff0c\u8fc7\u66dd\uff0c\u9759\u6001\uff0c\u7ec6\u8282\u6a21\u7cca\u4e0d\u6e05\uff0c\u5b57\u5e55\uff0c\u98ce\u683c\uff0c\u4f5c\u54c1\uff0c\u753b\u4f5c\uff0c\u753b\u9762\uff0c\u9759\u6b62\uff0c\u6574\u4f53\u53d1\u7070\uff0c\u6700\u5dee\u8d28\u91cf\uff0c\u4f4e\u8d28\u91cf\uff0cJPEG\u538b\u7f29\u6b8b\u7559\uff0c\u4e11\u964b\u7684\uff0c\u6b8b\u7f3a\u7684\uff0c\u591a\u4f59\u7684\u624b\u6307\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u624b\u90e8\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u8138\u90e8\uff0c\u7578\u5f62\u7684\uff0c\u6bc1\u5bb9\u7684\uff0c\u5f62\u6001\u7578\u5f62\u7684\u80a2\u4f53\uff0c\u624b\u6307\u878d\u5408\uff0c\u9759\u6b62\u4e0d\u52a8\u7684\u753b\u9762\uff0c\u6742\u4e71\u7684\u80cc\u666f\uff0c\u4e09\u6761\u817f\uff0c\u80cc\u666f\u4eba\u5f88\u591a\uff0c\u5012\u7740\u8d70"
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "8_CLIP_Text_Encode_(Positive_Prompt)": {
+      "node_type": "CLIPTextEncode",
+      "node_id": 8,
+      "title": "CLIP Text Encode (Positive Prompt)",
+      "values": [
+        "A nuclear explosion erupts behind a cute anime girl, causing her to drop the flowers in her hands as she begins running for her life, fleeing in fear at great speed."
+      ],
+      "note": "Configurable parameters for CLIPTextEncode"
+    },
+    "22_ImageScaleToTotalPixels_22": {
+      "node_type": "ImageScaleToTotalPixels",
+      "node_id": 22,
+      "title": "ImageScaleToTotalPixels_22",
+      "values": [
+        "lanczos",
+        0.25
+      ],
+      "note": "Configurable parameters for ImageScaleToTotalPixels"
+    },
+    "14_WanMoeKSampler_14": {
+      "node_type": "WanMoeKSampler",
+      "node_id": 14,
+      "title": "WanMoeKSampler_14",
+      "values": [
+        0.5,
+        878883364592829,
+        "fixed",
+        4,
+        1,
+        1,
+        "uni_pc",
+        "beta57",
+        5,
+        1
+      ],
+      "note": "Configurable parameters for WanMoeKSampler"
+    },
+    "18_ClipLoaderGGUF_18": {
+      "node_type": "ClipLoaderGGUF",
+      "node_id": 18,
+      "title": "ClipLoaderGGUF_18",
+      "values": [
+        "cow-umt5xxl-q8_0.gguf",
+        "wan",
+        "default"
+      ],
+      "note": "Configurable parameters for ClipLoaderGGUF"
+    },
+    "24_CreateVideo_24": {
+      "node_type": "CreateVideo",
+      "node_id": 24,
+      "title": "CreateVideo_24",
+      "values": [
+        16
+      ],
+      "note": "Configurable parameters for CreateVideo"
+    },
+    "27_CreateVideo_27": {
+      "node_type": "CreateVideo",
+      "node_id": 27,
+      "title": "CreateVideo_27",
+      "values": [
+        32
+      ],
+      "note": "Configurable parameters for CreateVideo"
+    },
+    "19_VaeGGUF_19": {
+      "node_type": "VaeGGUF",
+      "node_id": 19,
+      "title": "VaeGGUF_19",
+      "values": [
+        "pig_wan_vae_fp32-f16.gguf"
+      ],
+      "note": "Configurable parameters for VaeGGUF"
+    },
+    "9_LoadImage_9": {
+      "node_type": "LoadImage",
+      "node_id": 9,
+      "title": "LoadImage_9",
+      "values": [
+        "fennec_girl_flowers.png",
+        "image"
+      ],
+      "note": "Configurable parameters for LoadImage"
+    },
+    "35_RIFE_VFI_35": {
+      "node_type": "RIFE VFI",
+      "node_id": 35,
+      "title": "RIFE VFI_35",
+      "values": [
+        "rife49.pth",
+        10,
+        2,
+        true,
+        true,
+        1
+      ],
+      "note": "Configurable parameters for RIFE VFI"
+    },
+    "29_UpscaleModelLoader_29": {
+      "node_type": "UpscaleModelLoader",
+      "node_id": 29,
+      "title": "UpscaleModelLoader_29",
+      "values": [
+        "RealESRGAN_x2plus.pth"
+      ],
+      "note": "Configurable parameters for UpscaleModelLoader"
+    },
+    "25_SaveVideo_25": {
+      "node_type": "SaveVideo",
+      "node_id": 25,
+      "title": "SaveVideo_25",
+      "values": [
+        "video/ComfyUI",
+        "auto",
+        "auto"
+      ],
+      "note": "Configurable parameters for SaveVideo"
+    },
+    "28_SaveVideo_28": {
+      "node_type": "SaveVideo",
+      "node_id": 28,
+      "title": "SaveVideo_28",
+      "values": [
+        "video/ComfyUI",
+        "auto",
+        "auto"
+      ],
+      "note": "Configurable parameters for SaveVideo"
+    }
+  },
+  "_internal": {
+    "original_structure": {
+      "workflow_info": {
+        "id": "37c0b8cc-6246-402e-a7b7-fbb2020d0c10",
+        "name": "MOTION_FORGE_Wan_2.2_14B_MoE_I2V_NOOB_FRIENDLY",
+        "description": "Auto-generated configuration template"
+      },
+      "instance_config": {
+        "gpu_name": "RTX 5090",
+        "gpu_index": 0,
+        "provisioning_script": "MOTION_FORGE_Wan_2.2_14B_MoE_I2V_NOOB_FRIENDLY.sh",
+        "disk_size": 100,
+        "github_user": "jiso007",
+        "github_branch": "main",
+        "note": "Instance creation settings - auto-detected github_user from current repo",
+        "ssh_key_path": "~/.ssh/id_ed25519_vastai"
+      },
+      "configurable_parameters": {
+        "LoaderGGUF": {
+          "17_LoaderGGUF_17": {
+            "node_id": 17,
+            "title": "LoaderGGUF_17",
+            "parameters": {
+              "widgets_values": [
+                "Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+              ]
+            }
+          },
+          "16_LoaderGGUF_16": {
+            "node_id": 16,
+            "title": "LoaderGGUF_16",
+            "parameters": {
+              "widgets_values": [
+                "Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
+              ]
+            }
+          }
+        },
+        "WanImageToVideo": {
+          "11_WanImageToVideo_11": {
+            "node_id": 11,
+            "title": "WanImageToVideo_11",
+            "parameters": {
+              "widgets_values": [
+                960,
+                960,
+                65,
+                1
+              ],
+              "input_widgets": {
+                "width": {
+                  "type": "INT",
+                  "current_value": null
+                },
+                "height": {
+                  "type": "INT",
+                  "current_value": null
+                }
+              }
+            }
+          }
+        },
+        "LoraLoaderModelOnly": {
+          "21_LIGHTX2V_LOW_NOISE": {
+            "node_id": 21,
+            "title": "LIGHTX2V LOW NOISE",
+            "parameters": {
+              "widgets_values": [
+                "lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
+                2
+              ]
+            }
+          },
+          "20_LIGHTX2V_HIGH_NOISE": {
+            "node_id": 20,
+            "title": "LIGHTX2V HIGH NOISE",
+            "parameters": {
+              "widgets_values": [
+                "lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors",
+                5.6
+              ]
+            }
+          }
+        },
+        "Power Lora Loader (rgthree)": {
+          "33_LORAS_LOADER_LOW_NOISE": {
+            "node_id": 33,
+            "title": "LORAS LOADER LOW NOISE",
+            "parameters": {
+              "widgets_values": [
+                {},
+                {
+                  "type": "PowerLoraLoaderHeaderWidget"
+                },
+                {},
+                ""
+              ]
+            }
+          },
+          "31_LORAS_LOADER_HIGH_NOISE": {
+            "node_id": 31,
+            "title": "LORAS LOADER HIGH NOISE",
+            "parameters": {
+              "widgets_values": [
+                {},
+                {
+                  "type": "PowerLoraLoaderHeaderWidget"
+                },
+                {},
+                ""
+              ]
+            }
+          }
+        },
+        "RAMCleanup": {
+          "42_RAMCleanup_42": {
+            "node_id": 42,
+            "title": "RAMCleanup_42",
+            "parameters": {
+              "widgets_values": [
+                true,
+                true,
+                true,
+                3
+              ]
+            }
+          }
+        },
+        "CLIPTextEncode": {
+          "1_CLIP_Text_Encode_(Negative_Prompt)": {
+            "node_id": 1,
+            "title": "CLIP Text Encode (Negative Prompt)",
+            "parameters": {
+              "widgets_values": [
+                "\u8272\u8c03\u8273\u4e3d\uff0c\u8fc7\u66dd\uff0c\u9759\u6001\uff0c\u7ec6\u8282\u6a21\u7cca\u4e0d\u6e05\uff0c\u5b57\u5e55\uff0c\u98ce\u683c\uff0c\u4f5c\u54c1\uff0c\u753b\u4f5c\uff0c\u753b\u9762\uff0c\u9759\u6b62\uff0c\u6574\u4f53\u53d1\u7070\uff0c\u6700\u5dee\u8d28\u91cf\uff0c\u4f4e\u8d28\u91cf\uff0cJPEG\u538b\u7f29\u6b8b\u7559\uff0c\u4e11\u964b\u7684\uff0c\u6b8b\u7f3a\u7684\uff0c\u591a\u4f59\u7684\u624b\u6307\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u624b\u90e8\uff0c\u753b\u5f97\u4e0d\u597d\u7684\u8138\u90e8\uff0c\u7578\u5f62\u7684\uff0c\u6bc1\u5bb9\u7684\uff0c\u5f62\u6001\u7578\u5f62\u7684\u80a2\u4f53\uff0c\u624b\u6307\u878d\u5408\uff0c\u9759\u6b62\u4e0d\u52a8\u7684\u753b\u9762\uff0c\u6742\u4e71\u7684\u80cc\u666f\uff0c\u4e09\u6761\u817f\uff0c\u80cc\u666f\u4eba\u5f88\u591a\uff0c\u5012\u7740\u8d70"
+              ]
+            }
+          },
+          "8_CLIP_Text_Encode_(Positive_Prompt)": {
+            "node_id": 8,
+            "title": "CLIP Text Encode (Positive Prompt)",
+            "parameters": {
+              "widgets_values": [
+                "A nuclear explosion erupts behind a cute anime girl, causing her to drop the flowers in her hands as she begins running for her life, fleeing in fear at great speed."
+              ]
+            }
+          }
+        },
+        "ImageScaleToTotalPixels": {
+          "22_ImageScaleToTotalPixels_22": {
+            "node_id": 22,
+            "title": "ImageScaleToTotalPixels_22",
+            "parameters": {
+              "widgets_values": [
+                "lanczos",
+                0.25
+              ]
+            }
+          }
+        },
+        "WanMoeKSampler": {
+          "14_WanMoeKSampler_14": {
+            "node_id": 14,
+            "title": "WanMoeKSampler_14",
+            "parameters": {
+              "widgets_values": [
+                0.5,
+                878883364592829,
+                "fixed",
+                4,
+                1,
+                1,
+                "uni_pc",
+                "beta57",
+                5,
+                1
+              ]
+            }
+          }
+        },
+        "ClipLoaderGGUF": {
+          "18_ClipLoaderGGUF_18": {
+            "node_id": 18,
+            "title": "ClipLoaderGGUF_18",
+            "parameters": {
+              "widgets_values": [
+                "cow-umt5xxl-q8_0.gguf",
+                "wan",
+                "default"
+              ]
+            }
+          }
+        },
+        "CreateVideo": {
+          "24_CreateVideo_24": {
+            "node_id": 24,
+            "title": "CreateVideo_24",
+            "parameters": {
+              "widgets_values": [
+                16
+              ]
+            }
+          },
+          "27_CreateVideo_27": {
+            "node_id": 27,
+            "title": "CreateVideo_27",
+            "parameters": {
+              "widgets_values": [
+                32
+              ]
+            }
+          }
+        },
+        "VaeGGUF": {
+          "19_VaeGGUF_19": {
+            "node_id": 19,
+            "title": "VaeGGUF_19",
+            "parameters": {
+              "widgets_values": [
+                "pig_wan_vae_fp32-f16.gguf"
+              ]
+            }
+          }
+        },
+        "LoadImage": {
+          "9_LoadImage_9": {
+            "node_id": 9,
+            "title": "LoadImage_9",
+            "parameters": {
+              "widgets_values": [
+                "fennec_girl_flowers.png",
+                "image"
+              ]
+            }
+          }
+        },
+        "RIFE VFI": {
+          "35_RIFE_VFI_35": {
+            "node_id": 35,
+            "title": "RIFE VFI_35",
+            "parameters": {
+              "widgets_values": [
+                "rife49.pth",
+                10,
+                2,
+                true,
+                true,
+                1
+              ]
+            }
+          }
+        },
+        "UpscaleModelLoader": {
+          "29_UpscaleModelLoader_29": {
+            "node_id": 29,
+            "title": "UpscaleModelLoader_29",
+            "parameters": {
+              "widgets_values": [
+                "RealESRGAN_x2plus.pth"
+              ]
+            }
+          }
+        },
+        "SaveVideo": {
+          "25_SaveVideo_25": {
+            "node_id": 25,
+            "title": "SaveVideo_25",
+            "parameters": {
+              "widgets_values": [
+                "video/ComfyUI",
+                "auto",
+                "auto"
+              ]
+            }
+          },
+          "28_SaveVideo_28": {
+            "node_id": 28,
+            "title": "SaveVideo_28",
+            "parameters": {
+              "widgets_values": [
+                "video/ComfyUI",
+                "auto",
+                "auto"
+              ]
+            }
+          }
+        }
+      },
+      "workflow_links": [
+        [
+          5,
+          14,
+          0,
+          10,
+          0,
+          "LATENT"
+        ],
+        [
+          7,
+          8,
+          0,
+          11,
+          0,
+          "CONDITIONING"
+        ],
+        [
+          8,
+          1,
+          0,
+          11,
+          1,
+          "CONDITIONING"
+        ],
+        [
+          10,
+          9,
+          0,
+          11,
+          4,
+          "IMAGE"
+        ],
+        [
+          13,
+          11,
+          0,
+          14,
+          2,
+          "CONDITIONING"
+        ],
+        [
+          14,
+          11,
+          1,
+          14,
+          3,
+          "CONDITIONING"
+        ],
+        [
+          15,
+          11,
+          2,
+          14,
+          4,
+          "LATENT"
+        ],
+        [
+          18,
+          18,
+          0,
+          8,
+          0,
+          "CLIP"
+        ],
+        [
+          19,
+          18,
+          0,
+          1,
+          0,
+          "CLIP"
+        ],
+        [
+          20,
+          19,
+          0,
+          11,
+          2,
+          "VAE"
+        ],
+        [
+          21,
+          19,
+          0,
+          10,
+          1,
+          "VAE"
+        ],
+        [
+          22,
+          16,
+          0,
+          20,
+          0,
+          "MODEL"
+        ],
+        [
+          25,
+          17,
+          0,
+          21,
+          0,
+          "MODEL"
+        ],
+        [
+          26,
+          9,
+          0,
+          22,
+          0,
+          "IMAGE"
+        ],
+        [
+          27,
+          22,
+          0,
+          23,
+          0,
+          "IMAGE"
+        ],
+        [
+          28,
+          23,
+          0,
+          11,
+          5,
+          "INT"
+        ],
+        [
+          29,
+          23,
+          1,
+          11,
+          6,
+          "INT"
+        ],
+        [
+          30,
+          10,
+          0,
+          24,
+          0,
+          "IMAGE"
+        ],
+        [
+          31,
+          24,
+          0,
+          25,
+          0,
+          "VIDEO"
+        ],
+        [
+          32,
+          27,
+          0,
+          28,
+          0,
+          "VIDEO"
+        ],
+        [
+          33,
+          10,
+          0,
+          30,
+          1,
+          "IMAGE"
+        ],
+        [
+          34,
+          29,
+          0,
+          30,
+          0,
+          "UPSCALE_MODEL"
+        ],
+        [
+          36,
+          20,
+          0,
+          31,
+          0,
+          "MODEL"
+        ],
+        [
+          37,
+          31,
+          0,
+          14,
+          0,
+          "MODEL"
+        ],
+        [
+          38,
+          21,
+          0,
+          33,
+          0,
+          "MODEL"
+        ],
+        [
+          39,
+          33,
+          0,
+          14,
+          1,
+          "MODEL"
+        ],
+        [
+          42,
+          35,
+          0,
+          27,
+          0,
+          "IMAGE"
+        ],
+        [
+          43,
+          30,
+          0,
+          35,
+          0,
+          "IMAGE"
+        ],
+        [
+          44,
+          1,
+          0,
+          36,
+          0,
+          "*"
+        ],
+        [
+          45,
+          31,
+          0,
+          37,
+          0,
+          "*"
+        ],
+        [
+          46,
+          33,
+          0,
+          38,
+          0,
+          "*"
+        ],
+        [
+          47,
+          14,
+          0,
+          39,
+          0,
+          "*"
+        ],
+        [
+          48,
+          24,
+          0,
+          40,
+          0,
+          "*"
+        ],
+        [
+          49,
+          27,
+          0,
+          41,
+          0,
+          "*"
+        ],
+        [
+          50,
+          27,
+          0,
+          42,
+          0,
+          "*"
+        ]
+      ]
+    },
+    "note": "This section is used internally for workflow reconstruction"
+  }
+}

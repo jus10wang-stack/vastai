@@ -21,6 +21,7 @@ from components.create_instance import create_instance as create_vast_instance
 from components.monitor_instance import VastInstanceMonitor
 from components.destroy_instance import destroy_instance
 from utils.ssh_utils import get_ssh_command_string
+from utils.tunnel_manager import TunnelManager
 
 def load_instance_config(config_filename, script_dir):
     """Load instance configuration from config file."""
@@ -269,32 +270,7 @@ def start_monitoring_with_failsafe(instance_id, result_data=None, ssh_key_path=N
         
         if success:
             log_message(f"✅ Instance {instance_id} is fully ready and operational!")
-            
-            # Add practical SSH command for easy access
-            try:
-                import requests
-                api_key = os.getenv("VAST_API_KEY")
-                if api_key:
-                    headers = {"Authorization": f"Bearer {api_key}"}
-                    response = requests.get("https://console.vast.ai/api/v0/instances/", headers=headers)
-                    instances = response.json().get('instances', [])
-                    
-                    for instance in instances:
-                        if str(instance.get('id')) == str(instance_id):
-                            ssh_host = instance.get('ssh_host')
-                            ssh_port = instance.get('ssh_port', 0)
-
-                            # Generate portable SSH command using utility function
-                            ssh_command = get_ssh_command_string(ssh_host, ssh_port, local_port=8188, remote_port=8188)
-
-                            log_message(f"")
-                            log_message(f"🔑 SSH Commands for ComfyUI Access:")
-                            log_message(f"{ssh_command}")
-                            log_message(f"Then open: http://localhost:8188")
-                            log_message(f"")
-                            break
-            except Exception as e:
-                log_message(f"⚠️ Could not generate SSH command: {e}")
+            log_message(f"⏳ Proceeding to SSH tunnel setup...")
         else:
             log_message(f"⚠️ Monitoring completed with issues for instance {instance_id}")
             
@@ -369,29 +345,13 @@ def main():
                     
                     if success:
                         print("\n🎉 Instance is ready and monitoring completed successfully!")
-                        
-                        # Auto-extract content
-                        print("\n📥 Auto-extracting content files...")
-                        try:
-                            vai_path = os.path.join(script_dir, "vai")
-                            result = subprocess.run(
-                                [vai_path, "extract", str(instance_id), "content"],
-                                cwd=script_dir,
-                                text=True,
-                                capture_output=False  # Let it stream to console/log naturally
-                            )
-                            
-                            if result.returncode == 0:
-                                print("✅ Content extraction completed successfully!")
-                            else:
-                                print("⚠️ Content extraction failed, but instance is ready for manual use")
-                                print(f"💡 You can manually run: vai extract {instance_id} content")
-                                
-                        except Exception as e:
-                            print(f"⚠️ Auto-extract error: {e}")
-                            print(f"💡 Instance is ready - you can manually run: vai extract {instance_id} content")
 
-                        # Display SSH commands for easy access
+                        # Wait a bit for SSH to fully stabilize
+                        print("\n⏳ Waiting 10 seconds for SSH to stabilize...")
+                        time.sleep(10)
+
+                        # Auto-create SSH tunnel with dynamic port allocation
+                        print("\n🔗 Setting up SSH tunnel...")
                         try:
                             import requests
                             api_key = os.getenv("VAST_API_KEY")
@@ -405,18 +365,54 @@ def main():
                                         ssh_host = instance.get('ssh_host')
                                         ssh_port = instance.get('ssh_port', 0)
 
-                                        # Generate portable SSH command using utility function
-                                        ssh_command = get_ssh_command_string(ssh_host, ssh_port, local_port=8188, remote_port=8188)
+                                        # Create tunnel manager and establish tunnel
+                                        tunnel_manager = TunnelManager()
+                                        local_port = tunnel_manager.create_tunnel(
+                                            instance_id=instance_id,
+                                            ssh_host=ssh_host,
+                                            ssh_port=ssh_port,
+                                            remote_port=8188,
+                                            ssh_key_path=ssh_key_path
+                                        )
 
-                                        print(f"\n🔑 SSH Commands for ComfyUI Access:")
-                                        print(f"{ssh_command}")
-                                        print(f"Then open: http://localhost:8188")
-                                        print("")
+                                        # Verify tunnel is actually running
+                                        tunnel_pid = tunnel_manager.get_tunnel(instance_id)['pid']
+                                        time.sleep(2)  # Give tunnel a moment to establish
+
+                                        # Check if tunnel process is still alive
+                                        import os as os_module
+                                        try:
+                                            os_module.kill(tunnel_pid, 0)  # Check if PID exists
+                                            print(f"\n✅ SSH tunnel established!")
+                                            print(f"🌐 Access ComfyUI at: http://localhost:{local_port}")
+                                            print(f"🔗 Tunnel running in background (PID: {tunnel_pid})")
+                                        except ProcessLookupError:
+                                            print(f"\n⚠️ SSH tunnel was created but died immediately!")
+                                            print(f"💡 Try recreating manually: vai tunnel {instance_id}")
+                                            print(f"💡 Or check SSH connection: ssh -p {ssh_port} root@{ssh_host}")
+
+                                        # Generate manual SSH command for interactive access (no port forwarding)
+                                        from utils.ssh_utils import detect_ssh_key
+                                        manual_ssh_key = ssh_key_path or detect_ssh_key()
+                                        # Use ~ notation for portability
+                                        home_dir = os.path.expanduser("~")
+                                        if manual_ssh_key.startswith(home_dir):
+                                            display_key = manual_ssh_key.replace(home_dir, "~", 1)
+                                        else:
+                                            display_key = manual_ssh_key
+
+                                        print(f"\n🔑 Manual SSH access (for debugging/file editing):")
+                                        print(f"   ssh -i {display_key} -p {ssh_port} root@{ssh_host}")
+
+                                        print(f"\n💡 Tunnel management:")
+                                        print(f"   vai tunnel --list              # List all tunnels")
+                                        print(f"   vai tunnel --stop {instance_id}   # Close this tunnel")
                                         break
                         except Exception as e:
-                            pass  # Don't fail if we can't display SSH info
+                            print(f"⚠️ Could not auto-create SSH tunnel: {e}")
+                            print(f"💡 You can manually create tunnel: vai tunnel {instance_id}")
 
-                        print(f"💡 Ready to execute workflow:")
+                        print(f"\n💡 Ready to execute workflow:")
                         print(f"vai exec {instance_id} {config_filename}")
                     else:
                         print(f"\n⚠️ Monitoring completed with issues.")
