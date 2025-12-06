@@ -6,7 +6,7 @@
     "gpu_index": 0,
     "provisioning_script": "blank.sh",
     "disk_size": 100,
-    "github_user": "jiso007",
+    "github_user": "jus10wang-stack",
     "github_branch": "main",
     "note": "Instance creation settings - auto-detected github_user from current repo, ssh_key_path is optional (will auto-detect if not specified)",
     "ssh_key_path": "~/.ssh/id_ed25519_vastai"
