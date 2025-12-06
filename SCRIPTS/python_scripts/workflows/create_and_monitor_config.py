@@ -346,6 +346,10 @@ def main():
                     if success:
                         print("\n🎉 Instance is ready and monitoring completed successfully!")
 
+                        # Wait a bit for SSH to fully stabilize
+                        print("\n⏳ Waiting 10 seconds for SSH to stabilize...")
+                        time.sleep(10)
+
                         # Auto-create SSH tunnel with dynamic port allocation
                         print("\n🔗 Setting up SSH tunnel...")
                         try:
@@ -371,9 +375,21 @@ def main():
                                             ssh_key_path=ssh_key_path
                                         )
 
-                                        print(f"\n✅ SSH tunnel established!")
-                                        print(f"🌐 Access ComfyUI at: http://localhost:{local_port}")
-                                        print(f"🔗 Tunnel running in background (PID: {tunnel_manager.get_tunnel(instance_id)['pid']})")
+                                        # Verify tunnel is actually running
+                                        tunnel_pid = tunnel_manager.get_tunnel(instance_id)['pid']
+                                        time.sleep(2)  # Give tunnel a moment to establish
+
+                                        # Check if tunnel process is still alive
+                                        import os as os_module
+                                        try:
+                                            os_module.kill(tunnel_pid, 0)  # Check if PID exists
+                                            print(f"\n✅ SSH tunnel established!")
+                                            print(f"🌐 Access ComfyUI at: http://localhost:{local_port}")
+                                            print(f"🔗 Tunnel running in background (PID: {tunnel_pid})")
+                                        except ProcessLookupError:
+                                            print(f"\n⚠️ SSH tunnel was created but died immediately!")
+                                            print(f"💡 Try recreating manually: vai tunnel {instance_id}")
+                                            print(f"💡 Or check SSH connection: ssh -p {ssh_port} root@{ssh_host}")
 
                                         # Generate manual SSH command for interactive access (no port forwarding)
                                         from utils.ssh_utils import detect_ssh_key
