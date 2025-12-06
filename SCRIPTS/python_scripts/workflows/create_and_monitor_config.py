@@ -270,32 +270,7 @@ def start_monitoring_with_failsafe(instance_id, result_data=None, ssh_key_path=N
         
         if success:
             log_message(f"✅ Instance {instance_id} is fully ready and operational!")
-            
-            # Add practical SSH command for easy access
-            try:
-                import requests
-                api_key = os.getenv("VAST_API_KEY")
-                if api_key:
-                    headers = {"Authorization": f"Bearer {api_key}"}
-                    response = requests.get("https://console.vast.ai/api/v0/instances/", headers=headers)
-                    instances = response.json().get('instances', [])
-                    
-                    for instance in instances:
-                        if str(instance.get('id')) == str(instance_id):
-                            ssh_host = instance.get('ssh_host')
-                            ssh_port = instance.get('ssh_port', 0)
-
-                            # Generate portable SSH command using utility function
-                            ssh_command = get_ssh_command_string(ssh_host, ssh_port, local_port=8188, remote_port=8188)
-
-                            log_message(f"")
-                            log_message(f"🔑 SSH Commands for ComfyUI Access:")
-                            log_message(f"{ssh_command}")
-                            log_message(f"Then open: http://localhost:8188")
-                            log_message(f"")
-                            break
-            except Exception as e:
-                log_message(f"⚠️ Could not generate SSH command: {e}")
+            log_message(f"⏳ Proceeding to SSH tunnel setup...")
         else:
             log_message(f"⚠️ Monitoring completed with issues for instance {instance_id}")
             
@@ -399,8 +374,23 @@ def main():
                                         print(f"\n✅ SSH tunnel established!")
                                         print(f"🌐 Access ComfyUI at: http://localhost:{local_port}")
                                         print(f"🔗 Tunnel running in background (PID: {tunnel_manager.get_tunnel(instance_id)['pid']})")
-                                        print(f"\n💡 To close tunnel later: vai tunnel --stop {instance_id}")
-                                        print(f"💡 To list all tunnels: vai tunnel --list")
+
+                                        # Generate manual SSH command for interactive access (no port forwarding)
+                                        from utils.ssh_utils import detect_ssh_key
+                                        manual_ssh_key = ssh_key_path or detect_ssh_key()
+                                        # Use ~ notation for portability
+                                        home_dir = os.path.expanduser("~")
+                                        if manual_ssh_key.startswith(home_dir):
+                                            display_key = manual_ssh_key.replace(home_dir, "~", 1)
+                                        else:
+                                            display_key = manual_ssh_key
+
+                                        print(f"\n🔑 Manual SSH access (for debugging/file editing):")
+                                        print(f"   ssh -i {display_key} -p {ssh_port} root@{ssh_host}")
+
+                                        print(f"\n💡 Tunnel management:")
+                                        print(f"   vai tunnel --list              # List all tunnels")
+                                        print(f"   vai tunnel --stop {instance_id}   # Close this tunnel")
                                         break
                         except Exception as e:
                             print(f"⚠️ Could not auto-create SSH tunnel: {e}")

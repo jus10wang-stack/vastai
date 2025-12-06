@@ -14,9 +14,17 @@ import time
 from pathlib import Path
 from typing import Optional, Dict, List
 from datetime import datetime
+import sys
+import os
 
-from .port_allocator import PortAllocator
-from .ssh_utils import detect_ssh_key
+# Handle imports for both direct execution and module import
+try:
+    from .port_allocator import PortAllocator
+    from .ssh_utils import detect_ssh_key
+except ImportError:
+    # Fallback for direct execution or different import contexts
+    from port_allocator import PortAllocator
+    from ssh_utils import detect_ssh_key
 
 
 class TunnelManager:
